@@ -1,0 +1,94 @@
+.hero {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  min-height: 100vh;
+  min-height: 100svh;
+  place-items: start center;
+  overflow: hidden;
+  padding: clamp(3.5rem, 9vh, 7rem) 1.5rem 2rem;
+  background-color: #28385b;
+  background-image:
+    linear-gradient(180deg, rgba(16, 24, 52, 0.5) 0%, transparent 48%),
+    url('../../images/yoge-lemur.png');
+  background-position: center;
+  background-size: cover;
+}
+
+.hero__content {
+  display: grid;
+  width: min(100%, 46rem);
+  justify-items: center;
+  text-align: center;
+  text-shadow: 0 2px 18px rgba(7, 12, 31, 0.7);
+}
+
+.hero__eyebrow {
+  margin: 0 0 0.75rem;
+  color: #ffe1b5;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  max-width: 12ch;
+  margin: 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(2.7rem, 8vw, 6.5rem);
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  line-height: 0.95;
+}
+
+.hero__subtitle {
+  max-width: 35rem;
+  margin: 1.25rem 0 0;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  line-height: 1.6;
+}
+
+.hero__cta {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.75rem;
+  padding: 0.75rem 1.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: 999px;
+  background: rgba(20, 28, 53, 0.45);
+  font-weight: 700;
+  text-decoration: none;
+  backdrop-filter: blur(6px);
+  transition:
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+
+.hero__cta:hover {
+  background: rgba(20, 28, 53, 0.7);
+  transform: translateY(-2px);
+}
+
+.hero__cta:focus-visible {
+  outline: 3px solid #ffe1b5;
+  outline-offset: 4px;
+}
+
+@media (max-width: 40rem) {
+  .hero {
+    padding-top: 4rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .hero__cta {
+    transition: none;
+  }
+}

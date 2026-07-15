@@ -1,0 +1,6 @@
+dist
+coverage
+node_modules
+package-lock.json
+docs/codex-execution-prompts.md
+docs/scene-design-and-implementation-plan.md
