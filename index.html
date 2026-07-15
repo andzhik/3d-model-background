@@ -11,6 +11,23 @@
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <main>
+        <section class="hero" aria-labelledby="fallback-hero-title">
+          <div class="hero__content">
+            <p class="hero__eyebrow">Find your center</p>
+            <h1 id="fallback-hero-title">Stillness in the wild</h1>
+            <p class="hero__subtitle">
+              Pause, breathe, and meet the quiet beyond the trail.
+            </p>
+            <a class="hero__cta" href="#fallback-begin">Begin the journey</a>
+          </div>
+        </section>
+        <div id="fallback-begin" class="sr-only" tabindex="-1">
+          Your journey begins here.
+        </div>
+      </main>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

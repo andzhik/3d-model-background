@@ -20,6 +20,7 @@ The following rules apply to all prompts below:
 10. Stop after the current step. Do not silently continue into the next prompt.
 11. Treat Blender Python scripts as asset source code. Do not make undocumented manual-only changes to `.blend` files.
 12. Resolve Blender from `BLENDER_PATH`; the detected local executable is `D:\Program Files\Blender Foundation\Blender 4.3\blender.exe`. Do not hard-code that machine-specific path into browser code.
+13. When done with changes, propose one-line commit message
 
 ---
 

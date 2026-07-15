@@ -1,26 +1,57 @@
+:root {
+  --hero-height: 100vh;
+  --hero-content-width: 46rem;
+  --hero-scrim-intensity: 0.5;
+  --hero-focal-position: 50% 50%;
+}
+
+@supports (height: 100svh) {
+  :root {
+    --hero-height: 100svh;
+  }
+}
+
 .hero {
   position: relative;
   isolation: isolate;
   display: grid;
-  min-height: 100vh;
-  min-height: 100svh;
+  min-height: var(--hero-height);
   place-items: start center;
   overflow: hidden;
-  padding: clamp(3.5rem, 9vh, 7rem) 1.5rem 2rem;
+  padding: clamp(3.75rem, 8vh, 6.5rem) clamp(1rem, 4vw, 2rem) 2rem;
   background-color: #28385b;
-  background-image:
-    linear-gradient(180deg, rgba(16, 24, 52, 0.5) 0%, transparent 48%),
-    url('../../images/yoge-lemur.png');
-  background-position: center;
+  background-image: url('../../images/yoge-lemur.png');
+  background-position: var(--hero-focal-position);
   background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.hero::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background:
+    radial-gradient(
+      ellipse 62% 42% at 50% 12%,
+      rgb(8 15 36 / calc(var(--hero-scrim-intensity) * 0.72)) 0%,
+      transparent 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgb(8 15 36 / var(--hero-scrim-intensity)) 0%,
+      rgb(8 15 36 / calc(var(--hero-scrim-intensity) * 0.24)) 43%,
+      rgb(8 15 36 / 0.08) 100%
+    );
+  content: '';
+  pointer-events: none;
 }
 
 .hero__content {
   display: grid;
-  width: min(100%, 46rem);
+  width: min(100%, var(--hero-content-width));
   justify-items: center;
   text-align: center;
-  text-shadow: 0 2px 18px rgba(7, 12, 31, 0.7);
+  text-shadow: 0 2px 18px rgb(7 12 31 / 0.72);
 }
 
 .hero__eyebrow {
@@ -56,9 +87,9 @@
   justify-content: center;
   margin-top: 1.75rem;
   padding: 0.75rem 1.4rem;
-  border: 1px solid rgba(255, 255, 255, 0.75);
+  border: 1px solid rgb(255 255 255 / 0.75);
   border-radius: 999px;
-  background: rgba(20, 28, 53, 0.45);
+  background: rgb(20 28 53 / 0.52);
   font-weight: 700;
   text-decoration: none;
   backdrop-filter: blur(6px);
@@ -68,7 +99,7 @@
 }
 
 .hero__cta:hover {
-  background: rgba(20, 28, 53, 0.7);
+  background: rgb(20 28 53 / 0.72);
   transform: translateY(-2px);
 }
 
@@ -77,9 +108,40 @@
   outline-offset: 4px;
 }
 
-@media (max-width: 40rem) {
+@media (orientation: portrait) and (min-width: 41rem) {
+  :root {
+    --hero-content-width: 40rem;
+    --hero-scrim-intensity: 0.54;
+    --hero-focal-position: 50% 50%;
+  }
+
   .hero {
-    padding-top: 4rem;
+    padding-top: clamp(4.5rem, 8vh, 6rem);
+  }
+}
+
+@media (max-width: 40rem) {
+  :root {
+    --hero-content-width: 22rem;
+    --hero-scrim-intensity: 0.58;
+    --hero-focal-position: 50% 48%;
+  }
+
+  .hero {
+    padding-top: clamp(3.5rem, 7vh, 4.5rem);
+  }
+
+  .hero h1 {
+    font-size: clamp(2.6rem, 13vw, 4rem);
+  }
+
+  .hero__subtitle {
+    max-width: 29ch;
+    margin-top: 1rem;
+  }
+
+  .hero__cta {
+    margin-top: 1.4rem;
   }
 }
 
