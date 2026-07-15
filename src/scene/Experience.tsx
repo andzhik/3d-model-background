@@ -2,14 +2,9 @@ import { PerspectiveCamera } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { useEffect, useRef } from 'react'
 
-import {
-  CAMERA_CONFIG,
-  FOG_CONFIG,
-  LIGHT_CONFIG,
-  PLACEHOLDER_CONFIG,
-} from './constants'
+import { CAMERA_CONFIG, FOG_CONFIG, LIGHT_CONFIG } from './constants'
+import { Clouds, SkyGradient, SunDisc } from './Atmosphere'
 import type { SceneDebugSettings } from './debug'
-import { lowPolyMaterialParameters } from './materials'
 import { SCENE_PALETTE } from './palette'
 
 interface ExperienceProps {
@@ -45,8 +40,6 @@ function FirstFrameReporter({
   return null
 }
 
-const placeholderMaterial = lowPolyMaterialParameters(SCENE_PALETTE.coral)
-
 function CameraConfiguration({ settings }: Pick<ExperienceProps, 'settings'>) {
   return (
     <PerspectiveCamera
@@ -63,12 +56,13 @@ export function Experience({ onFirstFrame, settings }: ExperienceProps) {
   return (
     <>
       <CameraConfiguration settings={settings} />
-      <color attach="background" args={[SCENE_PALETTE.sky]} />
       <fog
         attach="fog"
         args={[FOG_CONFIG.color, settings.fogNear, settings.fogFar]}
       />
       <group visible={settings.visibility.environment}>
+        <SkyGradient />
+        <SunDisc />
         <hemisphereLight
           args={[
             SCENE_PALETTE.skyLight,
@@ -83,14 +77,10 @@ export function Experience({ onFirstFrame, settings }: ExperienceProps) {
           color={SCENE_PALETTE.sunrise}
         />
       </group>
-      <group visible={settings.visibility.foreground}>
-        <mesh rotation={PLACEHOLDER_CONFIG.rotation}>
-          <icosahedronGeometry
-            args={[PLACEHOLDER_CONFIG.radius, PLACEHOLDER_CONFIG.detail]}
-          />
-          <meshStandardMaterial {...placeholderMaterial} />
-        </mesh>
-      </group>
+      <Clouds
+        farVisible={settings.visibility.distantWorld}
+        nearVisible={settings.visibility.middleWorld}
+      />
       <FirstFrameReporter onFirstFrame={onFirstFrame} />
     </>
   )

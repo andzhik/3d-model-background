@@ -22,10 +22,40 @@ export const LIGHT_CONFIG = {
   keyPosition: [3, 4, 5] as const,
 } as const
 
-export const PLACEHOLDER_CONFIG = {
-  radius: 1.05,
-  detail: 1,
-  rotation: [0.28, 0.58, 0] as const,
+export const ATMOSPHERE_CONFIG = {
+  sky: {
+    position: [0, 0, -20] as const,
+    size: [80, 40] as const,
+  },
+  sun: {
+    position: [0, -1.45, -12] as const,
+    radius: 1.15,
+    segments: 48,
+  },
+  clouds: {
+    wrapMinimum: -16,
+    wrapMaximum: 16,
+    far: {
+      count: 7,
+      seedOffset: 0x0f_a4,
+      z: -10,
+      xRange: [-14, 14] as const,
+      yRange: [-0.1, 3.6] as const,
+      scaleRange: [0.65, 1.2] as const,
+      speed: 0.018,
+      opacity: 0.38,
+    },
+    near: {
+      count: 5,
+      seedOffset: 0x2b_19,
+      z: -5,
+      xRange: [-13, 13] as const,
+      yRange: [0.15, 3.15] as const,
+      scaleRange: [0.8, 1.35] as const,
+      speed: 0.038,
+      opacity: 0.5,
+    },
+  },
 } as const
 
 export const MAJOR_GROUPS = [
