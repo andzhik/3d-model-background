@@ -1,6 +1,7 @@
-import { readFile } from 'node:fs/promises'
+import { readFile, rm } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { spawnSync } from 'node:child_process'
+import { createHash } from 'node:crypto'
 
 import { resolveBlender } from './resolve-blender.mjs'
 
@@ -10,7 +11,13 @@ const manifest = JSON.parse(
 )
 const saveBlend = process.argv.includes('--save-blend')
 
-for (const asset of manifest.assets) {
+async function fileDigest(path) {
+  return createHash('sha256')
+    .update(await readFile(path))
+    .digest('hex')
+}
+
+function generate(asset, output, blendOutput) {
   const generatorArguments = [
     '--background',
     '--factory-startup',
@@ -18,16 +25,20 @@ for (const asset of manifest.assets) {
     resolve(asset.generator),
     '--',
     '--output',
-    resolve(asset.output),
+    resolve(output),
   ]
-  if (saveBlend)
-    generatorArguments.push('--blend-output', resolve(asset.blendOutput))
+  if (blendOutput)
+    generatorArguments.push('--blend-output', resolve(blendOutput))
 
-  process.stdout.write(`Generating ${asset.id} with ${blender}\n`)
   const generation = spawnSync(blender, generatorArguments, {
     stdio: 'inherit',
   })
   if (generation.status !== 0) process.exit(generation.status ?? 1)
+}
+
+for (const asset of manifest.assets) {
+  process.stdout.write(`Generating ${asset.id} with ${blender}\n`)
+  generate(asset, asset.output, saveBlend ? asset.blendOutput : undefined)
 
   const validation = spawnSync(
     process.execPath,
@@ -37,4 +48,22 @@ for (const asset of manifest.assets) {
     },
   )
   if (validation.status !== 0) process.exit(validation.status ?? 1)
+
+  if (asset.deterministicRepeat) {
+    const repeatOutput = `${asset.output}.determinism.glb`
+    try {
+      generate(asset, repeatOutput)
+      const [firstDigest, repeatDigest] = await Promise.all([
+        fileDigest(resolve(asset.output)),
+        fileDigest(resolve(repeatOutput)),
+      ])
+      if (firstDigest !== repeatDigest)
+        throw new Error(
+          `${asset.id} did not produce a deterministic repeat build`,
+        )
+      process.stdout.write(`Deterministic repeat matched ${firstDigest}\n`)
+    } finally {
+      await rm(resolve(repeatOutput), { force: true })
+    }
+  }
 }

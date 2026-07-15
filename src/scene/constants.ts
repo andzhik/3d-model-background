@@ -11,8 +11,8 @@ export const CAMERA_CONFIG = {
 
 export const FOG_CONFIG = {
   color: SCENE_PALETTE.fog,
-  near: 8,
-  far: 34,
+  near: 7.5,
+  far: 24,
 } as const
 
 export const LIGHT_CONFIG = {

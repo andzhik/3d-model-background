@@ -7,7 +7,29 @@
       "output": "public/models/pipeline-test.glb",
       "blendOutput": "blender/generated/pipeline-test.blend",
       "expectedObjects": ["PipelineTestMesh"],
-      "expectedMaterials": ["PipelineTestMaterial"]
+      "expectedMaterials": ["PipelineTestMaterial"],
+      "minBytes": 100
+    },
+    {
+      "id": "environment-mountains",
+      "generator": "blender/scripts/generate_mountains.py",
+      "output": "public/models/environment-mountains.glb",
+      "blendOutput": "blender/generated/environment-mountains.blend",
+      "expectedObjects": [
+        "MountainLayerFar",
+        "MountainLayerLeft",
+        "MountainLayerRight"
+      ],
+      "expectedMaterials": [
+        "MountainFarBlue",
+        "MountainCoolBlue",
+        "MountainViolet",
+        "MountainPeachLight"
+      ],
+      "minBytes": 10000,
+      "maxBytes": 500000,
+      "requireFinitePositionBounds": true,
+      "deterministicRepeat": true
     }
   ]
 }

@@ -1,10 +1,12 @@
 import { PerspectiveCamera } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { useEffect, useRef } from 'react'
+import { Suspense } from 'react'
 
 import { CAMERA_CONFIG, FOG_CONFIG, LIGHT_CONFIG } from './constants'
 import { Clouds, SkyGradient, SunDisc } from './Atmosphere'
 import type { SceneDebugSettings } from './debug'
+import { Mountains } from './Mountains'
 import { SCENE_PALETTE } from './palette'
 
 interface ExperienceProps {
@@ -81,7 +83,10 @@ export function Experience({ onFirstFrame, settings }: ExperienceProps) {
         farVisible={settings.visibility.distantWorld}
         nearVisible={settings.visibility.middleWorld}
       />
-      <FirstFrameReporter onFirstFrame={onFirstFrame} />
+      <Suspense fallback={null}>
+        <Mountains visible={settings.visibility.distantWorld} />
+        <FirstFrameReporter onFirstFrame={onFirstFrame} />
+      </Suspense>
     </>
   )
 }

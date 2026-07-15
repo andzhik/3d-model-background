@@ -10,6 +10,10 @@ export const SCENE_PALETTE = {
   sunCore: '#fff1c7',
   cloudFar: '#c8c8df',
   cloudNear: '#f2c7bd',
+  mountainFar: '#596f9f',
+  mountainCool: '#495780',
+  mountainViolet: '#5a4d76',
+  mountainPeachLight: '#d37d70',
   coral: '#f08b73',
   fog: '#7895c1',
 } as const
