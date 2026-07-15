@@ -11,7 +11,10 @@
     "format:check": "prettier --check .",
     "typecheck": "tsc -b --pretty false",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "assets:build": "node scripts/build-blender-assets.mjs",
+    "assets:build:source": "node scripts/build-blender-assets.mjs --save-blend",
+    "assets:validate": "node scripts/validate-glb.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",

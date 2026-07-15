@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "id": "pipeline-test",
+      "generator": "blender/scripts/generate_pipeline_test.py",
+      "output": "public/models/pipeline-test.glb",
+      "blendOutput": "blender/generated/pipeline-test.blend",
+      "expectedObjects": ["PipelineTestMesh"],
+      "expectedMaterials": ["PipelineTestMaterial"]
+    }
+  ]
+}

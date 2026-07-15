@@ -9,6 +9,10 @@ import {
 } from 'react'
 
 import { Experience } from '../scene/Experience'
+import { CAMERA_CONFIG } from '../scene/constants'
+import { createDefaultDebugSettings } from '../scene/debug'
+import { DEFAULT_SCENE_QUALITY, SCENE_QUALITY } from '../scene/quality'
+import { SceneDebug } from './SceneDebug'
 import { sceneStatusReducer } from './sceneStatus'
 
 function canInitializeWebGL(): boolean {
@@ -47,6 +51,8 @@ class SceneErrorBoundary extends Component<
 }
 
 export function SceneBackground() {
+  const [debugSettings, setDebugSettings] = useState(createDefaultDebugSettings)
+  const quality = SCENE_QUALITY[DEFAULT_SCENE_QUALITY]
   const [status, dispatch] = useReducer(
     sceneStatusReducer,
     canInitializeWebGL() ? 'loading' : 'fallback',
@@ -82,24 +88,33 @@ export function SceneBackground() {
   }, [canvasElement, handleFailure])
 
   return (
-    <div
-      className="scene-background"
-      data-scene-status={status}
-      aria-hidden="true"
-    >
-      {status !== 'fallback' && (
-        <SceneErrorBoundary onError={handleFailure}>
-          <Canvas
-            aria-hidden="true"
-            camera={{ position: [0, 0, 5], fov: 42, near: 0.1, far: 100 }}
-            dpr={[1, 1.5]}
-            gl={{ alpha: true, antialias: true }}
-            onCreated={handleCreated}
-          >
-            <Experience onFirstFrame={handleFirstFrame} />
-          </Canvas>
-        </SceneErrorBoundary>
+    <>
+      <div
+        className="scene-background"
+        data-scene-status={status}
+        aria-hidden="true"
+      >
+        {status !== 'fallback' && (
+          <SceneErrorBoundary onError={handleFailure}>
+            <Canvas
+              aria-hidden="true"
+              camera={CAMERA_CONFIG}
+              dpr={quality.dpr}
+              shadows={quality.shadows}
+              gl={{ alpha: true, antialias: quality.antialias }}
+              onCreated={handleCreated}
+            >
+              <Experience
+                onFirstFrame={handleFirstFrame}
+                settings={debugSettings}
+              />
+            </Canvas>
+          </SceneErrorBoundary>
+        )}
+      </div>
+      {import.meta.env.DEV && (
+        <SceneDebug settings={debugSettings} onChange={setDebugSettings} />
       )}
-    </div>
+    </>
   )
 }

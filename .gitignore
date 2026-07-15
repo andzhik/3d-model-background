@@ -15,6 +15,9 @@ coverage/
 .eslintcache
 *.tsbuildinfo
 
+# Rebuildable Blender source output (GLBs remain versioned runtime assets)
+blender/generated/*.blend
+
 # Editor and operating-system files
 .idea/
 .vscode/

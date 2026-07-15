@@ -1,11 +1,25 @@
+import { PerspectiveCamera } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { useEffect, useRef } from 'react'
 
+import {
+  CAMERA_CONFIG,
+  FOG_CONFIG,
+  LIGHT_CONFIG,
+  PLACEHOLDER_CONFIG,
+} from './constants'
+import type { SceneDebugSettings } from './debug'
+import { lowPolyMaterialParameters } from './materials'
+import { SCENE_PALETTE } from './palette'
+
 interface ExperienceProps {
   onFirstFrame: () => void
+  settings: SceneDebugSettings
 }
 
-function FirstFrameReporter({ onFirstFrame }: ExperienceProps) {
+function FirstFrameReporter({
+  onFirstFrame,
+}: Pick<ExperienceProps, 'onFirstFrame'>) {
   const reported = useRef(false)
   const frameRequest = useRef<number | null>(null)
 
@@ -31,22 +45,52 @@ function FirstFrameReporter({ onFirstFrame }: ExperienceProps) {
   return null
 }
 
-export function Experience({ onFirstFrame }: ExperienceProps) {
+const placeholderMaterial = lowPolyMaterialParameters(SCENE_PALETTE.coral)
+
+function CameraConfiguration({ settings }: Pick<ExperienceProps, 'settings'>) {
+  return (
+    <PerspectiveCamera
+      makeDefault
+      position={settings.cameraPosition}
+      fov={settings.fov}
+      near={CAMERA_CONFIG.near}
+      far={CAMERA_CONFIG.far}
+    />
+  )
+}
+
+export function Experience({ onFirstFrame, settings }: ExperienceProps) {
   return (
     <>
-      <color attach="background" args={['#7895c1']} />
-      <hemisphereLight args={['#cfe2ff', '#2f3355', 1.8]} />
-      <ambientLight intensity={0.55} />
-      <directionalLight position={[3, 4, 5]} intensity={2.4} color="#ffd6a3" />
-      <mesh rotation={[0.28, 0.58, 0]}>
-        <icosahedronGeometry args={[1.05, 1]} />
-        <meshStandardMaterial
-          color="#f08b73"
-          flatShading
-          roughness={0.78}
-          metalness={0}
+      <CameraConfiguration settings={settings} />
+      <color attach="background" args={[SCENE_PALETTE.sky]} />
+      <fog
+        attach="fog"
+        args={[FOG_CONFIG.color, settings.fogNear, settings.fogFar]}
+      />
+      <group visible={settings.visibility.environment}>
+        <hemisphereLight
+          args={[
+            SCENE_PALETTE.skyLight,
+            SCENE_PALETTE.groundFill,
+            LIGHT_CONFIG.hemisphereIntensity,
+          ]}
         />
-      </mesh>
+        <ambientLight intensity={LIGHT_CONFIG.ambientIntensity} />
+        <directionalLight
+          position={LIGHT_CONFIG.keyPosition}
+          intensity={settings.lightIntensity}
+          color={SCENE_PALETTE.sunrise}
+        />
+      </group>
+      <group visible={settings.visibility.foreground}>
+        <mesh rotation={PLACEHOLDER_CONFIG.rotation}>
+          <icosahedronGeometry
+            args={[PLACEHOLDER_CONFIG.radius, PLACEHOLDER_CONFIG.detail]}
+          />
+          <meshStandardMaterial {...placeholderMaterial} />
+        </mesh>
+      </group>
       <FirstFrameReporter onFirstFrame={onFirstFrame} />
     </>
   )
