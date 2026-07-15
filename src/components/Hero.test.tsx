@@ -36,4 +36,12 @@ describe('Hero', () => {
     expect(callToAction).toHaveAttribute('href', '#begin')
     expect(target).toHaveAttribute('tabindex', '-1')
   })
+
+  it('keeps the poster fallback when WebGL is unavailable', () => {
+    const { container } = render(<Hero />)
+    const scene = container.querySelector('.scene-background')
+
+    expect(scene).toHaveAttribute('data-scene-status', 'fallback')
+    expect(scene?.querySelector('canvas')).not.toBeInTheDocument()
+  })
 })

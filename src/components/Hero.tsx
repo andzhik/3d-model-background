@@ -1,9 +1,12 @@
 import '../styles/hero.css'
 
+import { SceneBackground } from './SceneBackground'
+
 export function Hero() {
   return (
     <main>
       <section className="hero" aria-labelledby="hero-title">
+        <SceneBackground />
         <div className="hero__content">
           <p className="hero__eyebrow">Find your center</p>
           <h1 id="hero-title">Stillness in the wild</h1>

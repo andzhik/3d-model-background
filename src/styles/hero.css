@@ -28,7 +28,7 @@
 
 .hero::before {
   position: absolute;
-  z-index: -1;
+  z-index: 1;
   inset: 0;
   background:
     radial-gradient(
@@ -46,7 +46,33 @@
   pointer-events: none;
 }
 
+.scene-background {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 600ms ease;
+}
+
+.scene-background[data-scene-status='ready'] {
+  opacity: 0.72;
+}
+
+.scene-background[data-scene-status='fallback'] {
+  display: none;
+}
+
+.scene-background canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  pointer-events: none !important;
+}
+
 .hero__content {
+  position: relative;
+  z-index: 2;
   display: grid;
   width: min(100%, var(--hero-content-width));
   justify-items: center;
@@ -151,6 +177,10 @@
   }
 
   .hero__cta {
+    transition: none;
+  }
+
+  .scene-background {
     transition: none;
   }
 }
