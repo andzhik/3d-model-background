@@ -99,6 +99,7 @@
         "LemurLight",
         "LemurEye"
       ],
+      "expectedAnimations": ["Breathing", "Blink", "EarTwitch", "TailIdle"],
       "minBytes": 20000,
       "maxBytes": 500000,
       "requireFinitePositionBounds": true,

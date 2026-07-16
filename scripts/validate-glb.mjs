@@ -37,6 +37,13 @@ for (const asset of assets) {
     if (!materialNames.has(name))
       throw new Error(`${asset.output} is missing material ${name}`)
   }
+  const animationNames = new Set(
+    (document.animations ?? []).map((animation) => animation.name),
+  )
+  for (const name of asset.expectedAnimations ?? []) {
+    if (!animationNames.has(name))
+      throw new Error(`${asset.output} is missing animation ${name}`)
+  }
 
   for (const preview of asset.expectedPreviews ?? []) {
     const previewPath = resolve(join(asset.previewDir, preview))

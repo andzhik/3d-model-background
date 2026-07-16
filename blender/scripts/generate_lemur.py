@@ -48,6 +48,7 @@ TAIL_STRIPE_PATTERN = (
 )
 TAIL_START_RADIUS = 0.2
 TAIL_END_RADIUS = 0.105
+FRAMES_PER_SECOND = 24
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -378,6 +379,93 @@ def descendants(root: bpy.types.Object) -> list[bpy.types.Object]:
     return result
 
 
+def create_transform_clip(
+    node: bpy.types.Object,
+    clip_name: str,
+    property_name: str,
+    keyframes: tuple[tuple[int, tuple[float, float, float]], ...],
+) -> None:
+    """Stash one export-safe object-transform action as a named NLA clip."""
+    original_value = tuple(getattr(node, property_name))
+    node.animation_data_create()
+    action = bpy.data.actions.new(f"{clip_name}_{node.name}")
+    node.animation_data.action = action
+
+    for frame, value in keyframes:
+        setattr(node, property_name, value)
+        node.keyframe_insert(data_path=property_name, frame=frame, group=node.name)
+
+    for curve in action.fcurves:
+        for point in curve.keyframe_points:
+            point.interpolation = "LINEAR"
+
+    node.animation_data.action = None
+    track = node.animation_data.nla_tracks.new()
+    track.name = clip_name
+    track.strips.new(clip_name, keyframes[0][0], action)
+    setattr(node, property_name, original_value)
+
+
+def create_animations() -> None:
+    breathing_frames = tuple(
+        (
+            round(index * 7 * FRAMES_PER_SECOND / 8),
+            (1.0 + 0.018 * math.sin(index * math.tau / 8),) * 3,
+        )
+        for index in range(9)
+    )
+    create_transform_clip(
+        bpy.data.objects["Chest"], "Breathing", "scale", breathing_frames
+    )
+
+    create_transform_clip(
+        bpy.data.objects["Eyes"],
+        "Blink",
+        "scale",
+        (
+            (0, (1.0, 1.0, 1.0)),
+            (2, (1.0, 1.0, 1.0)),
+            (4, (1.0, 1.0, 0.08)),
+            (6, (1.0, 1.0, 1.0)),
+            (10, (1.0, 1.0, 1.0)),
+        ),
+    )
+
+    create_transform_clip(
+        bpy.data.objects["EarLeft"],
+        "EarTwitch",
+        "rotation_euler",
+        (
+            (0, (0.0, 0.0, 0.0)),
+            (3, (0.0, 0.0, -0.11)),
+            (6, (0.0, 0.0, 0.055)),
+            (10, (0.0, 0.0, 0.0)),
+        ),
+    )
+    create_transform_clip(
+        bpy.data.objects["EarRight"],
+        "EarTwitch",
+        "rotation_euler",
+        (
+            (0, (0.0, 0.0, 0.0)),
+            (3, (0.0, 0.0, 0.075)),
+            (6, (0.0, 0.0, -0.035)),
+            (10, (0.0, 0.0, 0.0)),
+        ),
+    )
+
+    tail_frames = tuple(
+        (
+            round(index * 8 * FRAMES_PER_SECOND / 8),
+            (0.0, 0.035 * math.sin(index * math.tau / 8), 0.0),
+        )
+        for index in range(9)
+    )
+    create_transform_clip(
+        bpy.data.objects["TailRoot"], "TailIdle", "rotation_euler", tail_frames
+    )
+
+
 def export_asset(root: bpy.types.Object, output_path: str) -> None:
     absolute_output = os.path.abspath(output_path)
     os.makedirs(os.path.dirname(absolute_output), exist_ok=True)
@@ -391,6 +479,9 @@ def export_asset(root: bpy.types.Object, output_path: str) -> None:
         use_selection=True,
         export_apply=True,
         export_materials="EXPORT",
+        export_animations=True,
+        export_animation_mode="NLA_TRACKS",
+        export_frame_range=False,
     )
 
 
@@ -458,6 +549,7 @@ def main() -> None:
     clear_scene()
     materials = create_materials()
     root = build_body(materials)
+    create_animations()
     export_asset(root, args.output)
     if not args.skip_previews:
         add_preview_environment(materials)

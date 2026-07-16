@@ -2,18 +2,21 @@ import { useGLTF } from '@react-three/drei'
 import { useMemo } from 'react'
 
 import { LEMUR_CONFIG } from './constants'
-import { validateLemurNodes } from './lemurAsset'
+import { useLemurAnimationController } from './lemurAnimation'
+import { validateLemurAnimations, validateLemurNodes } from './lemurAsset'
 
 interface LemurProps {
   visible?: boolean
 }
 
 export function Lemur({ visible = true }: LemurProps) {
-  const { nodes } = useGLTF(LEMUR_CONFIG.modelUrl)
+  const { animations, nodes } = useGLTF(LEMUR_CONFIG.modelUrl)
   const root = useMemo(() => {
     const validated = validateLemurNodes(nodes)
     return validated.Root.clone(true)
   }, [nodes])
+  const clips = useMemo(() => validateLemurAnimations(animations), [animations])
+  useLemurAnimationController(root, clips)
 
   return (
     <group
