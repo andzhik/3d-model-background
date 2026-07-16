@@ -14,6 +14,7 @@ import { createDefaultDebugSettings } from '../scene/debug'
 import { DEFAULT_SCENE_QUALITY, SCENE_QUALITY } from '../scene/quality'
 import { SceneDebug } from './SceneDebug'
 import { sceneStatusReducer } from './sceneStatus'
+import type { SceneStatus } from './sceneStatus'
 
 function canInitializeWebGL(): boolean {
   return (
@@ -50,7 +51,11 @@ class SceneErrorBoundary extends Component<
   }
 }
 
-export function SceneBackground() {
+interface SceneBackgroundProps {
+  onStatusChange?: (status: SceneStatus) => void
+}
+
+export function SceneBackground({ onStatusChange }: SceneBackgroundProps) {
   const [debugSettings, setDebugSettings] = useState(createDefaultDebugSettings)
   const quality = SCENE_QUALITY[DEFAULT_SCENE_QUALITY]
   const [status, dispatch] = useReducer(
@@ -72,6 +77,10 @@ export function SceneBackground() {
   const handleFailure = useCallback(() => {
     dispatch({ type: 'failure' })
   }, [])
+
+  useEffect(() => {
+    onStatusChange?.(status)
+  }, [onStatusChange, status])
 
   useEffect(() => {
     if (!canvasElement) return

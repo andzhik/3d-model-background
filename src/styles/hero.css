@@ -20,10 +20,13 @@
   overflow: hidden;
   padding: clamp(3.75rem, 8vh, 6.5rem) clamp(1rem, 4vw, 2rem) 2rem;
   background-color: #28385b;
-  background-image: url('../../images/yoge-lemur.png');
   background-position: var(--hero-focal-position);
   background-size: cover;
   background-repeat: no-repeat;
+}
+
+.hero--poster-visible {
+  background-image: url('../../images/yoge-lemur.png');
 }
 
 .hero::before {
@@ -56,7 +59,12 @@
 }
 
 .scene-background[data-scene-status='ready'] {
-  opacity: 0.72;
+  opacity: 1;
+}
+
+.hero--poster-mode .scene-background {
+  visibility: hidden;
+  opacity: 0;
 }
 
 .scene-background[data-scene-status='fallback'] {
@@ -68,6 +76,43 @@
   width: 100% !important;
   height: 100% !important;
   pointer-events: none !important;
+}
+
+.hero__scene-toggle {
+  position: absolute;
+  z-index: 3;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: inline-flex;
+  min-height: 2.5rem;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid rgb(255 255 255 / 0.35);
+  border-radius: 999px;
+  color: #fff;
+  background: rgb(10 16 36 / 0.72);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+}
+
+.hero__scene-toggle input {
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  accent-color: #f0a65a;
+}
+
+.hero__scene-toggle:has(input:focus-visible) {
+  outline: 3px solid #ffe1b5;
+  outline-offset: 3px;
+}
+
+.hero__scene-toggle:has(input:disabled) {
+  cursor: not-allowed;
+  opacity: 0.65;
 }
 
 .scene-debug {

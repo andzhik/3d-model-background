@@ -40,8 +40,14 @@ describe('Hero', () => {
   it('keeps the poster fallback when WebGL is unavailable', () => {
     const { container } = render(<Hero />)
     const scene = container.querySelector('.scene-background')
+    const hero = screen.getByRole('region', {
+      name: /stillness in the wild/i,
+    })
+    const sceneToggle = screen.getByRole('switch', { name: /3d scene/i })
 
     expect(scene).toHaveAttribute('data-scene-status', 'fallback')
     expect(scene?.querySelector('canvas')).not.toBeInTheDocument()
+    expect(hero).toHaveClass('hero--poster-visible')
+    expect(sceneToggle).toBeDisabled()
   })
 })
