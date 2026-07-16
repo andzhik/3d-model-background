@@ -7,6 +7,8 @@ export const LEMUR_NODE_NAMES = [
   'Chest',
   'Neck',
   'Head',
+  'FacialMask',
+  'EyePatches',
   'EarLeft',
   'EarRight',
   'Muzzle',

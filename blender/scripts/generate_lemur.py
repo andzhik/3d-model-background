@@ -17,6 +17,38 @@ MATERIAL_SPECS = (
     ("LemurEye", (0.72, 0.36, 0.08, 1.0)),
 )
 
+# Authoring controls for the ring tail. Points are in exported world space and
+# deliberately keep the tail behind the right hip before bringing it around the
+# legs and across the foreground. Repeating entries make each color band span
+# more than one faceted segment instead of reading as a checkerboard.
+TAIL_CURVE = (
+    (0.48, 0.24, 0.78),
+    (0.78, 0.28, 0.7),
+    (1.04, 0.2, 0.78),
+    (1.26, 0.04, 0.73),
+    (1.38, -0.18, 0.6),
+    (1.4, -0.4, 0.42),
+    (1.28, -0.6, 0.28),
+    (1.04, -0.76, 0.21),
+    (0.72, -0.85, 0.19),
+    (0.36, -0.9, 0.18),
+    (-0.02, -0.91, 0.18),
+    (-0.4, -0.87, 0.19),
+    (-0.72, -0.77, 0.22),
+    (-0.96, -0.62, 0.28),
+    (-1.08, -0.43, 0.36),
+    (-1.08, -0.23, 0.44),
+    (-0.96, -0.08, 0.5),
+)
+TAIL_STRIPE_PATTERN = (
+    "LemurCharcoal",
+    "LemurCharcoal",
+    "LemurLight",
+    "LemurLight",
+)
+TAIL_START_RADIUS = 0.2
+TAIL_END_RADIUS = 0.105
+
 
 def parse_arguments() -> argparse.Namespace:
     arguments = sys.argv[sys.argv.index("--") + 1 :] if "--" in sys.argv else []
@@ -27,6 +59,7 @@ def parse_arguments() -> argparse.Namespace:
         "--preview-dir",
         default=str(Path(__file__).resolve().parents[1] / "generated" / "previews"),
     )
+    parser.add_argument("--skip-previews", action="store_true")
     return parser.parse_args(arguments)
 
 
@@ -183,25 +216,68 @@ def build_body(materials: dict[str, bpy.types.Material]) -> bpy.types.Object:
 
     for side, suffix in ((-1.0, "Left"), (1.0, "Right")):
         ear = create_node(f"Ear{suffix}", head, (side * 0.49, 0.0, 0.08))
-        create_wedge(ear, (side * 0.5, 0.08, 2.3), 0.32, 0.14, 0.52, light, side)
+        create_wedge(ear, (side * 0.54, -0.06, 2.3), 0.34, 0.12, 0.52, light, side)
         create_icosphere(
             ear,
-            (side * 0.57, -0.06, 2.34),
-            (0.22, 0.1, 0.28),
+            (side * 0.66, -0.08, 2.35),
+            (0.2, 0.065, 0.25),
             light,
+        )
+        create_icosphere(
+            ear,
+            (side * 0.61, -0.14, 2.34),
+            (0.1, 0.045, 0.14),
+            charcoal,
+        )
+
+    facial_mask = create_node("FacialMask", head, (0.0, -0.4, 0.12))
+    for side in (-1.0, 1.0):
+        create_icosphere(
+            facial_mask,
+            (side * 0.22, -0.425, 2.31),
+            (0.29, 0.085, 0.31),
+            light,
+            2,
+        )
+    create_icosphere(
+        facial_mask, (0.0, -0.43, 2.48), (0.17, 0.07, 0.2), light, 1
+    )
+
+    eye_patches = create_node("EyePatches", head, (0.0, -0.48, 0.12))
+    for side in (-1.0, 1.0):
+        create_icosphere(
+            eye_patches,
+            (side * 0.205, -0.49, 2.32),
+            (0.17, 0.055, 0.18),
+            charcoal,
+            2,
         )
 
     muzzle = create_node("Muzzle", head, (0.0, -0.37, -0.08))
-    create_icosphere(muzzle, (0.0, -0.39, 2.1), (0.3, 0.29, 0.22), light)
-    create_icosphere(muzzle, (0.0, -0.61, 2.12), (0.13, 0.09, 0.1), charcoal)
+    for side in (-1.0, 1.0):
+        create_icosphere(
+            muzzle,
+            (side * 0.105, -0.49, 2.12),
+            (0.19, 0.1, 0.17),
+            light,
+        )
+    create_icosphere(muzzle, (0.0, -0.57, 2.12), (0.18, 0.09, 0.13), charcoal)
+    create_icosphere(muzzle, (0.0, -0.65, 2.16), (0.105, 0.055, 0.08), charcoal)
 
     eyes = create_node("Eyes", head, (0.0, -0.4, 0.11))
     for side in (-1.0, 1.0):
         create_icosphere(
             eyes,
-            (side * 0.205, -0.405, 2.3),
-            (0.09, 0.065, 0.105),
+            (side * 0.205, -0.545, 2.32),
+            (0.105, 0.045, 0.115),
             eye,
+            2,
+        )
+        create_icosphere(
+            eyes,
+            (side * 0.205, -0.582, 2.32),
+            (0.038, 0.022, 0.055),
+            charcoal,
         )
 
     for side, suffix in ((-1.0, "Left"), (1.0, "Right")):
@@ -212,7 +288,7 @@ def build_body(materials: dict[str, bpy.types.Material]) -> bpy.types.Object:
             f"LowerArm{suffix}", upper_arm, (side * 0.11, -0.08, -0.48)
         )
         hand = create_node(
-            f"Hand{suffix}", lower_arm, (-side * 0.3, -0.15, -0.39)
+            f"Hand{suffix}", lower_arm, (side * 0.24, -0.31, -0.34)
         )
         create_tapered_limb(
             upper_arm,
@@ -225,14 +301,27 @@ def build_body(materials: dict[str, bpy.types.Material]) -> bpy.types.Object:
         create_tapered_limb(
             lower_arm,
             (side * 0.55, -0.08, 1.05),
-            (side * 0.25, -0.23, 0.66),
+            (side * 0.78, -0.3, 0.72),
             0.12,
             0.085,
             charcoal,
         )
         create_icosphere(
-            hand, (side * 0.16, -0.25, 0.64), (0.2, 0.11, 0.115), charcoal
+            hand, (side * 0.8, -0.34, 0.7), (0.17, 0.1, 0.12), charcoal
         )
+        finger_loop = (
+            (side * 0.74, -0.47, 0.7),
+            (side * 0.78, -0.48, 0.81),
+            (side * 0.89, -0.47, 0.79),
+            (side * 0.92, -0.46, 0.68),
+        )
+        for finger_index, (start, end) in enumerate(
+            zip(finger_loop, finger_loop[1:] + finger_loop[:1])
+        ):
+            finger = create_node(
+                f"Finger{suffix}{finger_index + 1:02d}", hand, (0.0, 0.0, 0.0)
+            )
+            create_tapered_limb(finger, start, end, 0.027, 0.023, charcoal)
 
         upper_leg = create_node(
             f"UpperLeg{suffix}", pelvis, (side * 0.42, 0.0, -0.02)
@@ -254,32 +343,29 @@ def build_body(materials: dict[str, bpy.types.Material]) -> bpy.types.Object:
         create_tapered_limb(
             lower_leg,
             (side * 0.78, -0.05, 0.44),
-            (side * 0.14, -0.28, 0.2),
+            (-side * 0.3, -0.29, 0.21),
             0.2,
             0.14,
             charcoal,
         )
         create_icosphere(
-            foot, (-side * 0.2, -0.32, 0.18), (0.42, 0.17, 0.13), charcoal
+            foot, (-side * 0.46, -0.34, 0.18), (0.42, 0.16, 0.125), charcoal
         )
 
     tail_root = create_node("TailRoot", pelvis, (0.48, 0.22, -0.05))
-    tail_points = (
-        (0.48, 0.2, 0.76),
-        (0.94, 0.27, 0.56),
-        (1.22, 0.3, 0.82),
-        (1.12, 0.32, 1.3),
-        (0.88, 0.34, 1.68),
-    )
-    for index, (start, end) in enumerate(zip(tail_points, tail_points[1:])):
-        tail_segment = create_node(f"TailBlockout{index + 1:02d}", tail_root, (0, 0, 0))
+    tail_segment_count = len(TAIL_CURVE) - 1
+    for index, (start, end) in enumerate(zip(TAIL_CURVE, TAIL_CURVE[1:])):
+        tail_segment = create_node(f"TailSegment{index + 1:02d}", tail_root, (0, 0, 0))
+        radius_progress = index / tail_segment_count
+        next_radius_progress = (index + 1) / tail_segment_count
         create_tapered_limb(
             tail_segment,
             start,
             end,
-            0.17 - index * 0.018,
-            0.15 - index * 0.018,
-            charcoal,
+            TAIL_START_RADIUS + (TAIL_END_RADIUS - TAIL_START_RADIUS) * radius_progress,
+            TAIL_START_RADIUS
+            + (TAIL_END_RADIUS - TAIL_START_RADIUS) * next_radius_progress,
+            materials[TAIL_STRIPE_PATTERN[index % len(TAIL_STRIPE_PATTERN)]],
         )
 
     return root
@@ -310,7 +396,7 @@ def export_asset(root: bpy.types.Object, output_path: str) -> None:
 
 def add_preview_environment(materials: dict[str, bpy.types.Material]) -> None:
     bpy.context.scene.world.color = (0.035, 0.055, 0.09)
-    bpy.ops.mesh.primitive_cylinder_add(vertices=12, radius=1.42, depth=0.16, location=(0, 0, 0.02))
+    bpy.ops.mesh.primitive_cylinder_add(vertices=12, radius=1.62, depth=0.16, location=(0, 0, 0.02))
     platform = bpy.context.object
     platform.name = "PreviewPlatform"
     platform.data.materials.append(materials["LemurGray"])
@@ -351,12 +437,12 @@ def render_previews(preview_dir: str) -> None:
     camera.name = "PreviewCamera"
     camera.data.lens = 58
     scene.camera = camera
-    for filename, location in (
-        ("lemur-front.png", (0.0, -7.0, 2.05)),
-        ("lemur-three-quarter.png", (4.5, -5.7, 2.4)),
+    for filename, location, target in (
+        ("lemur-close.png", (0.0, -4.7, 2.3), (0.0, 0.0, 1.48)),
+        ("lemur-target-framing.png", (0.0, -7.2, 2.05), (0.0, -0.08, 1.2)),
     ):
         camera.location = location
-        point_camera(camera, (0.0, 0.0, 1.2))
+        point_camera(camera, target)
         scene.render.filepath = os.path.join(absolute_dir, filename)
         bpy.ops.render.render(write_still=True)
 
@@ -373,8 +459,9 @@ def main() -> None:
     materials = create_materials()
     root = build_body(materials)
     export_asset(root, args.output)
-    add_preview_environment(materials)
-    render_previews(args.preview_dir)
+    if not args.skip_previews:
+        add_preview_environment(materials)
+        render_previews(args.preview_dir)
     if args.blend_output:
         save_source(args.blend_output)
 

@@ -65,7 +65,7 @@
       "output": "public/models/lemur.glb",
       "blendOutput": "blender/generated/lemur.blend",
       "previewDir": "blender/generated/previews",
-      "expectedPreviews": ["lemur-front.png", "lemur-three-quarter.png"],
+      "expectedPreviews": ["lemur-close.png", "lemur-target-framing.png"],
       "expectedObjects": [
         "Root",
         "Pelvis",
@@ -73,6 +73,8 @@
         "Chest",
         "Neck",
         "Head",
+        "FacialMask",
+        "EyePatches",
         "EarLeft",
         "EarRight",
         "Muzzle",

@@ -17,7 +17,7 @@ async function fileDigest(path) {
     .digest('hex')
 }
 
-function generate(asset, output, blendOutput) {
+function generate(asset, output, blendOutput, skipPreviews = false) {
   const generatorArguments = [
     '--background',
     '--factory-startup',
@@ -31,6 +31,7 @@ function generate(asset, output, blendOutput) {
     generatorArguments.push('--blend-output', resolve(blendOutput))
   if (asset.previewDir)
     generatorArguments.push('--preview-dir', resolve(asset.previewDir))
+  if (skipPreviews) generatorArguments.push('--skip-previews')
 
   const generation = spawnSync(blender, generatorArguments, {
     stdio: 'inherit',
@@ -54,7 +55,7 @@ for (const asset of manifest.assets) {
   if (asset.deterministicRepeat) {
     const repeatOutput = `${asset.output}.determinism.glb`
     try {
-      generate(asset, repeatOutput)
+      generate(asset, repeatOutput, undefined, Boolean(asset.previewDir))
       const [firstDigest, repeatDigest] = await Promise.all([
         fileDigest(resolve(asset.output)),
         fileDigest(resolve(repeatOutput)),
