@@ -8,6 +8,7 @@ import { Clouds, SkyGradient, SunDisc } from './Atmosphere'
 import type { SceneDebugSettings } from './debug'
 import { Mountains } from './Mountains'
 import { SCENE_PALETTE } from './palette'
+import { Lake } from './Lake'
 
 interface ExperienceProps {
   onFirstFrame: () => void
@@ -85,6 +86,7 @@ export function Experience({ onFirstFrame, settings }: ExperienceProps) {
       />
       <Suspense fallback={null}>
         <Mountains visible={settings.visibility.distantWorld} />
+        <Lake visible={settings.visibility.middleWorld} />
         <FirstFrameReporter onFirstFrame={onFirstFrame} />
       </Suspense>
     </>

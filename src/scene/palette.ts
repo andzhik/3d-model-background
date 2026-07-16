@@ -14,6 +14,10 @@ export const SCENE_PALETTE = {
   mountainCool: '#495780',
   mountainViolet: '#5a4d76',
   mountainPeachLight: '#d37d70',
+  waterForeground: '#16bad1',
+  waterHorizon: '#4b78a8',
+  waterFacet: '#80d8dd',
+  waterReflection: '#ffd9a0',
   coral: '#f08b73',
   fog: '#7895c1',
 } as const
