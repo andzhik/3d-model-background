@@ -32,19 +32,23 @@ const NODE_NAMES = {
 
 type ForegroundNodeName = keyof typeof NODE_NAMES
 
-function getMesh(
+function getMeshObject(
   nodes: Record<string, Object3D>,
   key: ForegroundNodeName,
-): Mesh {
+): Object3D {
   const name = NODE_NAMES[key]
   const node = nodes[name]
-  if (!(node instanceof Mesh))
+  let containsMesh = false
+  node?.traverse((child) => {
+    if (child instanceof Mesh) containsMesh = true
+  })
+  if (!node || !containsMesh)
     throw new Error(`Foreground asset is missing mesh ${name}`)
   return node
 }
 
 interface RockAssetProps {
-  mesh: Mesh
+  source: Object3D
   name: string
   position: readonly [number, number, number]
   rotation: readonly [number, number, number]
@@ -52,13 +56,13 @@ interface RockAssetProps {
 }
 
 export function RockAsset({
-  mesh,
+  source,
   name,
   position,
   rotation,
   scale,
 }: RockAssetProps) {
-  const rock = useMemo(() => mesh.clone(), [mesh])
+  const rock = useMemo(() => source.clone(), [source])
   return (
     <primitive
       object={rock}
@@ -71,12 +75,22 @@ export function RockAsset({
 }
 
 interface RockInstancesProps {
-  mesh: Mesh
+  source: Object3D
   placements: RockPlacement[]
   variant: RockVariant
 }
 
-function RockInstances({ mesh, placements, variant }: RockInstancesProps) {
+interface RockPrimitiveInstancesProps extends Omit<RockInstancesProps, 'source'> {
+  mesh: Mesh
+  primitiveIndex: number
+}
+
+function RockPrimitiveInstances({
+  mesh,
+  placements,
+  variant,
+  primitiveIndex,
+}: RockPrimitiveInstancesProps) {
   const instances = useRef<InstancedMesh>(null)
 
   useLayoutEffect(() => {
@@ -101,7 +115,7 @@ function RockInstances({ mesh, placements, variant }: RockInstancesProps) {
   return (
     <instancedMesh
       ref={instances}
-      name={`RockField-${variant}`}
+      name={`RockField-${variant}-${primitiveIndex}`}
       args={[
         mesh.geometry,
         mesh.material as Material | Material[],
@@ -112,8 +126,32 @@ function RockInstances({ mesh, placements, variant }: RockInstancesProps) {
   )
 }
 
+function RockInstances({ source, placements, variant }: RockInstancesProps) {
+  const meshes = useMemo(() => {
+    const descendants: Mesh[] = []
+    source.traverse((child) => {
+      if (child instanceof Mesh) descendants.push(child)
+    })
+    return descendants
+  }, [source])
+
+  return (
+    <group name={`RockField-${variant}`}>
+      {meshes.map((mesh, primitiveIndex) => (
+        <RockPrimitiveInstances
+          key={mesh.uuid}
+          mesh={mesh}
+          primitiveIndex={primitiveIndex}
+          variant={variant}
+          placements={placements}
+        />
+      ))}
+    </group>
+  )
+}
+
 interface RockFieldProps {
-  sources: Record<RockVariant, Mesh>
+  sources: Record<RockVariant, Object3D>
 }
 
 export function RockField({ sources }: RockFieldProps) {
@@ -125,7 +163,7 @@ export function RockField({ sources }: RockFieldProps) {
         <RockInstances
           key={variant}
           variant={variant}
-          mesh={sources[variant]}
+          source={sources[variant]}
           placements={placements.filter((rock) => rock.variant === variant)}
         />
       ))}
@@ -145,14 +183,14 @@ export function Foreground({
   const { nodes } = useGLTF(FOREGROUND_CONFIG.modelUrl)
   const meshes = useMemo(
     () => ({
-      shoreLeft: getMesh(nodes, 'shoreLeft'),
-      shoreRight: getMesh(nodes, 'shoreRight'),
-      platform: getMesh(nodes, 'platform'),
-      smallA: getMesh(nodes, 'smallA'),
-      smallB: getMesh(nodes, 'smallB'),
-      smallC: getMesh(nodes, 'smallC'),
-      frameLeft: getMesh(nodes, 'frameLeft'),
-      frameRight: getMesh(nodes, 'frameRight'),
+      shoreLeft: getMeshObject(nodes, 'shoreLeft'),
+      shoreRight: getMeshObject(nodes, 'shoreRight'),
+      platform: getMeshObject(nodes, 'platform'),
+      smallA: getMeshObject(nodes, 'smallA'),
+      smallB: getMeshObject(nodes, 'smallB'),
+      smallC: getMeshObject(nodes, 'smallC'),
+      frameLeft: getMeshObject(nodes, 'frameLeft'),
+      frameRight: getMeshObject(nodes, 'frameRight'),
     }),
     [nodes],
   )
@@ -174,12 +212,12 @@ export function Foreground({
         <primitive object={platform} />
         <RockField sources={meshes} />
         <RockAsset
-          mesh={meshes.frameLeft}
+          source={meshes.frameLeft}
           name="FramingRockLeft"
           {...FOREGROUND_CONFIG.framingRocks.left}
         />
         <RockAsset
-          mesh={meshes.frameRight}
+          source={meshes.frameRight}
           name="FramingRockRight"
           {...FOREGROUND_CONFIG.framingRocks.right}
         />
