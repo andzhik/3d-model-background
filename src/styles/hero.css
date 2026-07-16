@@ -160,6 +160,10 @@
   text-align: right;
 }
 
+.scene-debug__controls select {
+  min-width: 0;
+}
+
 .scene-debug__controls fieldset {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -172,6 +176,24 @@
   display: flex;
   gap: 0.35rem;
   align-items: center;
+}
+
+.scene-debug__statistics {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0.25rem 0 0;
+}
+
+.scene-debug__statistics div {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.scene-debug__statistics dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
 }
 
 .hero__content {

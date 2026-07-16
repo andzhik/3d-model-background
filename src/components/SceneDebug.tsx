@@ -2,10 +2,16 @@ import { type ChangeEvent } from 'react'
 
 import { MAJOR_GROUPS, type MajorGroup } from '../scene/constants'
 import type { SceneDebugSettings } from '../scene/debug'
+import type { RendererStatistics } from '../scene/debug'
+import type { SceneQuality } from '../scene/quality'
+import { getVegetationMetrics } from '../scene/vegetationLayout'
 
 interface SceneDebugProps {
   settings: SceneDebugSettings
   onChange: (settings: SceneDebugSettings) => void
+  quality: SceneQuality
+  onQualityChange: (quality: SceneQuality) => void
+  rendererStatistics: RendererStatistics | null
 }
 
 interface SliderProps {
@@ -34,7 +40,16 @@ function Slider({ label, value, min, max, step, onChange }: SliderProps) {
   )
 }
 
-export function SceneDebug({ settings, onChange }: SceneDebugProps) {
+const DEBUG_QUALITY_TIERS = ['high', 'medium', 'low'] as const
+
+export function SceneDebug({
+  settings,
+  onChange,
+  quality,
+  onQualityChange,
+  rendererStatistics,
+}: SceneDebugProps) {
+  const vegetation = getVegetationMetrics(quality)
   const setNumber =
     (key: keyof Omit<SceneDebugSettings, 'cameraPosition' | 'visibility'>) =>
     (value: number) =>
@@ -61,6 +76,21 @@ export function SceneDebug({ settings, onChange }: SceneDebugProps) {
     <details className="scene-debug">
       <summary>Scene debug</summary>
       <div className="scene-debug__controls">
+        <label>
+          <span>Quality</span>
+          <select
+            value={quality}
+            onChange={(event) =>
+              onQualityChange(event.currentTarget.value as SceneQuality)
+            }
+          >
+            {DEBUG_QUALITY_TIERS.map((tier) => (
+              <option key={tier} value={tier}>
+                {tier}
+              </option>
+            ))}
+          </select>
+        </label>
         <Slider
           label="Camera X"
           value={settings.cameraPosition[0]}
@@ -130,6 +160,24 @@ export function SceneDebug({ settings, onChange }: SceneDebugProps) {
             </label>
           ))}
         </fieldset>
+        <dl className="scene-debug__statistics">
+          <div>
+            <dt>Vegetation</dt>
+            <dd>{vegetation.totalInstances} instances</dd>
+          </div>
+          <div>
+            <dt>Vegetation calls</dt>
+            <dd>{vegetation.expectedDrawCalls} expected</dd>
+          </div>
+          <div>
+            <dt>Renderer</dt>
+            <dd>
+              {rendererStatistics
+                ? `${rendererStatistics.drawCalls} calls / ${rendererStatistics.triangles} triangles`
+                : 'waiting for frame'}
+            </dd>
+          </div>
+        </dl>
       </div>
     </details>
   )

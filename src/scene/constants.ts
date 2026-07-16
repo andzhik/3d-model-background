@@ -90,6 +90,31 @@ export const FOREGROUND_CONFIG = {
   },
 } as const
 
+export const VEGETATION_CONFIG = {
+  seedOffset: 0x09_f1,
+  protectedHalfWidth: 3.05,
+  maxTreeRadius: 0.76,
+  maxPlantRadius: 0.32,
+  far: {
+    xRange: [4.15, 10.2] as const,
+    zRange: [-10.4, -6.1] as const,
+    scaleRange: [0.58, 0.92] as const,
+    y: -1.46,
+  },
+  near: {
+    xRange: [4.2, 8.2] as const,
+    zRange: [-5.8, -1.75] as const,
+    scaleRange: [0.88, 1.38] as const,
+    y: -1.58,
+  },
+  plants: {
+    xRange: [3.45, 7.15] as const,
+    zRange: [-1.35, 0.65] as const,
+    scaleRange: [0.55, 1.08] as const,
+    y: -1.72,
+  },
+} as const
+
 export const MAJOR_GROUPS = [
   'environment',
   'distantWorld',

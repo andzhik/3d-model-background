@@ -15,6 +15,11 @@ export interface SceneDebugSettings {
   visibility: Record<MajorGroup, boolean>
 }
 
+export interface RendererStatistics {
+  drawCalls: number
+  triangles: number
+}
+
 export function createDefaultDebugSettings(): SceneDebugSettings {
   return {
     cameraPosition: [...CAMERA_CONFIG.position],

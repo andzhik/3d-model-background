@@ -11,7 +11,12 @@ import {
 import { Experience } from '../scene/Experience'
 import { CAMERA_CONFIG } from '../scene/constants'
 import { createDefaultDebugSettings } from '../scene/debug'
-import { DEFAULT_SCENE_QUALITY, SCENE_QUALITY } from '../scene/quality'
+import type { RendererStatistics } from '../scene/debug'
+import {
+  DEFAULT_SCENE_QUALITY,
+  SCENE_QUALITY,
+  type SceneQuality,
+} from '../scene/quality'
 import { SceneDebug } from './SceneDebug'
 import { sceneStatusReducer } from './sceneStatus'
 import type { SceneStatus } from './sceneStatus'
@@ -57,7 +62,12 @@ interface SceneBackgroundProps {
 
 export function SceneBackground({ onStatusChange }: SceneBackgroundProps) {
   const [debugSettings, setDebugSettings] = useState(createDefaultDebugSettings)
-  const quality = SCENE_QUALITY[DEFAULT_SCENE_QUALITY]
+  const [qualityTier, setQualityTier] = useState<SceneQuality>(
+    DEFAULT_SCENE_QUALITY,
+  )
+  const [rendererStatistics, setRendererStatistics] =
+    useState<RendererStatistics | null>(null)
+  const quality = SCENE_QUALITY[qualityTier]
   const [status, dispatch] = useReducer(
     sceneStatusReducer,
     canInitializeWebGL() ? 'loading' : 'fallback',
@@ -115,6 +125,10 @@ export function SceneBackground({ onStatusChange }: SceneBackgroundProps) {
             >
               <Experience
                 onFirstFrame={handleFirstFrame}
+                onRendererStatistics={
+                  import.meta.env.DEV ? setRendererStatistics : undefined
+                }
+                quality={qualityTier}
                 settings={debugSettings}
               />
             </Canvas>
@@ -122,7 +136,13 @@ export function SceneBackground({ onStatusChange }: SceneBackgroundProps) {
         )}
       </div>
       {import.meta.env.DEV && (
-        <SceneDebug settings={debugSettings} onChange={setDebugSettings} />
+        <SceneDebug
+          settings={debugSettings}
+          onChange={setDebugSettings}
+          quality={qualityTier}
+          onQualityChange={setQualityTier}
+          rendererStatistics={rendererStatistics}
+        />
       )}
     </>
   )
