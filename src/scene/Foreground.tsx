@@ -22,7 +22,6 @@ import {
 const NODE_NAMES = {
   shoreLeft: 'ShoreLeft',
   shoreRight: 'ShoreRight',
-  platform: 'MeditationPlatform',
   smallA: 'RockSourceSmallA',
   smallB: 'RockSourceSmallB',
   smallC: 'RockSourceSmallC',
@@ -185,7 +184,6 @@ export function Foreground({
     () => ({
       shoreLeft: getMeshObject(nodes, 'shoreLeft'),
       shoreRight: getMeshObject(nodes, 'shoreRight'),
-      platform: getMeshObject(nodes, 'platform'),
       smallA: getMeshObject(nodes, 'smallA'),
       smallB: getMeshObject(nodes, 'smallB'),
       smallC: getMeshObject(nodes, 'smallC'),
@@ -200,8 +198,6 @@ export function Foreground({
     () => meshes.shoreRight.clone(),
     [meshes.shoreRight],
   )
-  const platform = useMemo(() => meshes.platform.clone(), [meshes.platform])
-
   return (
     <group name="EnvironmentForeground" dispose={null}>
       <group name="ShoreSources" visible={middleVisible}>
@@ -209,7 +205,6 @@ export function Foreground({
         <primitive object={shoreRight} />
       </group>
       <group name="ForegroundFraming" visible={foregroundVisible}>
-        <primitive object={platform} />
         <RockField sources={meshes} />
         <RockAsset
           source={meshes.frameLeft}

@@ -110,9 +110,12 @@ def create_rock_source(
 def create_platform(materials: list[bpy.types.Material]) -> None:
     bpy.ops.mesh.primitive_cylinder_add(
         vertices=12,
-        radius=1.62,
+        radius=0.9,
         depth=0.42,
-        location=(0.0, -1.73, 0.15),
+        # Keep the platform low and behind the nearest foreground details. The
+        # previous placement sat close to the camera and filled most of the
+        # viewport before the character was present.
+        location=(0.0, -0.35, -1.15),
         rotation=(math.pi / 2, 0.0, 0.0),
     )
     platform = bpy.context.object
