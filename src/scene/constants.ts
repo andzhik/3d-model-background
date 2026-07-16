@@ -90,6 +90,13 @@ export const FOREGROUND_CONFIG = {
   },
 } as const
 
+export const LEMUR_CONFIG = {
+  modelUrl: '/models/lemur.glb',
+  position: [0, -1.35, -0.28] as const,
+  rotation: [0, 0, 0] as const,
+  scale: 0.9,
+} as const
+
 export const VEGETATION_CONFIG = {
   seedOffset: 0x09_f1,
   protectedHalfWidth: 3.05,

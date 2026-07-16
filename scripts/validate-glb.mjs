@@ -1,5 +1,6 @@
 import { resolve } from 'node:path'
 import { readFile } from 'node:fs/promises'
+import { join } from 'node:path'
 
 import { readGlbJson } from './glb-utils.mjs'
 
@@ -35,6 +36,17 @@ for (const asset of assets) {
   for (const name of asset.expectedMaterials) {
     if (!materialNames.has(name))
       throw new Error(`${asset.output} is missing material ${name}`)
+  }
+
+  for (const preview of asset.expectedPreviews ?? []) {
+    const previewPath = resolve(join(asset.previewDir, preview))
+    const image = await readFile(previewPath)
+    const pngSignature = '89504e470d0a1a0a'
+    if (
+      image.length < 1024 ||
+      image.subarray(0, 8).toString('hex') !== pngSignature
+    )
+      throw new Error(`${previewPath} is not a valid non-empty PNG preview`)
   }
 
   if (asset.requireFinitePositionBounds) {

@@ -29,6 +29,8 @@ function generate(asset, output, blendOutput) {
   ]
   if (blendOutput)
     generatorArguments.push('--blend-output', resolve(blendOutput))
+  if (asset.previewDir)
+    generatorArguments.push('--preview-dir', resolve(asset.previewDir))
 
   const generation = spawnSync(blender, generatorArguments, {
     stdio: 'inherit',

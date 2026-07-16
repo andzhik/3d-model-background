@@ -9,6 +9,7 @@ import type { SceneDebugSettings } from './debug'
 import { Mountains } from './Mountains'
 import { SCENE_PALETTE } from './palette'
 import { Lake } from './Lake'
+import { Lemur } from './Lemur'
 import { Foreground } from './Foreground'
 import type { RendererStatistics } from './debug'
 import type { SceneQuality } from './quality'
@@ -128,6 +129,7 @@ export function Experience({
           middleVisible={settings.visibility.middleWorld}
           foregroundVisible={settings.visibility.foreground}
         />
+        <Lemur visible={settings.visibility.foreground} />
         <FirstFrameReporter onFirstFrame={onFirstFrame} />
       </Suspense>
       {onRendererStatistics && (

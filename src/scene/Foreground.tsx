@@ -79,7 +79,10 @@ interface RockInstancesProps {
   variant: RockVariant
 }
 
-interface RockPrimitiveInstancesProps extends Omit<RockInstancesProps, 'source'> {
+interface RockPrimitiveInstancesProps extends Omit<
+  RockInstancesProps,
+  'source'
+> {
   mesh: Mesh
   primitiveIndex: number
 }

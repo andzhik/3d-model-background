@@ -58,6 +58,49 @@
       "maxBytes": 250000,
       "requireFinitePositionBounds": true,
       "deterministicRepeat": true
+    },
+    {
+      "id": "lemur",
+      "generator": "blender/scripts/generate_lemur.py",
+      "output": "public/models/lemur.glb",
+      "blendOutput": "blender/generated/lemur.blend",
+      "previewDir": "blender/generated/previews",
+      "expectedPreviews": ["lemur-front.png", "lemur-three-quarter.png"],
+      "expectedObjects": [
+        "Root",
+        "Pelvis",
+        "Torso",
+        "Chest",
+        "Neck",
+        "Head",
+        "EarLeft",
+        "EarRight",
+        "Muzzle",
+        "Eyes",
+        "UpperArmLeft",
+        "LowerArmLeft",
+        "HandLeft",
+        "UpperArmRight",
+        "LowerArmRight",
+        "HandRight",
+        "UpperLegLeft",
+        "LowerLegLeft",
+        "FootLeft",
+        "UpperLegRight",
+        "LowerLegRight",
+        "FootRight",
+        "TailRoot"
+      ],
+      "expectedMaterials": [
+        "LemurCharcoal",
+        "LemurGray",
+        "LemurLight",
+        "LemurEye"
+      ],
+      "minBytes": 20000,
+      "maxBytes": 500000,
+      "requireFinitePositionBounds": true,
+      "deterministicRepeat": true
     }
   ]
 }
