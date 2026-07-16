@@ -19,5 +19,10 @@ export const SCENE_PALETTE = {
   waterFacet: '#80d8dd',
   waterReflection: '#ffd9a0',
   coral: '#f08b73',
+  shoreDark: '#252d39',
+  shoreMoss: '#344942',
+  rockSlate: '#454957',
+  rockViolet: '#554d64',
+  rockWarmFace: '#756063',
   fog: '#7895c1',
 } as const

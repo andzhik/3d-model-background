@@ -70,6 +70,26 @@ export const WATER_CONFIG = {
   reflectionLift: 0.012,
 } as const
 
+export const FOREGROUND_CONFIG = {
+  modelUrl: '/models/environment-foreground.glb',
+  seedOffset: 0x08_f0,
+  protectedHalfWidth: 2.65,
+  cameraClearanceZ: 1.5,
+  rockCountPerSide: 9,
+  framingRocks: {
+    left: {
+      position: [-5.4, -1.9, 0.9] as const,
+      rotation: [0.08, -0.28, -0.06] as const,
+      scale: 1.25,
+    },
+    right: {
+      position: [5.3, -1.92, 0.82] as const,
+      rotation: [-0.04, 0.36, 0.08] as const,
+      scale: 1.22,
+    },
+  },
+} as const
+
 export const MAJOR_GROUPS = [
   'environment',
   'distantWorld',

@@ -30,6 +30,34 @@
       "maxBytes": 500000,
       "requireFinitePositionBounds": true,
       "deterministicRepeat": true
+    },
+    {
+      "id": "environment-foreground",
+      "generator": "blender/scripts/generate_foreground.py",
+      "output": "public/models/environment-foreground.glb",
+      "blendOutput": "blender/generated/environment-foreground.blend",
+      "expectedObjects": [
+        "ShoreLeft",
+        "ShoreRight",
+        "RockSourceSmallA",
+        "RockSourceSmallB",
+        "RockSourceSmallC",
+        "RockSourceFrameLeft",
+        "RockSourceFrameRight",
+        "MeditationPlatform"
+      ],
+      "expectedMaterials": [
+        "ShoreDark",
+        "ShoreMoss",
+        "RockSlate",
+        "RockViolet",
+        "RockWarmFace",
+        "PlatformTop"
+      ],
+      "minBytes": 10000,
+      "maxBytes": 250000,
+      "requireFinitePositionBounds": true,
+      "deterministicRepeat": true
     }
   ]
 }
