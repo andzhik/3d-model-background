@@ -1,34 +1,75 @@
-/** Central color roles for the Yoga Lemur scene. */
+/**
+ * Central art-direction palette for the Yoga Lemur scene.
+ *
+ * Roles are ordered from distant atmosphere to foreground focal detail. Keep
+ * authored GLB material names in MODEL_MATERIAL_PALETTE so a model cannot
+ * silently bypass this module with stale export colors.
+ */
 export const SCENE_PALETTE = {
-  sky: '#7895c1',
-  skyZenith: '#506fa7',
-  skyMiddle: '#91aed0',
-  skyHorizon: '#f2b49f',
-  skyLight: '#cfe2ff',
-  groundFill: '#2f3355',
-  sunrise: '#ffd6a3',
-  sunCore: '#fff1c7',
-  cloudFar: '#c8c8df',
-  cloudNear: '#f2c7bd',
-  mountainFar: '#596f9f',
-  mountainCool: '#495780',
-  mountainViolet: '#5a4d76',
-  mountainPeachLight: '#d37d70',
-  waterForeground: '#16bad1',
-  waterHorizon: '#4b78a8',
-  waterFacet: '#80d8dd',
-  waterReflection: '#ffd9a0',
-  coral: '#f08b73',
-  shoreDark: '#252d39',
-  shoreMoss: '#344942',
-  forestFar: '#4c5a68',
-  forestNear: '#263d3b',
-  pineNeedle: '#78927b',
-  pineNeedleDark: '#526c5e',
-  pineTrunk: '#755c50',
-  reeds: '#61785e',
-  rockSlate: '#454957',
-  rockViolet: '#554d64',
-  rockWarmFace: '#756063',
-  fog: '#7895c1',
+  // Air and light: cool overhead fill meeting a peach-gold horizon.
+  skyZenith: '#7898c5',
+  skyMiddle: '#aebed6',
+  skyHorizon: '#f5bea7',
+  skyLight: '#bed5f5',
+  ambientFill: '#7488b4',
+  groundFill: '#29334c',
+  sunrise: '#ffd0a0',
+  sunCore: '#fff0c8',
+  fog: '#9aa9c4',
+
+  // Clouds inherit the cool/warm split without becoming pure white.
+  cloudFar: '#bec7dc',
+  cloudNear: '#efc0b6',
+
+  // Valley layers: lavender-blue depth with restrained coral sunward faces.
+  mountainFar: '#526791',
+  mountainCool: '#3d4f79',
+  mountainViolet: '#51466f',
+  mountainPeachLight: '#a96f79',
+
+  // Lake: cyan foreground deepening to the distant valley and peach sun path.
+  waterForeground: '#159fc2',
+  waterHorizon: '#477baa',
+  waterFacet: '#72c9d5',
+  waterReflection: '#ffd0a1',
+
+  // Shore and vegetation form a dark, green framing silhouette.
+  shoreDark: '#26323b',
+  shoreMoss: '#354940',
+  forestFar: '#71817d',
+  forestNear: '#536750',
+  pineNeedle: '#829061',
+  pineNeedleDark: '#536b50',
+  pineTrunk: '#685046',
+  reeds: '#718052',
+
+  // Foreground rocks echo the mountain violets with warmer lit facets.
+  rockSlate: '#4b5265',
+  rockViolet: '#625a72',
+  rockWarmFace: '#95716d',
+
+  // The neutral lemur owns the scene's widest value range and warmest accent.
+  lemurCharcoal: '#11141b',
+  lemurGray: '#666873',
+  lemurLight: '#d0cdc7',
+  lemurEye: '#d77b17',
 } as const
+
+/** Maps stable authored material names to their runtime color roles. */
+export const MODEL_MATERIAL_PALETTE = {
+  MountainFarBlue: SCENE_PALETTE.mountainFar,
+  MountainCoolBlue: SCENE_PALETTE.mountainCool,
+  MountainViolet: SCENE_PALETTE.mountainViolet,
+  MountainPeachLight: SCENE_PALETTE.mountainPeachLight,
+  ShoreDark: SCENE_PALETTE.shoreDark,
+  ShoreMoss: SCENE_PALETTE.shoreMoss,
+  RockSlate: SCENE_PALETTE.rockSlate,
+  RockViolet: SCENE_PALETTE.rockViolet,
+  RockWarmFace: SCENE_PALETTE.rockWarmFace,
+  LemurCharcoal: SCENE_PALETTE.lemurCharcoal,
+  LemurGray: SCENE_PALETTE.lemurGray,
+  LemurLight: SCENE_PALETTE.lemurLight,
+  LemurEye: SCENE_PALETTE.lemurEye,
+} as const
+
+export type ModelMaterialName = keyof typeof MODEL_MATERIAL_PALETTE

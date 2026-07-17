@@ -43,16 +43,14 @@
         "RockSourceSmallB",
         "RockSourceSmallC",
         "RockSourceFrameLeft",
-        "RockSourceFrameRight",
-        "MeditationPlatform"
+        "RockSourceFrameRight"
       ],
       "expectedMaterials": [
         "ShoreDark",
         "ShoreMoss",
         "RockSlate",
         "RockViolet",
-        "RockWarmFace",
-        "PlatformTop"
+        "RockWarmFace"
       ],
       "minBytes": 10000,
       "maxBytes": 250000,

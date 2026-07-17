@@ -142,7 +142,10 @@ export function Experience({
               LIGHT_CONFIG.hemisphereIntensity,
             ]}
           />
-          <ambientLight intensity={LIGHT_CONFIG.ambientIntensity} />
+          <ambientLight
+            color={SCENE_PALETTE.ambientFill}
+            intensity={LIGHT_CONFIG.ambientIntensity}
+          />
           <directionalLight
             position={LIGHT_CONFIG.keyPosition}
             intensity={settings.lightIntensity}

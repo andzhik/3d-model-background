@@ -1,7 +1,8 @@
 :root {
   --hero-height: 100vh;
   --hero-content-width: 46rem;
-  --hero-scrim-intensity: 0.5;
+  --hero-scrim-intensity: 0.23;
+  --hero-vignette-intensity: 0.24;
   --hero-focal-position: 50% 50%;
 }
 
@@ -35,15 +36,20 @@
   inset: 0;
   background:
     radial-gradient(
-      ellipse 62% 42% at 50% 12%,
-      rgb(8 15 36 / calc(var(--hero-scrim-intensity) * 0.72)) 0%,
+      ellipse 58% 38% at 50% 13%,
+      rgb(8 15 36 / calc(var(--hero-scrim-intensity) * 0.62)) 0%,
       transparent 100%
+    ),
+    radial-gradient(
+      ellipse 82% 78% at 50% 47%,
+      transparent 58%,
+      rgb(7 12 28 / var(--hero-vignette-intensity)) 100%
     ),
     linear-gradient(
       180deg,
       rgb(8 15 36 / var(--hero-scrim-intensity)) 0%,
-      rgb(8 15 36 / calc(var(--hero-scrim-intensity) * 0.24)) 43%,
-      rgb(8 15 36 / 0.08) 100%
+      rgb(8 15 36 / calc(var(--hero-scrim-intensity) * 0.2)) 38%,
+      rgb(8 15 36 / 0.06) 100%
     );
   content: '';
   pointer-events: none;
@@ -263,7 +269,8 @@
 @media (orientation: portrait) and (min-width: 41rem) {
   :root {
     --hero-content-width: 40rem;
-    --hero-scrim-intensity: 0.54;
+    --hero-scrim-intensity: 0.4;
+    --hero-vignette-intensity: 0.27;
     --hero-focal-position: 50% 50%;
   }
 
@@ -275,7 +282,8 @@
 @media (max-width: 40rem) {
   :root {
     --hero-content-width: 22rem;
-    --hero-scrim-intensity: 0.58;
+    --hero-scrim-intensity: 0.46;
+    --hero-vignette-intensity: 0.3;
     --hero-focal-position: 50% 48%;
   }
 

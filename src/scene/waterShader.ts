@@ -59,7 +59,7 @@ export const REFLECTION_FRAGMENT_SHADER = /* glsl */ `
     float broadBreaks = sin(vUv.y * 34.0 + uTime * 1.6);
     float brokenMask = smoothstep(0.18, 0.72, movingBands) * smoothstep(-0.6, 0.35, broadBreaks);
     float horizonFade = smoothstep(0.02, 0.18, vUv.y) * (1.0 - smoothstep(0.91, 1.0, vUv.y));
-    float alpha = horizontalMask * brokenMask * horizonFade * 0.78;
+    float alpha = horizontalMask * brokenMask * horizonFade * 0.38;
 
     gl_FragColor = vec4(uReflectionColor, alpha);
   }

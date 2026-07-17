@@ -41,7 +41,7 @@ export const CAMERA_PRESETS: Record<CameraPresetName, CameraPreset> = {
     name: 'desktop-landscape',
     position: [0, 0.8, 8],
     fov: 44,
-    sunPosition: [-3, 0.5, -12],
+    sunPosition: [1.8, 1.75, -12],
     details: {
       rockField: true,
       framingRocks: true,

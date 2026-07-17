@@ -17,7 +17,6 @@ MATERIAL_SPECS = (
     ("RockSlate", (0.25, 0.29, 0.38, 1.0)),
     ("RockViolet", (0.34, 0.31, 0.43, 1.0)),
     ("RockWarmFace", (0.49, 0.39, 0.40, 1.0)),
-    ("PlatformTop", (0.34, 0.36, 0.43, 1.0)),
 )
 
 
@@ -107,27 +106,6 @@ def create_rock_source(
         polygon.material_index = rng.randrange(0, 3)
 
 
-def create_platform(materials: list[bpy.types.Material]) -> None:
-    bpy.ops.mesh.primitive_cylinder_add(
-        vertices=12,
-        radius=0.9,
-        depth=0.42,
-        # Keep the platform low and behind the nearest foreground details. The
-        # previous placement sat close to the camera and filled most of the
-        # viewport before the character was present.
-        location=(0.0, -0.35, -1.15),
-        rotation=(math.pi / 2, 0.0, 0.0),
-    )
-    platform = bpy.context.object
-    platform.name = "MeditationPlatform"
-    platform.data.name = "MeditationPlatformGeometry"
-    platform.scale = (1.0, 0.72, 1.0)
-    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
-    finish_mesh(platform, [materials[2], materials[3], materials[5]])
-    for polygon in platform.data.polygons:
-        polygon.material_index = 2 if abs(polygon.normal.z) > 0.8 else polygon.index % 2
-
-
 def export_asset(output_path: str) -> None:
     absolute_output = os.path.abspath(output_path)
     os.makedirs(os.path.dirname(absolute_output), exist_ok=True)
@@ -164,7 +142,6 @@ def main() -> None:
     create_rock_source("RockSourceSmallC", (0.86, 0.55, 0.52), 307, materials)
     create_rock_source("RockSourceFrameLeft", (1.45, 0.92, 1.18), 401, materials)
     create_rock_source("RockSourceFrameRight", (1.32, 0.86, 1.35), 503, materials)
-    create_platform(materials)
     export_asset(args.output)
     if args.blend_output:
         save_source(args.blend_output)

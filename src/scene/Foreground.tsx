@@ -13,6 +13,7 @@ import {
 
 import { FOREGROUND_CONFIG, PARALLAX_CONFIG } from './constants'
 import type { CameraDetailRules } from './cameraPresets'
+import { cloneWithScenePalette } from './materials'
 import { ParallaxGroup } from './ParallaxRig'
 import {
   createRockFieldLayout,
@@ -45,7 +46,7 @@ function getMeshObject(
   })
   if (!node || !containsMesh)
     throw new Error(`Foreground asset is missing mesh ${name}`)
-  return node
+  return cloneWithScenePalette(node)
 }
 
 interface RockAssetProps {
@@ -63,7 +64,7 @@ export function RockAsset({
   rotation,
   scale,
 }: RockAssetProps) {
-  const rock = useMemo(() => source.clone(), [source])
+  const rock = useMemo(() => source.clone(true), [source])
   return (
     <primitive
       object={rock}

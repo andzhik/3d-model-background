@@ -30,15 +30,15 @@ export const PARALLAX_CONFIG = {
 
 export const FOG_CONFIG = {
   color: SCENE_PALETTE.fog,
-  near: 7.5,
-  far: 24,
+  near: 10,
+  far: 31,
 } as const
 
 export const LIGHT_CONFIG = {
-  hemisphereIntensity: 1.8,
-  ambientIntensity: 0.55,
-  keyIntensity: 2.4,
-  keyPosition: [3, 4, 5] as const,
+  hemisphereIntensity: 0.95,
+  ambientIntensity: 0.42,
+  keyIntensity: 2.65,
+  keyPosition: [3.5, 2.4, 4.5] as const,
 } as const
 
 export const ATMOSPHERE_CONFIG = {
@@ -48,7 +48,7 @@ export const ATMOSPHERE_CONFIG = {
   },
   sun: {
     position: [0, 0.5, -12] as const,
-    radius: 1.15,
+    radius: 0.52,
     segments: 48,
   },
   clouds: {
@@ -85,7 +85,7 @@ export const WATER_CONFIG = {
   lengthSegments: 64,
   speed: 0.22,
   amplitude: 0.055,
-  reflectionWidth: 2.8,
+  reflectionWidth: 18,
   reflectionLift: 0.012,
 } as const
 

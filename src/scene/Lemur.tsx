@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import { LEMUR_CONFIG, PARALLAX_CONFIG } from './constants'
 import { useLemurAnimationController } from './lemurAnimation'
 import { validateLemurAnimations, validateLemurNodes } from './lemurAsset'
+import { cloneWithScenePalette } from './materials'
 import { ParallaxGroup } from './ParallaxRig'
 
 interface LemurProps {
@@ -14,7 +15,7 @@ export function Lemur({ visible = true }: LemurProps) {
   const { animations, nodes } = useGLTF(LEMUR_CONFIG.modelUrl)
   const root = useMemo(() => {
     const validated = validateLemurNodes(nodes)
-    return validated.Root.clone(true)
+    return cloneWithScenePalette(validated.Root)
   }, [nodes])
   const clips = useMemo(() => validateLemurAnimations(animations), [animations])
   useLemurAnimationController(root, clips)

@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import type { Object3D } from 'three'
 
 import { PARALLAX_CONFIG } from './constants'
+import { cloneWithScenePalette } from './materials'
 import { ParallaxGroup } from './ParallaxRig'
 
 export const MOUNTAIN_MODEL_URL = '/models/environment-mountains.glb'
@@ -22,7 +23,7 @@ function getMountainNode(
   const nodeName = MOUNTAIN_NODE_NAMES[layer]
   const node = nodes[nodeName]
   if (!node) throw new Error(`Mountain asset is missing ${nodeName}`)
-  return node.clone()
+  return cloneWithScenePalette(node)
 }
 
 interface MountainsProps {
