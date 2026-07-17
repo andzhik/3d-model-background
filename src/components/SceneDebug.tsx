@@ -1,6 +1,7 @@
 import { type ChangeEvent } from 'react'
 
 import { MAJOR_GROUPS, type MajorGroup } from '../scene/constants'
+import type { CameraPresetName } from '../scene/cameraPresets'
 import type { SceneDebugSettings } from '../scene/debug'
 import type { RendererStatistics } from '../scene/debug'
 import type { SceneQuality } from '../scene/quality'
@@ -12,6 +13,7 @@ interface SceneDebugProps {
   quality: SceneQuality
   onQualityChange: (quality: SceneQuality) => void
   rendererStatistics: RendererStatistics | null
+  cameraPreset: CameraPresetName
 }
 
 interface SliderProps {
@@ -48,17 +50,18 @@ export function SceneDebug({
   quality,
   onQualityChange,
   rendererStatistics,
+  cameraPreset,
 }: SceneDebugProps) {
   const vegetation = getVegetationMetrics(quality)
   const setNumber =
-    (key: keyof Omit<SceneDebugSettings, 'cameraPosition' | 'visibility'>) =>
+    (key: keyof Omit<SceneDebugSettings, 'cameraOffset' | 'visibility'>) =>
     (value: number) =>
       onChange({ ...settings, [key]: value })
 
   const setCameraAxis = (axis: number) => (value: number) => {
-    const position: [number, number, number] = [...settings.cameraPosition]
+    const position: [number, number, number] = [...settings.cameraOffset]
     position[axis] = value
-    onChange({ ...settings, cameraPosition: position })
+    onChange({ ...settings, cameraOffset: position })
   }
 
   const setVisibility =
@@ -92,36 +95,36 @@ export function SceneDebug({
           </select>
         </label>
         <Slider
-          label="Camera X"
-          value={settings.cameraPosition[0]}
-          min={-10}
-          max={10}
+          label="Camera X offset"
+          value={settings.cameraOffset[0]}
+          min={-3}
+          max={3}
           step={0.1}
           onChange={setCameraAxis(0)}
         />
         <Slider
-          label="Camera Y"
-          value={settings.cameraPosition[1]}
-          min={-10}
-          max={10}
+          label="Camera Y offset"
+          value={settings.cameraOffset[1]}
+          min={-3}
+          max={3}
           step={0.1}
           onChange={setCameraAxis(1)}
         />
         <Slider
-          label="Camera Z"
-          value={settings.cameraPosition[2]}
-          min={1}
-          max={15}
+          label="Camera Z offset"
+          value={settings.cameraOffset[2]}
+          min={-3}
+          max={3}
           step={0.1}
           onChange={setCameraAxis(2)}
         />
         <Slider
-          label="Field of view"
-          value={settings.fov}
-          min={20}
-          max={90}
+          label="FOV offset"
+          value={settings.fovOffset}
+          min={-20}
+          max={20}
           step={1}
-          onChange={setNumber('fov')}
+          onChange={setNumber('fovOffset')}
         />
         <Slider
           label="Fog near"
@@ -161,6 +164,10 @@ export function SceneDebug({
           ))}
         </fieldset>
         <dl className="scene-debug__statistics">
+          <div>
+            <dt>Camera preset</dt>
+            <dd>{cameraPreset}</dd>
+          </div>
           <div>
             <dt>Vegetation</dt>
             <dd>{vegetation.totalInstances} instances</dd>

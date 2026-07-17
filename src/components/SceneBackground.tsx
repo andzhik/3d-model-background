@@ -10,6 +10,7 @@ import {
 
 import { Experience } from '../scene/Experience'
 import { CAMERA_CONFIG } from '../scene/constants'
+import { useResponsiveCameraPreset } from '../scene/cameraPresets'
 import { createDefaultDebugSettings } from '../scene/debug'
 import type { RendererStatistics } from '../scene/debug'
 import {
@@ -61,6 +62,7 @@ interface SceneBackgroundProps {
 }
 
 export function SceneBackground({ onStatusChange }: SceneBackgroundProps) {
+  const cameraPreset = useResponsiveCameraPreset()
   const [debugSettings, setDebugSettings] = useState(createDefaultDebugSettings)
   const [qualityTier, setQualityTier] = useState<SceneQuality>(
     DEFAULT_SCENE_QUALITY,
@@ -111,13 +113,19 @@ export function SceneBackground({ onStatusChange }: SceneBackgroundProps) {
       <div
         className="scene-background"
         data-scene-status={status}
+        data-camera-preset={cameraPreset.name}
         aria-hidden="true"
       >
         {status !== 'fallback' && (
           <SceneErrorBoundary onError={handleFailure}>
             <Canvas
               aria-hidden="true"
-              camera={CAMERA_CONFIG}
+              camera={{
+                position: [...cameraPreset.position],
+                fov: cameraPreset.fov,
+                near: CAMERA_CONFIG.near,
+                far: CAMERA_CONFIG.far,
+              }}
               dpr={quality.dpr}
               shadows={quality.shadows}
               gl={{ alpha: true, antialias: quality.antialias }}
@@ -130,6 +138,7 @@ export function SceneBackground({ onStatusChange }: SceneBackgroundProps) {
                 }
                 quality={qualityTier}
                 settings={debugSettings}
+                cameraPreset={cameraPreset}
               />
             </Canvas>
           </SceneErrorBoundary>
@@ -142,6 +151,7 @@ export function SceneBackground({ onStatusChange }: SceneBackgroundProps) {
           quality={qualityTier}
           onQualityChange={setQualityTier}
           rendererStatistics={rendererStatistics}
+          cameraPreset={cameraPreset.name}
         />
       )}
     </>

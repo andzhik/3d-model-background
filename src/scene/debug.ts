@@ -1,5 +1,4 @@
 import {
-  CAMERA_CONFIG,
   FOG_CONFIG,
   LIGHT_CONFIG,
   MAJOR_GROUPS,
@@ -7,8 +6,8 @@ import {
 } from './constants'
 
 export interface SceneDebugSettings {
-  cameraPosition: [number, number, number]
-  fov: number
+  cameraOffset: [number, number, number]
+  fovOffset: number
   fogNear: number
   fogFar: number
   lightIntensity: number
@@ -22,8 +21,8 @@ export interface RendererStatistics {
 
 export function createDefaultDebugSettings(): SceneDebugSettings {
   return {
-    cameraPosition: [...CAMERA_CONFIG.position],
-    fov: CAMERA_CONFIG.fov,
+    cameraOffset: [0, 0, 0],
+    fovOffset: 0,
     fogNear: FOG_CONFIG.near,
     fogFar: FOG_CONFIG.far,
     lightIntensity: LIGHT_CONFIG.keyIntensity,

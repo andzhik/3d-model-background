@@ -3,8 +3,6 @@ import { SCENE_PALETTE } from './palette'
 export const SCENE_SEED = 0x1e4d_2026
 
 export const CAMERA_CONFIG = {
-  position: [0, 0, 5] as const,
-  fov: 42,
   near: 0.1,
   far: 100,
 } as const
@@ -49,7 +47,7 @@ export const ATMOSPHERE_CONFIG = {
     size: [80, 40] as const,
   },
   sun: {
-    position: [0, -1.45, -12] as const,
+    position: [0, 0.5, -12] as const,
     radius: 1.15,
     segments: 48,
   },

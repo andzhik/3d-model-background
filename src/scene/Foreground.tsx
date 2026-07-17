@@ -12,6 +12,7 @@ import {
 } from 'three'
 
 import { FOREGROUND_CONFIG, PARALLAX_CONFIG } from './constants'
+import type { CameraDetailRules } from './cameraPresets'
 import { ParallaxGroup } from './ParallaxRig'
 import {
   createRockFieldLayout,
@@ -177,11 +178,13 @@ export function RockField({ sources }: RockFieldProps) {
 interface ForegroundProps {
   middleVisible: boolean
   foregroundVisible: boolean
+  details: CameraDetailRules
 }
 
 export function Foreground({
   middleVisible,
   foregroundVisible,
+  details,
 }: ForegroundProps) {
   const { nodes } = useGLTF(FOREGROUND_CONFIG.modelUrl)
   const meshes = useMemo(
@@ -217,17 +220,21 @@ export function Foreground({
         visible={foregroundVisible}
         multiplier={PARALLAX_CONFIG.multipliers.foreground}
       >
-        <RockField sources={meshes} />
-        <RockAsset
-          source={meshes.frameLeft}
-          name="FramingRockLeft"
-          {...FOREGROUND_CONFIG.framingRocks.left}
-        />
-        <RockAsset
-          source={meshes.frameRight}
-          name="FramingRockRight"
-          {...FOREGROUND_CONFIG.framingRocks.right}
-        />
+        <group name="ResponsiveRockField" visible={details.rockField}>
+          <RockField sources={meshes} />
+        </group>
+        <group name="ResponsiveFramingRocks" visible={details.framingRocks}>
+          <RockAsset
+            source={meshes.frameLeft}
+            name="FramingRockLeft"
+            {...FOREGROUND_CONFIG.framingRocks.left}
+          />
+          <RockAsset
+            source={meshes.frameRight}
+            name="FramingRockRight"
+            {...FOREGROUND_CONFIG.framingRocks.right}
+          />
+        </group>
       </ParallaxGroup>
     </group>
   )

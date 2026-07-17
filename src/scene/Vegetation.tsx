@@ -18,6 +18,7 @@ import { SCENE_PALETTE } from './palette'
 import { PARALLAX_CONFIG } from './constants'
 import { ParallaxGroup } from './ParallaxRig'
 import type { SceneQuality } from './quality'
+import type { CameraDetailRules } from './cameraPresets'
 import {
   FOREST_BANDS,
   PINE_VARIANTS,
@@ -228,6 +229,7 @@ interface VegetationProps {
   distantVisible: boolean
   middleVisible: boolean
   foregroundVisible: boolean
+  details: CameraDetailRules
 }
 
 export function Vegetation({
@@ -235,6 +237,7 @@ export function Vegetation({
   distantVisible,
   middleVisible,
   foregroundVisible,
+  details,
 }: VegetationProps) {
   const layout = useMemo(() => createVegetationLayout(quality), [quality])
 
@@ -244,7 +247,11 @@ export function Vegetation({
         <ParallaxGroup
           key={band}
           name={`ForestBand-${band}`}
-          visible={band === 'far' ? distantVisible : middleVisible}
+          visible={
+            band === 'far'
+              ? distantVisible
+              : middleVisible && details.nearForest
+          }
           multiplier={
             band === 'far'
               ? PARALLAX_CONFIG.multipliers.mountainsNear
@@ -268,7 +275,7 @@ export function Vegetation({
       ))}
       <ParallaxGroup
         name="ForegroundPlants"
-        visible={foregroundVisible}
+        visible={foregroundVisible && details.foregroundPlants}
         multiplier={PARALLAX_CONFIG.multipliers.foreground}
       >
         {layout.plants.length > 0 && <PlantBatch placements={layout.plants} />}

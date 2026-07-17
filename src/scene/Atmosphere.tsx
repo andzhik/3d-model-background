@@ -138,9 +138,13 @@ export function SkyGradient() {
   )
 }
 
-export function SunDisc() {
+export function SunDisc({
+  position = ATMOSPHERE_CONFIG.sun.position,
+}: {
+  position?: readonly [number, number, number]
+}) {
   return (
-    <mesh position={ATMOSPHERE_CONFIG.sun.position} renderOrder={-2}>
+    <mesh position={position} renderOrder={-2}>
       <circleGeometry
         args={[ATMOSPHERE_CONFIG.sun.radius, ATMOSPHERE_CONFIG.sun.segments]}
       />

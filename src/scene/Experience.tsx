@@ -2,7 +2,14 @@ import { PerspectiveCamera } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { useEffect, useRef } from 'react'
 import { Suspense } from 'react'
+import type { PerspectiveCamera as ThreePerspectiveCamera } from 'three'
 
+import { useReducedMotion } from '../hooks/useReducedMotion'
+import {
+  CAMERA_PRESETS,
+  CAMERA_TRANSITION,
+  type CameraPreset,
+} from './cameraPresets'
 import { CAMERA_CONFIG, FOG_CONFIG, LIGHT_CONFIG } from './constants'
 import { Clouds, SkyGradient, SunDisc } from './Atmosphere'
 import type { SceneDebugSettings } from './debug'
@@ -15,12 +22,14 @@ import type { RendererStatistics } from './debug'
 import type { SceneQuality } from './quality'
 import { Vegetation } from './Vegetation'
 import { ParallaxRig } from './ParallaxRig'
+import { damp } from './parallaxMath'
 
 interface ExperienceProps {
   onFirstFrame: () => void
   onRendererStatistics?: (statistics: RendererStatistics) => void
   quality: SceneQuality
   settings: SceneDebugSettings
+  cameraPreset: CameraPreset
 }
 
 function RendererStatisticsReporter({
@@ -71,12 +80,30 @@ function FirstFrameReporter({
   return null
 }
 
-function CameraConfiguration({ settings }: Pick<ExperienceProps, 'settings'>) {
+interface CameraConfigurationProps {
+  fov: number
+}
+
+function CameraConfiguration({ fov }: CameraConfigurationProps) {
+  const camera = useRef<ThreePerspectiveCamera>(null)
+  const reducedMotion = useReducedMotion()
+
+  useFrame((_, delta) => {
+    if (!camera.current) return
+    const nextFov = reducedMotion
+      ? fov
+      : damp(camera.current.fov, fov, CAMERA_TRANSITION.damping, delta)
+    if (Math.abs(camera.current.fov - nextFov) < 0.0001) return
+    camera.current.fov = nextFov
+    camera.current.updateProjectionMatrix()
+  })
+
   return (
     <PerspectiveCamera
+      ref={camera}
       makeDefault
-      position={settings.cameraPosition}
-      fov={settings.fov}
+      position={CAMERA_PRESETS['desktop-landscape'].position}
+      fov={CAMERA_PRESETS['desktop-landscape'].fov}
       near={CAMERA_CONFIG.near}
       far={CAMERA_CONFIG.far}
     />
@@ -88,18 +115,26 @@ export function Experience({
   onRendererStatistics,
   quality,
   settings,
+  cameraPreset,
 }: ExperienceProps) {
+  const cameraPosition: [number, number, number] = [
+    cameraPreset.position[0] + settings.cameraOffset[0],
+    cameraPreset.position[1] + settings.cameraOffset[1],
+    cameraPreset.position[2] + settings.cameraOffset[2],
+  ]
+  const fov = cameraPreset.fov + settings.fovOffset
+
   return (
     <>
-      <CameraConfiguration settings={settings} />
-      <ParallaxRig basePosition={settings.cameraPosition}>
+      <CameraConfiguration fov={fov} />
+      <ParallaxRig basePosition={cameraPosition}>
         <fog
           attach="fog"
           args={[FOG_CONFIG.color, settings.fogNear, settings.fogFar]}
         />
         <group visible={settings.visibility.environment}>
           <SkyGradient />
-          <SunDisc />
+          <SunDisc position={cameraPreset.sunPosition} />
           <hemisphereLight
             args={[
               SCENE_PALETTE.skyLight,
@@ -123,6 +158,7 @@ export function Experience({
           distantVisible={settings.visibility.distantWorld}
           middleVisible={settings.visibility.middleWorld}
           foregroundVisible={settings.visibility.foreground}
+          details={cameraPreset.details}
         />
         <Suspense fallback={null}>
           <Mountains visible={settings.visibility.distantWorld} />
@@ -130,6 +166,7 @@ export function Experience({
           <Foreground
             middleVisible={settings.visibility.middleWorld}
             foregroundVisible={settings.visibility.foreground}
+            details={cameraPreset.details}
           />
           <Lemur visible={settings.visibility.foreground} />
           <FirstFrameReporter onFirstFrame={onFirstFrame} />

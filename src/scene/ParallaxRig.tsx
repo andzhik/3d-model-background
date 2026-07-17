@@ -12,6 +12,7 @@ import type { Group } from 'three'
 
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import { PARALLAX_CONFIG } from './constants'
+import { CAMERA_TRANSITION } from './cameraPresets'
 import {
   damp,
   getCameraPose,
@@ -62,6 +63,7 @@ export function ParallaxRig({ basePosition, children }: ParallaxRigProps) {
   const coarsePointer = useCoarsePointer()
   const target = useRef<ParallaxMotion>({ pointer: { x: 0, y: 0 }, scroll: 0 })
   const motion = useRef<ParallaxMotion>({ pointer: { x: 0, y: 0 }, scroll: 0 })
+  const responsiveBase = useRef<[number, number, number]>([...basePosition])
 
   useEffect(() => {
     const resetPointer = () => {
@@ -101,6 +103,12 @@ export function ParallaxRig({ basePosition, children }: ParallaxRigProps) {
   }, [canvas, coarsePointer, reducedMotion])
 
   useFrame(({ camera }, delta) => {
+    responsiveBase.current.forEach((current, axis) => {
+      responsiveBase.current[axis] = reducedMotion
+        ? basePosition[axis]
+        : damp(current, basePosition[axis], CAMERA_TRANSITION.damping, delta)
+    })
+
     if (reducedMotion) {
       motion.current.pointer = { x: 0, y: 0 }
       motion.current.scroll = 0
@@ -126,7 +134,7 @@ export function ParallaxRig({ basePosition, children }: ParallaxRigProps) {
     }
 
     const pose = getCameraPose(
-      basePosition,
+      responsiveBase.current,
       motion.current.pointer,
       motion.current.scroll,
     )
