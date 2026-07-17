@@ -15,6 +15,8 @@ import {
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
 
 import { SCENE_PALETTE } from './palette'
+import { PARALLAX_CONFIG } from './constants'
+import { ParallaxGroup } from './ParallaxRig'
 import type { SceneQuality } from './quality'
 import {
   FOREST_BANDS,
@@ -239,10 +241,15 @@ export function Vegetation({
   return (
     <group name="ProceduralVegetation" dispose={null}>
       {FOREST_BANDS.map((band) => (
-        <group
+        <ParallaxGroup
           key={band}
           name={`ForestBand-${band}`}
           visible={band === 'far' ? distantVisible : middleVisible}
+          multiplier={
+            band === 'far'
+              ? PARALLAX_CONFIG.multipliers.mountainsNear
+              : PARALLAX_CONFIG.multipliers.forest
+          }
         >
           {PINE_VARIANTS.map((variant) => {
             const placements = layout.trees.filter(
@@ -257,11 +264,15 @@ export function Vegetation({
               />
             ) : null
           })}
-        </group>
+        </ParallaxGroup>
       ))}
-      <group name="ForegroundPlants" visible={foregroundVisible}>
+      <ParallaxGroup
+        name="ForegroundPlants"
+        visible={foregroundVisible}
+        multiplier={PARALLAX_CONFIG.multipliers.foreground}
+      >
         {layout.plants.length > 0 && <PlantBatch placements={layout.plants} />}
-      </group>
+      </ParallaxGroup>
     </group>
   )
 }

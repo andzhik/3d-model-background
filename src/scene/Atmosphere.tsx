@@ -8,8 +8,9 @@ import {
   getCloudXAtTime,
   type CloudLayerName,
 } from './cloudLayout'
-import { ATMOSPHERE_CONFIG } from './constants'
+import { ATMOSPHERE_CONFIG, PARALLAX_CONFIG } from './constants'
 import { SCENE_PALETTE } from './palette'
+import { ParallaxGroup } from './ParallaxRig'
 
 const SKY_VERTEX_SHADER = /* glsl */ `
   varying vec2 vUv;
@@ -162,12 +163,20 @@ export function Clouds({ farVisible, nearVisible }: CloudsProps) {
 
   return (
     <>
-      <group visible={farVisible}>
+      <ParallaxGroup
+        name="CloudParallaxFar"
+        visible={farVisible}
+        multiplier={PARALLAX_CONFIG.multipliers.cloudsFar}
+      >
         <CloudLayer layerName="far" reducedMotion={reducedMotion} />
-      </group>
-      <group visible={nearVisible}>
+      </ParallaxGroup>
+      <ParallaxGroup
+        name="CloudParallaxNear"
+        visible={nearVisible}
+        multiplier={PARALLAX_CONFIG.multipliers.cloudsNear}
+      >
         <CloudLayer layerName="near" reducedMotion={reducedMotion} />
-      </group>
+      </ParallaxGroup>
     </>
   )
 }

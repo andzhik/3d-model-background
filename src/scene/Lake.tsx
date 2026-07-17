@@ -3,8 +3,9 @@ import { useMemo, useRef } from 'react'
 import { Color, type ShaderMaterial } from 'three'
 
 import { useReducedMotion } from '../hooks/useReducedMotion'
-import { WATER_CONFIG } from './constants'
+import { PARALLAX_CONFIG, WATER_CONFIG } from './constants'
 import { SCENE_PALETTE } from './palette'
+import { ParallaxGroup } from './ParallaxRig'
 import {
   getWaterAnimationTime,
   REFLECTION_FRAGMENT_SHADER,
@@ -56,7 +57,11 @@ export function Lake({ visible }: LakeProps) {
   ] as const
 
   return (
-    <group name="MiddleWorldLake" visible={visible}>
+    <ParallaxGroup
+      name="MiddleWorldLake"
+      visible={visible}
+      multiplier={PARALLAX_CONFIG.multipliers.mountainsNear}
+    >
       <mesh
         name="LakeSurface"
         position={WATER_CONFIG.position}
@@ -90,6 +95,6 @@ export function Lake({ visible }: LakeProps) {
           depthWrite={false}
         />
       </mesh>
-    </group>
+    </ParallaxGroup>
   )
 }

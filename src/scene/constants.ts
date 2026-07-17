@@ -9,6 +9,27 @@ export const CAMERA_CONFIG = {
   far: 100,
 } as const
 
+export const PARALLAX_CONFIG = {
+  damping: 5,
+  maximumYawDegrees: 1.5,
+  maximumPitchDegrees: 1.25,
+  cameraTravel: [0.06, 0.04] as const,
+  lookDistance: 5,
+  groupTravel: [0.42, 0.2] as const,
+  scrollForward: 0.35,
+  scrollTargetRaise: 0.22,
+  multipliers: {
+    sky: 0,
+    cloudsFar: 0.05,
+    cloudsNear: 0.1,
+    mountainsFar: 0.08,
+    mountainsNear: 0.16,
+    forest: 0.25,
+    lemur: 0.35,
+    foreground: 0.5,
+  },
+} as const
+
 export const FOG_CONFIG = {
   color: SCENE_PALETTE.fog,
   near: 7.5,

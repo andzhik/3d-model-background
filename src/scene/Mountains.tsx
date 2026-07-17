@@ -2,6 +2,9 @@ import { useGLTF } from '@react-three/drei'
 import { useMemo } from 'react'
 import type { Object3D } from 'three'
 
+import { PARALLAX_CONFIG } from './constants'
+import { ParallaxGroup } from './ParallaxRig'
+
 export const MOUNTAIN_MODEL_URL = '/models/environment-mountains.glb'
 
 const MOUNTAIN_NODE_NAMES = {
@@ -39,15 +42,24 @@ export function Mountains({ visible }: MountainsProps) {
 
   return (
     <group name="MountainLayers" visible={visible} dispose={null}>
-      <group name="MountainParallaxFar">
+      <ParallaxGroup
+        name="MountainParallaxFar"
+        multiplier={PARALLAX_CONFIG.multipliers.mountainsFar}
+      >
         <primitive object={layers.far} />
-      </group>
-      <group name="MountainParallaxLeft">
+      </ParallaxGroup>
+      <ParallaxGroup
+        name="MountainParallaxLeft"
+        multiplier={PARALLAX_CONFIG.multipliers.mountainsNear}
+      >
         <primitive object={layers.left} />
-      </group>
-      <group name="MountainParallaxRight">
+      </ParallaxGroup>
+      <ParallaxGroup
+        name="MountainParallaxRight"
+        multiplier={PARALLAX_CONFIG.multipliers.mountainsNear}
+      >
         <primitive object={layers.right} />
-      </group>
+      </ParallaxGroup>
     </group>
   )
 }

@@ -11,7 +11,8 @@ import {
   type Object3D,
 } from 'three'
 
-import { FOREGROUND_CONFIG } from './constants'
+import { FOREGROUND_CONFIG, PARALLAX_CONFIG } from './constants'
+import { ParallaxGroup } from './ParallaxRig'
 import {
   createRockFieldLayout,
   ROCK_VARIANTS,
@@ -203,11 +204,19 @@ export function Foreground({
   )
   return (
     <group name="EnvironmentForeground" dispose={null}>
-      <group name="ShoreSources" visible={middleVisible}>
+      <ParallaxGroup
+        name="ShoreSources"
+        visible={middleVisible}
+        multiplier={PARALLAX_CONFIG.multipliers.forest}
+      >
         <primitive object={shoreLeft} />
         <primitive object={shoreRight} />
-      </group>
-      <group name="ForegroundFraming" visible={foregroundVisible}>
+      </ParallaxGroup>
+      <ParallaxGroup
+        name="ForegroundFraming"
+        visible={foregroundVisible}
+        multiplier={PARALLAX_CONFIG.multipliers.foreground}
+      >
         <RockField sources={meshes} />
         <RockAsset
           source={meshes.frameLeft}
@@ -219,7 +228,7 @@ export function Foreground({
           name="FramingRockRight"
           {...FOREGROUND_CONFIG.framingRocks.right}
         />
-      </group>
+      </ParallaxGroup>
     </group>
   )
 }

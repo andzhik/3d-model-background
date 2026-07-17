@@ -14,6 +14,7 @@ import { Foreground } from './Foreground'
 import type { RendererStatistics } from './debug'
 import type { SceneQuality } from './quality'
 import { Vegetation } from './Vegetation'
+import { ParallaxRig } from './ParallaxRig'
 
 interface ExperienceProps {
   onFirstFrame: () => void
@@ -91,50 +92,52 @@ export function Experience({
   return (
     <>
       <CameraConfiguration settings={settings} />
-      <fog
-        attach="fog"
-        args={[FOG_CONFIG.color, settings.fogNear, settings.fogFar]}
-      />
-      <group visible={settings.visibility.environment}>
-        <SkyGradient />
-        <SunDisc />
-        <hemisphereLight
-          args={[
-            SCENE_PALETTE.skyLight,
-            SCENE_PALETTE.groundFill,
-            LIGHT_CONFIG.hemisphereIntensity,
-          ]}
+      <ParallaxRig basePosition={settings.cameraPosition}>
+        <fog
+          attach="fog"
+          args={[FOG_CONFIG.color, settings.fogNear, settings.fogFar]}
         />
-        <ambientLight intensity={LIGHT_CONFIG.ambientIntensity} />
-        <directionalLight
-          position={LIGHT_CONFIG.keyPosition}
-          intensity={settings.lightIntensity}
-          color={SCENE_PALETTE.sunrise}
+        <group visible={settings.visibility.environment}>
+          <SkyGradient />
+          <SunDisc />
+          <hemisphereLight
+            args={[
+              SCENE_PALETTE.skyLight,
+              SCENE_PALETTE.groundFill,
+              LIGHT_CONFIG.hemisphereIntensity,
+            ]}
+          />
+          <ambientLight intensity={LIGHT_CONFIG.ambientIntensity} />
+          <directionalLight
+            position={LIGHT_CONFIG.keyPosition}
+            intensity={settings.lightIntensity}
+            color={SCENE_PALETTE.sunrise}
+          />
+        </group>
+        <Clouds
+          farVisible={settings.visibility.distantWorld}
+          nearVisible={settings.visibility.middleWorld}
         />
-      </group>
-      <Clouds
-        farVisible={settings.visibility.distantWorld}
-        nearVisible={settings.visibility.middleWorld}
-      />
-      <Vegetation
-        quality={quality}
-        distantVisible={settings.visibility.distantWorld}
-        middleVisible={settings.visibility.middleWorld}
-        foregroundVisible={settings.visibility.foreground}
-      />
-      <Suspense fallback={null}>
-        <Mountains visible={settings.visibility.distantWorld} />
-        <Lake visible={settings.visibility.middleWorld} />
-        <Foreground
+        <Vegetation
+          quality={quality}
+          distantVisible={settings.visibility.distantWorld}
           middleVisible={settings.visibility.middleWorld}
           foregroundVisible={settings.visibility.foreground}
         />
-        <Lemur visible={settings.visibility.foreground} />
-        <FirstFrameReporter onFirstFrame={onFirstFrame} />
-      </Suspense>
-      {onRendererStatistics && (
-        <RendererStatisticsReporter onReport={onRendererStatistics} />
-      )}
+        <Suspense fallback={null}>
+          <Mountains visible={settings.visibility.distantWorld} />
+          <Lake visible={settings.visibility.middleWorld} />
+          <Foreground
+            middleVisible={settings.visibility.middleWorld}
+            foregroundVisible={settings.visibility.foreground}
+          />
+          <Lemur visible={settings.visibility.foreground} />
+          <FirstFrameReporter onFirstFrame={onFirstFrame} />
+        </Suspense>
+        {onRendererStatistics && (
+          <RendererStatisticsReporter onReport={onRendererStatistics} />
+        )}
+      </ParallaxRig>
     </>
   )
 }
