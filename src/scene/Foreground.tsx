@@ -240,5 +240,3 @@ export function Foreground({
     </group>
   )
 }
-
-useGLTF.preload(FOREGROUND_CONFIG.modelUrl)

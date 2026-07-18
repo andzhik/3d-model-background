@@ -64,5 +64,3 @@ export function Mountains({ visible }: MountainsProps) {
     </group>
   )
 }
-
-useGLTF.preload(MOUNTAIN_MODEL_URL)

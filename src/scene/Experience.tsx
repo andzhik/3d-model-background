@@ -19,17 +19,53 @@ import { Lake } from './Lake'
 import { Lemur } from './Lemur'
 import { Foreground } from './Foreground'
 import type { RendererStatistics } from './debug'
-import type { SceneQuality } from './quality'
+import { SCENE_QUALITY, type SceneQuality } from './quality'
 import { Vegetation } from './Vegetation'
 import { ParallaxRig } from './ParallaxRig'
 import { damp } from './parallaxMath'
 
 interface ExperienceProps {
+  active: boolean
   onFirstFrame: () => void
   onRendererStatistics?: (statistics: RendererStatistics) => void
+  onRuntimePerformance?: (averageFps: number) => void
   quality: SceneQuality
   settings: SceneDebugSettings
   cameraPreset: CameraPreset
+}
+
+const PERFORMANCE_WARMUP_FRAMES = 30
+const PERFORMANCE_SAMPLE_FRAMES = 120
+
+function RuntimePerformanceSampler({
+  quality,
+  onReport,
+}: {
+  quality: SceneQuality
+  onReport: (averageFps: number) => void
+}) {
+  const sample = useRef({ warmup: 0, frames: 0, seconds: 0 })
+
+  useEffect(() => {
+    sample.current = { warmup: 0, frames: 0, seconds: 0 }
+  }, [quality])
+
+  useFrame((_, delta) => {
+    // Ignore resume gaps and debugger pauses; they do not describe render cost.
+    if (delta <= 0 || delta > 0.25) return
+    if (sample.current.warmup < PERFORMANCE_WARMUP_FRAMES) {
+      sample.current.warmup += 1
+      return
+    }
+    sample.current.frames += 1
+    sample.current.seconds += delta
+    if (sample.current.frames < PERFORMANCE_SAMPLE_FRAMES) return
+
+    onReport(sample.current.frames / sample.current.seconds)
+    sample.current = { warmup: 0, frames: 0, seconds: 0 }
+  })
+
+  return null
 }
 
 function RendererStatisticsReporter({
@@ -111,12 +147,15 @@ function CameraConfiguration({ fov }: CameraConfigurationProps) {
 }
 
 export function Experience({
+  active,
   onFirstFrame,
   onRendererStatistics,
+  onRuntimePerformance,
   quality,
   settings,
   cameraPreset,
 }: ExperienceProps) {
+  const qualitySettings = SCENE_QUALITY[quality]
   const cameraPosition: [number, number, number] = [
     cameraPreset.position[0] + settings.cameraOffset[0],
     cameraPreset.position[1] + settings.cameraOffset[1],
@@ -150,11 +189,17 @@ export function Experience({
             position={LIGHT_CONFIG.keyPosition}
             intensity={settings.lightIntensity}
             color={SCENE_PALETTE.sunrise}
+            castShadow={qualitySettings.shadows}
+            shadow-mapSize-width={1024}
+            shadow-mapSize-height={1024}
           />
         </group>
         <Clouds
           farVisible={settings.visibility.distantWorld}
-          nearVisible={settings.visibility.middleWorld}
+          nearVisible={
+            settings.visibility.middleWorld &&
+            qualitySettings.effects.nearClouds
+          }
         />
         <Vegetation
           quality={quality}
@@ -165,17 +210,42 @@ export function Experience({
         />
         <Suspense fallback={null}>
           <Mountains visible={settings.visibility.distantWorld} />
-          <Lake visible={settings.visibility.middleWorld} />
+          <Lake
+            visible={settings.visibility.middleWorld}
+            quality={qualitySettings.water}
+            showReflection={qualitySettings.effects.sunReflection}
+          />
           <Foreground
             middleVisible={settings.visibility.middleWorld}
             foregroundVisible={settings.visibility.foreground}
             details={cameraPreset.details}
           />
-          <Lemur visible={settings.visibility.foreground} />
+          <Lemur
+            visible={settings.visibility.foreground}
+            shadows={qualitySettings.shadows}
+            animationActive={active}
+          />
+          {qualitySettings.shadows && (
+            <mesh
+              name="LemurShadowCatcher"
+              position={[0, -1.47, -0.15]}
+              rotation={[-Math.PI / 2, 0, 0]}
+              receiveShadow
+            >
+              <planeGeometry args={[5.2, 4.2]} />
+              <shadowMaterial transparent opacity={0.2} />
+            </mesh>
+          )}
           <FirstFrameReporter onFirstFrame={onFirstFrame} />
         </Suspense>
         {onRendererStatistics && (
           <RendererStatisticsReporter onReport={onRendererStatistics} />
+        )}
+        {onRuntimePerformance && (
+          <RuntimePerformanceSampler
+            quality={quality}
+            onReport={onRuntimePerformance}
+          />
         )}
       </ParallaxRig>
     </>

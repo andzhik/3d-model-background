@@ -108,7 +108,11 @@ function playOneShot(action: AnimationAction) {
 }
 
 /** Central controller for mixer state, one-shots, reduced motion, and cleanup. */
-export function useLemurAnimationController(root: Object3D, clips: LemurClips) {
+export function useLemurAnimationController(
+  root: Object3D,
+  clips: LemurClips,
+  active: boolean,
+) {
   const reducedMotion = useReducedMotion()
   const mixer = useMemo(() => new AnimationMixer(root), [root])
   const actions = useMemo(
@@ -124,6 +128,14 @@ export function useLemurAnimationController(root: Object3D, clips: LemurClips) {
   useFrame((_, delta) => mixer.update(delta))
 
   useEffect(() => {
+    if (!active) {
+      actions.breathing.stop()
+      actions.tail.stop()
+      actions.blink.stop()
+      actions.ear.stop()
+      return
+    }
+
     if (!reducedMotion) {
       configureLoop(actions.breathing)
       configureLoop(actions.tail)
@@ -143,7 +155,7 @@ export function useLemurAnimationController(root: Object3D, clips: LemurClips) {
       actions.blink.stop()
       actions.ear.stop()
     }
-  }, [actions, reducedMotion])
+  }, [actions, active, reducedMotion])
 
   useEffect(
     () => () => {

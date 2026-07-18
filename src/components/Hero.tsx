@@ -21,7 +21,10 @@ export function Hero() {
         }`}
         aria-labelledby="hero-title"
       >
-        <SceneBackground onStatusChange={handleSceneStatusChange} />
+        <SceneBackground
+          enabled={sceneEnabled}
+          onStatusChange={handleSceneStatusChange}
+        />
         <label className="hero__scene-toggle">
           <input
             type="checkbox"

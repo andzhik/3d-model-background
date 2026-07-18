@@ -4,13 +4,15 @@ import { MAJOR_GROUPS, type MajorGroup } from '../scene/constants'
 import type { CameraPresetName } from '../scene/cameraPresets'
 import type { SceneDebugSettings } from '../scene/debug'
 import type { RendererStatistics } from '../scene/debug'
-import type { SceneQuality } from '../scene/quality'
+import { SCENE_QUALITY_TIERS, type SceneQuality } from '../scene/quality'
 import { getVegetationMetrics } from '../scene/vegetationLayout'
 
 interface SceneDebugProps {
   settings: SceneDebugSettings
   onChange: (settings: SceneDebugSettings) => void
   quality: SceneQuality
+  forcedQuality: SceneQuality | null
+  renderActive: boolean
   onQualityChange: (quality: SceneQuality) => void
   rendererStatistics: RendererStatistics | null
   cameraPreset: CameraPresetName
@@ -42,12 +44,12 @@ function Slider({ label, value, min, max, step, onChange }: SliderProps) {
   )
 }
 
-const DEBUG_QUALITY_TIERS = ['high', 'medium', 'low'] as const
-
 export function SceneDebug({
   settings,
   onChange,
   quality,
+  forcedQuality,
+  renderActive,
   onQualityChange,
   rendererStatistics,
   cameraPreset,
@@ -87,7 +89,7 @@ export function SceneDebug({
               onQualityChange(event.currentTarget.value as SceneQuality)
             }
           >
-            {DEBUG_QUALITY_TIERS.map((tier) => (
+            {SCENE_QUALITY_TIERS.map((tier) => (
               <option key={tier} value={tier}>
                 {tier}
               </option>
@@ -164,6 +166,16 @@ export function SceneDebug({
           ))}
         </fieldset>
         <dl className="scene-debug__statistics">
+          <div>
+            <dt>Selection</dt>
+            <dd>
+              {forcedQuality ? `query: ${forcedQuality}` : 'automatic/dev'}
+            </dd>
+          </div>
+          <div>
+            <dt>Render loop</dt>
+            <dd>{renderActive ? 'running' : 'paused'}</dd>
+          </div>
           <div>
             <dt>Camera preset</dt>
             <dd>{cameraPreset}</dd>

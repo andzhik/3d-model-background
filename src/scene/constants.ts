@@ -81,8 +81,6 @@ export const WATER_CONFIG = {
   position: [0, -1.52, -3.2] as const,
   width: 32,
   length: 18,
-  widthSegments: 48,
-  lengthSegments: 64,
   speed: 0.22,
   amplitude: 0.055,
   reflectionWidth: 18,

@@ -5,19 +5,19 @@ import {
   useCallback,
   useEffect,
   useReducer,
+  useRef,
   useState,
 } from 'react'
+import { PCFShadowMap } from 'three'
 
+import { useQualityTier } from '../hooks/useQualityTier'
+import { useSceneVisibility } from '../hooks/useSceneVisibility'
 import { Experience } from '../scene/Experience'
 import { CAMERA_CONFIG } from '../scene/constants'
 import { useResponsiveCameraPreset } from '../scene/cameraPresets'
 import { createDefaultDebugSettings } from '../scene/debug'
 import type { RendererStatistics } from '../scene/debug'
-import {
-  DEFAULT_SCENE_QUALITY,
-  SCENE_QUALITY,
-  type SceneQuality,
-} from '../scene/quality'
+import { SCENE_QUALITY } from '../scene/quality'
 import { SceneDebug } from './SceneDebug'
 import { sceneStatusReducer } from './sceneStatus'
 import type { SceneStatus } from './sceneStatus'
@@ -58,15 +58,24 @@ class SceneErrorBoundary extends Component<
 }
 
 interface SceneBackgroundProps {
+  enabled?: boolean
   onStatusChange?: (status: SceneStatus) => void
 }
 
-export function SceneBackground({ onStatusChange }: SceneBackgroundProps) {
+export function SceneBackground({
+  enabled = true,
+  onStatusChange,
+}: SceneBackgroundProps) {
+  const sceneElement = useRef<HTMLDivElement>(null)
+  const sceneVisible = useSceneVisibility(sceneElement)
   const cameraPreset = useResponsiveCameraPreset()
   const [debugSettings, setDebugSettings] = useState(createDefaultDebugSettings)
-  const [qualityTier, setQualityTier] = useState<SceneQuality>(
-    DEFAULT_SCENE_QUALITY,
-  )
+  const {
+    quality: qualityTier,
+    forcedQuality,
+    setDevelopmentOverride,
+    reportRuntimeFps,
+  } = useQualityTier()
   const [rendererStatistics, setRendererStatistics] =
     useState<RendererStatistics | null>(null)
   const quality = SCENE_QUALITY[qualityTier]
@@ -77,8 +86,13 @@ export function SceneBackground({ onStatusChange }: SceneBackgroundProps) {
   const [canvasElement, setCanvasElement] = useState<HTMLCanvasElement | null>(
     null,
   )
+  const posterOnly = qualityTier === 'poster-only'
+  const effectiveStatus = posterOnly ? 'fallback' : status
+  const renderActive =
+    enabled && sceneVisible && !posterOnly && status !== 'fallback'
 
   const handleCreated = useCallback((state: RootState) => {
+    state.gl.shadowMap.type = PCFShadowMap
     setCanvasElement(state.gl.domElement)
   }, [])
 
@@ -91,8 +105,8 @@ export function SceneBackground({ onStatusChange }: SceneBackgroundProps) {
   }, [])
 
   useEffect(() => {
-    onStatusChange?.(status)
-  }, [onStatusChange, status])
+    onStatusChange?.(effectiveStatus)
+  }, [effectiveStatus, onStatusChange])
 
   useEffect(() => {
     if (!canvasElement) return
@@ -111,12 +125,15 @@ export function SceneBackground({ onStatusChange }: SceneBackgroundProps) {
   return (
     <>
       <div
+        ref={sceneElement}
         className="scene-background"
-        data-scene-status={status}
+        data-scene-status={effectiveStatus}
+        data-scene-quality={qualityTier}
+        data-scene-active={renderActive ? 'true' : 'false'}
         data-camera-preset={cameraPreset.name}
         aria-hidden="true"
       >
-        {status !== 'fallback' && (
+        {status !== 'fallback' && !posterOnly && (
           <SceneErrorBoundary onError={handleFailure}>
             <Canvas
               aria-hidden="true"
@@ -127,6 +144,7 @@ export function SceneBackground({ onStatusChange }: SceneBackgroundProps) {
                 far: CAMERA_CONFIG.far,
               }}
               dpr={quality.dpr}
+              frameloop={renderActive ? 'always' : 'never'}
               shadows={quality.shadows}
               gl={{ alpha: true, antialias: quality.antialias }}
               onCreated={handleCreated}
@@ -137,8 +155,10 @@ export function SceneBackground({ onStatusChange }: SceneBackgroundProps) {
                   import.meta.env.DEV ? setRendererStatistics : undefined
                 }
                 quality={qualityTier}
+                active={renderActive}
                 settings={debugSettings}
                 cameraPreset={cameraPreset}
+                onRuntimePerformance={reportRuntimeFps}
               />
             </Canvas>
           </SceneErrorBoundary>
@@ -149,7 +169,9 @@ export function SceneBackground({ onStatusChange }: SceneBackgroundProps) {
           settings={debugSettings}
           onChange={setDebugSettings}
           quality={qualityTier}
-          onQualityChange={setQualityTier}
+          forcedQuality={forcedQuality}
+          renderActive={renderActive}
+          onQualityChange={setDevelopmentOverride}
           rendererStatistics={rendererStatistics}
           cameraPreset={cameraPreset.name}
         />
