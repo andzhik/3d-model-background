@@ -84,11 +84,17 @@
   pointer-events: none !important;
 }
 
-.hero__scene-toggle {
+.hero__toggles {
   position: absolute;
   z-index: 3;
   top: 0.75rem;
   right: 0.75rem;
+  display: grid;
+  gap: 0.5rem;
+  justify-items: end;
+}
+
+.hero__scene-toggle {
   display: inline-flex;
   min-height: 2.5rem;
   align-items: center;
@@ -98,6 +104,7 @@
   border-radius: 999px;
   color: #fff;
   background: rgb(10 16 36 / 0.72);
+  font-family: inherit;
   font-size: 0.78rem;
   font-weight: 700;
   cursor: pointer;
@@ -210,6 +217,10 @@
   justify-items: center;
   text-align: center;
   text-shadow: 0 2px 18px rgb(7 12 31 / 0.72);
+}
+
+.hero__content[hidden] {
+  display: none;
 }
 
 .hero__eyebrow {

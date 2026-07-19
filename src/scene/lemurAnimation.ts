@@ -160,8 +160,11 @@ export function useLemurAnimationController(
   useEffect(
     () => () => {
       mixer.stopAllAction()
-      mixer.uncacheRoot(root)
+
+      // Do not uncache the root here. React replays effects in development,
+      // while `actions` remains memoized. Three.js cannot reactivate one of
+      // those action instances after its root has been uncached.
     },
-    [mixer, root],
+    [mixer],
   )
 }

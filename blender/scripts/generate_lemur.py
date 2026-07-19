@@ -196,6 +196,82 @@ def create_wedge(
     return finish_mesh(obj, material, node)
 
 
+def create_faceted_relief(
+    node: bpy.types.Object,
+    outline: tuple[tuple[float, float], ...],
+    depth: float,
+    material: bpy.types.Material,
+    front_y: float = -0.38,
+    center_relief: float = 0.055,
+) -> bpy.types.Object:
+    """Create a shallow reference-traced prism with an articulated front face.
+
+    Outline points are authored in front-view world X/Z coordinates. The
+    slightly projected center makes the triangle fan respond to light as a set
+    of intentional planes without disturbing the locked silhouette.
+    """
+    if len(outline) < 3:
+        raise ValueError("A faceted relief requires at least three outline points")
+
+    bpy.context.view_layer.update()
+    node_origin = node.matrix_world.translation
+    back_y = front_y + depth
+    center_x = sum(point[0] for point in outline) / len(outline)
+    center_z = sum(point[1] for point in outline) / len(outline)
+    vertices = [
+        (x - node_origin.x, front_y - node_origin.y, z - node_origin.z)
+        for x, z in outline
+    ]
+    front_center_index = len(vertices)
+    vertices.append(
+        (
+            center_x - node_origin.x,
+            front_y - center_relief - node_origin.y,
+            center_z - node_origin.z,
+        )
+    )
+    back_start_index = len(vertices)
+    vertices.extend(
+        (
+            x - node_origin.x,
+            back_y - node_origin.y,
+            z - node_origin.z,
+        )
+        for x, z in outline
+    )
+
+    faces: list[tuple[int, ...]] = []
+    point_count = len(outline)
+    for index in range(point_count):
+        next_index = (index + 1) % point_count
+        faces.append((front_center_index, index, next_index))
+        faces.append(
+            (
+                index,
+                next_index,
+                back_start_index + next_index,
+                back_start_index + index,
+            )
+        )
+    faces.append(
+        tuple(
+            back_start_index + index
+            for index in reversed(range(point_count))
+        )
+    )
+
+    mesh = bpy.data.meshes.new(f"{node.name}ReliefGeometry")
+    mesh.from_pydata(vertices, [], faces)
+    mesh.update(calc_edges=True)
+    obj = bpy.data.objects.new(f"{node.name}ReliefMesh", mesh)
+    bpy.context.collection.objects.link(obj)
+    obj.data.materials.append(material)
+    for polygon in obj.data.polygons:
+        polygon.use_smooth = False
+    obj.parent = node
+    return obj
+
+
 def build_body(materials: dict[str, bpy.types.Material]) -> bpy.types.Object:
     charcoal = materials["LemurCharcoal"]
     gray = materials["LemurGray"]
@@ -209,11 +285,86 @@ def build_body(materials: dict[str, bpy.types.Material]) -> bpy.types.Object:
     neck = create_node("Neck", chest, (0.0, 0.0, 0.38))
     head = create_node("Head", neck, (0.0, 0.0, 0.3))
 
-    create_icosphere(pelvis, (0.0, 0.0, 0.83), (0.58, 0.4, 0.48), gray)
-    create_icosphere(torso, (0.0, 0.0, 1.18), (0.5, 0.34, 0.64), gray)
-    create_icosphere(chest, (0.0, -0.035, 1.52), (0.56, 0.36, 0.5), light)
+    # Stage 1 of the reference-locked rebuild. These outlines preserve the
+    # supplied front composition while shallow depth keeps real lighting and
+    # modest parallax. Limbs and tail intentionally remain unchanged until the
+    # construction method is approved in the complete character.
+    create_faceted_relief(
+        pelvis,
+        (
+            (-0.48, 0.98),
+            (0.48, 0.98),
+            (0.54, 0.79),
+            (0.35, 0.63),
+            (0.0, 0.58),
+            (-0.35, 0.63),
+            (-0.54, 0.79),
+        ),
+        0.46,
+        gray,
+        front_y=-0.16,
+        center_relief=0.06,
+    )
+    create_faceted_relief(
+        torso,
+        (
+            (-0.31, 1.82),
+            (0.31, 1.82),
+            (0.41, 1.63),
+            (0.45, 1.25),
+            (0.43, 0.95),
+            (0.31, 0.72),
+            (0.0, 0.62),
+            (-0.31, 0.72),
+            (-0.43, 0.95),
+            (-0.45, 1.25),
+            (-0.41, 1.63),
+        ),
+        0.5,
+        gray,
+        front_y=-0.28,
+        center_relief=0.08,
+    )
+    create_faceted_relief(
+        chest,
+        (
+            (-0.18, 1.69),
+            (0.18, 1.69),
+            (0.28, 1.46),
+            (0.29, 1.1),
+            (0.2, 0.82),
+            (0.0, 0.7),
+            (-0.2, 0.82),
+            (-0.29, 1.1),
+            (-0.28, 1.46),
+        ),
+        0.09,
+        light,
+        front_y=-0.385,
+        center_relief=0.035,
+    )
     create_tapered_limb(neck, (0.0, 0.0, 1.7), (0.0, 0.0, 1.92), 0.25, 0.2, gray)
-    create_icosphere(head, (0.0, -0.015, 2.18), (0.58, 0.43, 0.53), gray, 2)
+    create_faceted_relief(
+        head,
+        (
+            (-0.39, 2.52),
+            (-0.18, 2.62),
+            (0.0, 2.65),
+            (0.2, 2.61),
+            (0.4, 2.5),
+            (0.5, 2.32),
+            (0.46, 2.12),
+            (0.3, 1.99),
+            (0.0, 1.93),
+            (-0.3, 1.99),
+            (-0.46, 2.12),
+            (-0.5, 2.32),
+        ),
+        0.62,
+        gray,
+        front_y=-0.16,
+        center_relief=0.09,
+    )
 
     for side, suffix in ((-1.0, "Left"), (1.0, "Right")):
         ear = create_node(f"Ear{suffix}", head, (side * 0.49, 0.0, 0.08))

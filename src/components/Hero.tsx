@@ -7,6 +7,7 @@ import type { SceneStatus } from './sceneStatus'
 
 export function Hero() {
   const [sceneEnabled, setSceneEnabled] = useState(true)
+  const [contentVisible, setContentVisible] = useState(true)
   const [sceneStatus, setSceneStatus] = useState<SceneStatus>('loading')
   const handleSceneStatusChange = useCallback((status: SceneStatus) => {
     setSceneStatus(status)
@@ -19,23 +20,39 @@ export function Hero() {
         className={`hero${showPoster ? ' hero--poster-visible' : ''}${
           sceneEnabled ? '' : ' hero--poster-mode'
         }`}
-        aria-labelledby="hero-title"
+        aria-label={contentVisible ? undefined : 'Lemur scene'}
+        aria-labelledby={contentVisible ? 'hero-title' : undefined}
       >
         <SceneBackground
           enabled={sceneEnabled}
           onStatusChange={handleSceneStatusChange}
         />
-        <label className="hero__scene-toggle">
-          <input
-            type="checkbox"
-            role="switch"
-            checked={sceneEnabled}
-            disabled={sceneStatus === 'fallback'}
-            onChange={(event) => setSceneEnabled(event.target.checked)}
-          />
-          <span>3D scene</span>
-        </label>
-        <div className="hero__content">
+        <div className="hero__toggles">
+          <label className="hero__scene-toggle">
+            <input
+              type="checkbox"
+              role="switch"
+              checked={sceneEnabled}
+              disabled={sceneStatus === 'fallback'}
+              onChange={(event) => setSceneEnabled(event.target.checked)}
+            />
+            <span>3D scene</span>
+          </label>
+          <button
+            className="hero__scene-toggle"
+            type="button"
+            aria-controls="hero-content"
+            aria-pressed={!contentVisible}
+            onClick={() => setContentVisible((visible) => !visible)}
+          >
+            {contentVisible ? 'Hide text' : 'Show text'}
+          </button>
+        </div>
+        <div
+          id="hero-content"
+          className="hero__content"
+          hidden={!contentVisible}
+        >
           <p className="hero__eyebrow">Find your center</p>
           <h1 id="hero-title">Stillness in the wild</h1>
           <p className="hero__subtitle">

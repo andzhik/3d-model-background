@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 
 import { Hero } from './Hero'
@@ -35,6 +35,30 @@ describe('Hero', () => {
 
     expect(callToAction).toHaveAttribute('href', '#begin')
     expect(target).toHaveAttribute('tabindex', '-1')
+  })
+
+  it('can hide the centered text and call to action', () => {
+    render(<Hero />)
+
+    const contentToggle = screen.getByRole('button', {
+      name: /hide text/i,
+    })
+    fireEvent.click(contentToggle)
+
+    expect(contentToggle).toHaveAttribute('aria-pressed', 'true')
+    expect(
+      screen.getByRole('button', { name: /show text/i }),
+    ).toBeInTheDocument()
+    expect(document.querySelector('#hero-content')).not.toBeVisible()
+    expect(
+      screen.queryByRole('heading', { name: /stillness in the wild/i }),
+    ).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole('link', { name: /begin the journey/i }),
+    ).not.toBeInTheDocument()
+    expect(
+      screen.getByRole('region', { name: /lemur scene/i }),
+    ).toBeInTheDocument()
   })
 
   it('keeps the poster fallback when WebGL is unavailable', () => {
