@@ -14,8 +14,16 @@ the character as a staging asset and do not replace the production GLB until
 the integration prompt is approved. Preserve `images/yoge-lemur.png` as the
 visual reference and poster.
 
-Use `npm run assets:validate`, `npm run typecheck`, `npm run lint`, `npm test`,
-and `npm run build` as relevant verification.
+Match verification to the prompt and explain what each check covers. Before
+integration, prioritize the full-3D build, targeted GLB validation, review
+renders, and visual inspection. Web tests/checks do not prove model quality;
+run them when web code changes or integration makes them relevant.
+
+If browser testing fails, pause, report the error, and fix it with the user.
+Do not give up or claim browser verification.
+
+If Git is missing or unusable, let the user fix it; do not change global Git
+configuration. GitHub `origin` exists, but only push or open a PR when asked.
 
 # Rules
 - Generate commit message for meaningful changes
