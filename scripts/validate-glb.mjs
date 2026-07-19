@@ -56,6 +56,42 @@ for (const asset of assets) {
       throw new Error(`${previewPath} is not a valid non-empty PNG preview`)
   }
 
+  if (asset.reviewPacket) {
+    for (const filename of asset.reviewPacket.expectedFiles ?? []) {
+      const reviewPath = resolve(join(asset.previewDir, filename))
+      const reviewFile = await readFile(reviewPath)
+      if (reviewFile.length === 0)
+        throw new Error(`${reviewPath} is an empty review artifact`)
+    }
+    const metricsPath = resolve(join(asset.previewDir, 'metrics.json'))
+    const metrics = JSON.parse(await readFile(metricsPath, 'utf8'))
+    if (
+      metrics.prompt !== asset.reviewPacket.prompt ||
+      metrics.revision !== asset.reviewPacket.revision
+    )
+      throw new Error(`${metricsPath} has the wrong prompt or revision`)
+    const cameras = metrics.cameras ?? []
+    const orthographicCameras = cameras.filter(
+      (camera) => camera.type === 'ORTHO',
+    )
+    if (cameras.length !== asset.reviewPacket.totalCameraCount)
+      throw new Error(`${metricsPath} has the wrong total camera count`)
+    if (
+      orthographicCameras.length !== asset.reviewPacket.orthographicCameraCount
+    )
+      throw new Error(`${metricsPath} has the wrong orthographic camera count`)
+    if (
+      new Set(orthographicCameras.map((camera) => camera.ortho_scale)).size !==
+      1
+    )
+      throw new Error(`${metricsPath} orthographic scales are not identical`)
+    if (
+      metrics.coordinate_convention?.forward_axis !== '-Y' ||
+      metrics.coordinate_convention?.ground_plane_z_m !== 0
+    )
+      throw new Error(`${metricsPath} has the wrong coordinate convention`)
+  }
+
   if (asset.requireFinitePositionBounds) {
     const positionAccessors = (document.meshes ?? []).flatMap((mesh) =>
       (mesh.primitives ?? []).map(

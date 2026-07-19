@@ -183,6 +183,12 @@ Every attempt must contain a self-contained review packet with:
   approved silhouette, topology, facet layout, marking, or deformation may have
   changed.
 
+Every `review.md` must also contain a short **How to verify** section written for
+the approver. It must name the exact validation command, interactive-review URL,
+files to open, controls to use, stage-specific questions to answer, and the
+precise scope of the approval being requested. The approver must not need to
+infer a review workflow from implementation notes.
+
 Review artifacts are stage-dependent:
 
 - Prompts 01-05 show the neutral modeling pose from the canonical cameras;
@@ -202,8 +208,48 @@ Review artifacts are stage-dependent:
 
 Automated checks establish technical eligibility for review; they do not grant
 visual approval. Every prompt must present its review packet and stop for the
-user's explicit approval. If rejected, remain on the same prompt, create a new
+user’s explicit approval. If rejected, remain on the same prompt, create a new
 revision directory, and do not advance.
+
+### Approval workflow
+
+Use both forms of evidence; neither replaces the other:
+
+1. Run `npm run assets:validate -- lemur-full-3d` to establish technical
+   eligibility.
+2. Open the versioned `review.md`, then inspect its contact sheet and the listed
+   full-resolution renders. These locked renders are the canonical evidence for
+   matched comparisons between revisions.
+3. Run `npm run dev` and open
+   `http://localhost:5173/?review=lemur-full-3d`. Orbit and zoom the actual
+   staging GLB, reset to every canonical direction, and use wireframe mode where
+   topology matters. When clips exist, play and pause every named clip.
+4. Compare the stage against `images/yoge-lemur.png` only for the reference
+   traits named by that prompt. Do not mistake the single reference perspective
+   for hidden side or back geometry.
+5. Record approval or rejection in plain language, naming the prompt and
+   revision. A pass from automation, a successful build, or silence is not
+   approval.
+
+The interactive reviewer is deliberately query-gated. The normal page continues
+to load `public/models/lemur.glb`; the reviewer alone loads
+`public/models/lemur-full-3d.glb`. This is a staging inspection aid, not early
+production integration.
+
+### What the approver verifies at each stage
+
+| Prompt | Canonical packet review                                                                                              | Interactive reviewer                                                                                                 | Approval question                                                                            |
+| ------ | -------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| 01     | Confirm all seven views are labeled, consistently framed, and lit well enough to expose volume.                      | Orbit a full revolution and reset to all six directions; verify the forward cue and real depth.                      | Is the isolated pipeline and review setup trustworthy enough to judge later work?            |
+| 02     | Compare front identity to the reference, then inspect side, back, and three-quarter silhouettes and measurements.    | Orbit around the skull, muzzle, torso, pelvis, limbs, feet, and full tail; look for missing or paper-thin forms.     | Are the primary volumes and deliberately designed unseen anatomy acceptable?                 |
+| 03     | Inspect matched Prompt 02 silhouettes, wireframes, integrity results, and the density diagnostic.                    | Enable wireframe and orbit every joint and connection; look for abrupt density changes and unusable poles.           | Is the unified topology suitable for deformation without changing approved proportions?      |
+| 04     | Inspect face, hand, foot, tail-base, full-character, and reduced-size sheets against Prompt 03.                      | Compare solid and wireframe while orbiting close to defining features; keep the reference image open.                | Are identity and deformation-critical features ready for final facets?                       |
+| 05     | Compare smooth and flat-shaded sheets, material IDs, triangulation, and reduced-size readability.                    | Toggle wireframe in every direction; inspect facet flow, marking continuity, cracks, and z-fighting.                 | Are facets and markings intentional and coherent from all angles?                            |
+| 06     | Review each labeled neutral/moderate/extreme deformation sheet and re-import results.                                | Orbit the exported diagnostic poses in solid and wireframe; inspect shoulders, hips, wrists, eyelids, and tail base. | Does the rig preserve the approved form throughout the required range?                       |
+| 07     | Review neutral-versus-meditation comparisons, close views, bounds, contact, and intersection checks.                 | Orbit the seated export from every direction and underneath where useful; inspect balance and occlusion.             | Is the meditation pose readable and anatomically coherent beyond the front view?             |
+| 08     | Watch every individual video and the combined video for at least two loops; inspect sampled frames and loop metrics. | Select every clip, orbit while it plays, pause at suspect frames, and confirm the no-motion pose.                    | Are all clips clean, restrained, independent, and loop-safe?                                 |
+| 09     | Audit the complete dossier and all matched comparisons for regressions.                                              | Repeat the all-angle, wireframe, and per-clip checks on the final exported GLB.                                      | Does the whole staging character merit explicit model-quality approval?                      |
+| 10     | Inspect matched pre/post optimization sheets and labeled application captures at every required tier and viewport.   | Review the production page behavior as documented; use the staging reviewer only for pre/post asset comparisons.     | Is the approved character preserved and correctly integrated without background regressions? |
 
 ## 10. Quality gates
 

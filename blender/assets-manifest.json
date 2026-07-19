@@ -102,6 +102,36 @@
       "maxBytes": 500000,
       "requireFinitePositionBounds": true,
       "deterministicRepeat": true
+    },
+    {
+      "id": "lemur-full-3d",
+      "generator": "blender/scripts/generate_lemur_full_3d.py",
+      "output": "public/models/lemur-full-3d.glb",
+      "blendOutput": "blender/generated/lemur-full-3d.blend",
+      "previewDir": "blender/generated/previews/lemur-full-3d/prompt-01/rev-01",
+      "expectedPreviews": [
+        "front.png",
+        "left.png",
+        "right.png",
+        "back.png",
+        "front-left-three-quarter.png",
+        "front-right-three-quarter.png",
+        "perspective-turntable.png",
+        "contact-sheet.png"
+      ],
+      "reviewPacket": {
+        "expectedFiles": ["review.md", "metrics.json"],
+        "prompt": "01",
+        "revision": "01",
+        "orthographicCameraCount": 6,
+        "totalCameraCount": 7
+      },
+      "expectedObjects": ["LemurFull3DRoot", "LemurFull3DDiagnostic"],
+      "expectedMaterials": ["DiagnosticFur", "DiagnosticForward"],
+      "minBytes": 10000,
+      "maxBytes": 250000,
+      "requireFinitePositionBounds": true,
+      "deterministicRepeat": true
     }
   ]
 }

@@ -13,6 +13,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "assets:build": "node scripts/build-blender-assets.mjs",
+    "assets:build:lemur-full-3d": "node scripts/build-blender-assets.mjs --asset lemur-full-3d",
     "assets:build:source": "node scripts/build-blender-assets.mjs --save-blend",
     "assets:validate": "node scripts/validate-glb.mjs"
   },

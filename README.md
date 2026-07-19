@@ -26,6 +26,15 @@ Vite prints the local development URL after startup.
 - `npm run assets:build` resolves Blender, generates every manifest asset headlessly, and validates the resulting GLBs.
 - `npm run assets:build:source` also saves optional inspectable `.blend` output under `blender/generated/`.
 - `npm run assets:validate` validates existing GLBs against `blender/assets-manifest.json` without launching Blender.
+- `npm run assets:build -- --asset <id>` builds only one manifest asset and verifies that all unselected GLB outputs remain byte-for-byte unchanged. Repeat `--asset` to select more than one asset.
+
+The isolated full-3D staging character is rebuilt with `npm run assets:build:lemur-full-3d` (equivalent to `npm run assets:build -- --asset lemur-full-3d`). It writes `public/models/lemur-full-3d.glb` and its versioned review packet without rebuilding or replacing `public/models/lemur.glb`. Validate it independently with `npm run assets:validate -- lemur-full-3d`.
+
+To inspect the staging GLB interactively, start the development server and open
+`http://localhost:5173/?review=lemur-full-3d`. The query-gated reviewer provides
+orbit/zoom controls, canonical directions, wireframe inspection, model counts,
+the reference image, and animation playback when clips exist. It does not change
+the production page or replace `public/models/lemur.glb`.
 
 ## Blender asset pipeline
 

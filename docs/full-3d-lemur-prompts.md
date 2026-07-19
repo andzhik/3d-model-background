@@ -28,6 +28,10 @@ approval and the user separately requests that deferred work.
 13. Automated checks do not grant visual approval. Present the review packet,
     stop after the requested prompt, and request explicit user approval. If the
     result is rejected, remain on the same prompt and create a new revision.
+14. Add a `How to verify` section to `review.md` following the approval workflow
+    and stage-specific guide in `docs/full-3d-lemur-plan.md`. Include the exact
+    command and `http://localhost:5173/?review=lemur-full-3d`; never ask the user
+    to approve from an unexplained list of generated files.
 
 ---
 
@@ -61,6 +65,12 @@ Verification:
 - Record initial file, vertex, triangle, primitive, and material counts.
 - Confirm the staging-only command leaves existing production GLBs unchanged.
 - Confirm review filenames and metadata are reproducible.
+
+User verification guide:
+- Open the contact sheet first, then the interactive reviewer. Reset to all six
+  canonical directions and orbit once around the object.
+- Verify consistent framing, useful neutral lighting, visible depth, and the
+  unambiguous `-Y` forward cue. Do not judge anatomy at this stage.
 
 Acceptance gate:
 - The staging pipeline is independent from the production GLB.
@@ -97,6 +107,12 @@ Verification:
 - Record descriptive counts for GLB bytes, vertices, triangles, primitives,
   materials, planned bones, and planned maximum weighted influences. Do not use
   these measurements as web budgets or simplify approved forms to meet them.
+
+User verification guide:
+- Compare the front render and overlay with the reference, then judge every
+  other locked view before orbiting the actual GLB.
+- Inspect every named primary volume for depth, coherent attachment, balance,
+  and a silhouette that does not work only from the front.
 
 Acceptance gate:
 - The character reads as a ring-tailed lemur from all primary views.
@@ -135,6 +151,11 @@ Verification:
 - Validate non-manifold edges, boundary edges, duplicate vertices and faces,
   zero-area faces, degenerate edges, inconsistent normals, and non-finite data.
 
+User verification guide:
+- Inspect the matched Prompt 02 silhouettes before topology details.
+- Enable wireframe in the interactive reviewer and orbit every planned joint;
+  use the density diagnostic to reject arbitrary density or unusable poles.
+
 Acceptance gate:
 - The mesh is structurally suitable for rigging.
 - Density follows silhouette and deformation needs rather than uniform detail.
@@ -163,6 +184,12 @@ Verification:
 - Compare updated statistics with Prompt 03.
 - Confirm the eyes, eyelids, mouth/muzzle, fingers, and tail have no unintended
   intersections in the neutral pose.
+
+User verification guide:
+- Open the reference image in the reviewer and compare the face at full size and
+  the supplied reduced-size render.
+- Orbit close to the face, hands, feet, and tail base in solid and wireframe
+  modes; reject hidden intersections or features that only read head-on.
 
 Acceptance gate:
 - The face has the calm, alert identity of the reference.
@@ -197,6 +224,11 @@ Verification:
 - Confirm deterministic triangle orientation and material assignment.
 - Report triangles, materials, primitives, and estimated draw calls.
 - Inspect normals, cracks, z-fighting, and unintended smooth shading.
+
+User verification guide:
+- Compare the approved smooth form with the flat-shaded and material-ID sheets.
+- Toggle wireframe while orbiting every canonical direction; inspect facet flow,
+  side/back marking continuity, cracks, z-fighting, and reduced-size readability.
 
 Acceptance gate:
 - The character reads as one coherent object made from intentional triangles.
@@ -239,6 +271,12 @@ Verification:
 - Programmatically sample every diagnostic pose after re-import and check for
   non-finite transforms, detached geometry, and unexpected bound growth.
 
+User verification guide:
+- Review every labeled joint at neutral, moderate, and extreme positions from
+  both supplied angles before judging the meditation range.
+- Orbit the exported diagnostic poses in solid and wireframe; closely inspect
+  shoulders, hips, wrists, eyelids, finger bases, and the tail base for collapse.
+
 Acceptance gate:
 - Major joints preserve useful volume without cracks or collapsing facets.
 - Eyelids close cleanly and ears deform from appropriate bases.
@@ -266,6 +304,12 @@ Verification:
 - Check mesh intersections, ground contact, center of mass, and tail clearance.
 - Compare neutral-pose and meditation-pose bounds and statistics.
 - Confirm the pose survives GLB export and re-import.
+
+User verification guide:
+- Compare neutral and meditation sheets, then orbit the seated GLB from front,
+  sides, back, three-quarters, and underneath where contacts are ambiguous.
+- Verify gesture readability, balance, ground contact, joint volume, marking
+  continuity, and the absence of camera-hidden intersections.
 
 Acceptance gate:
 - The meditation gesture reads immediately from the front and three-quarter view.
@@ -300,6 +344,12 @@ Verification:
 - Confirm a motion-disabled pose remains visually complete.
 - Compare the first and final evaluated loop frames within a documented numeric
   tolerance, and verify that concurrent clips do not animate unrelated bones.
+
+User verification guide:
+- Watch each individual video and the combined video for at least two complete
+  loops, then inspect the sampled-frame sheets.
+- In the reviewer, select every clip, orbit while it plays, pause at suspect
+  frames, and verify the motion-disabled pose before approving animation.
 
 Acceptance gate:
 - Breathing preserves torso volume and seated stability.
@@ -344,6 +394,12 @@ Verification:
   deformation, and animation playback checks.
 - Confirm matched comparisons show no unapproved regression from earlier visual
   gates.
+
+User verification guide:
+- Work through the dossier in quality-gate order, not file order: identity,
+  silhouette, anatomy and pose, deformation, facets, markings, then animation.
+- Repeat all canonical, free-orbit, wireframe, reduced-size, and per-clip checks
+  on the final exported GLB before granting model-quality approval.
 
 Acceptance gate:
 - The character is visually coherent and intentionally designed from every
@@ -396,6 +452,13 @@ Verification:
   desktop, tablet, and mobile across the required quality tiers, plus dedicated
   reduced-motion and poster-fallback captures. Record viewport dimensions,
   device pixel ratio, quality tier, animation time, and parallax position.
+
+User verification guide:
+- First approve matched pre/post optimization model sheets, using the staging
+  reviewer to investigate any visible difference.
+- Then inspect the labeled production-page captures and live page at every
+  required tier, viewport, reduced-motion state, and poster fallback before
+  granting separate integration approval.
 
 Acceptance gate:
 - The new lemur is visually integrated without background retuning.

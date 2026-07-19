@@ -11,6 +11,36 @@ const manifest = JSON.parse(
 )
 const saveBlend = process.argv.includes('--save-blend')
 
+function requestedAssetIds() {
+  const ids = []
+  for (let index = 2; index < process.argv.length; index += 1) {
+    const argument = process.argv[index]
+    if (argument === '--asset') {
+      const id = process.argv[index + 1]
+      if (!id || id.startsWith('--'))
+        throw new Error('--asset requires an asset id')
+      ids.push(id)
+      index += 1
+    } else if (argument.startsWith('--asset=')) {
+      ids.push(argument.slice('--asset='.length))
+    } else if (argument !== '--save-blend') {
+      throw new Error(`Unknown argument: ${argument}`)
+    }
+  }
+  return [...new Set(ids)]
+}
+
+const selectedIds = requestedAssetIds()
+const selectedAssets = selectedIds.length
+  ? manifest.assets.filter((asset) => selectedIds.includes(asset.id))
+  : manifest.assets
+
+const missingIds = selectedIds.filter(
+  (id) => !manifest.assets.some((asset) => asset.id === id),
+)
+if (missingIds.length > 0)
+  throw new Error(`Unknown asset id(s): ${missingIds.join(', ')}`)
+
 async function fileDigest(path) {
   return createHash('sha256')
     .update(await readFile(path))
@@ -39,7 +69,20 @@ function generate(asset, output, blendOutput, skipPreviews = false) {
   if (generation.status !== 0) process.exit(generation.status ?? 1)
 }
 
-for (const asset of manifest.assets) {
+const protectedAssets = selectedIds.length
+  ? manifest.assets.filter((asset) => !selectedIds.includes(asset.id))
+  : []
+const protectedDigests = new Map()
+for (const asset of protectedAssets) {
+  try {
+    protectedDigests.set(asset.output, await fileDigest(resolve(asset.output)))
+  } catch (error) {
+    if (error?.code !== 'ENOENT') throw error
+    protectedDigests.set(asset.output, null)
+  }
+}
+
+for (const asset of selectedAssets) {
   process.stdout.write(`Generating ${asset.id} with ${blender}\n`)
   generate(asset, asset.output, saveBlend ? asset.blendOutput : undefined)
 
@@ -70,3 +113,18 @@ for (const asset of manifest.assets) {
     }
   }
 }
+
+for (const [output, beforeDigest] of protectedDigests) {
+  let afterDigest = null
+  try {
+    afterDigest = await fileDigest(resolve(output))
+  } catch (error) {
+    if (error?.code !== 'ENOENT') throw error
+  }
+  if (afterDigest !== beforeDigest)
+    throw new Error(`Scoped build unexpectedly changed ${output}`)
+}
+if (protectedDigests.size > 0)
+  process.stdout.write(
+    `Scoped build left ${protectedDigests.size} unselected output(s) unchanged\n`,
+  )

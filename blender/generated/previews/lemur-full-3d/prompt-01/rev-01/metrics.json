@@ -1,0 +1,321 @@
+{
+  "asset_id": "lemur-full-3d",
+  "blender_version": "4.3.1",
+  "cameras": [
+    {
+      "lens_mm": 55.0,
+      "location": [
+        0.0,
+        -8.0,
+        1.3600000143051147
+      ],
+      "name": "Front",
+      "ortho_scale": 3.5999999046325684,
+      "rotation_euler_radians": [
+        1.5707964897155762,
+        -0.0,
+        0.0
+      ],
+      "target": [
+        0.0,
+        0.0,
+        1.36
+      ],
+      "type": "ORTHO"
+    },
+    {
+      "lens_mm": 55.0,
+      "location": [
+        -8.0,
+        0.0,
+        1.3600000143051147
+      ],
+      "name": "Left",
+      "ortho_scale": 3.5999999046325684,
+      "rotation_euler_radians": [
+        1.5707963705062866,
+        -0.0,
+        -1.5707963705062866
+      ],
+      "target": [
+        0.0,
+        0.0,
+        1.36
+      ],
+      "type": "ORTHO"
+    },
+    {
+      "lens_mm": 55.0,
+      "location": [
+        8.0,
+        0.0,
+        1.3600000143051147
+      ],
+      "name": "Right",
+      "ortho_scale": 3.5999999046325684,
+      "rotation_euler_radians": [
+        1.5707963705062866,
+        -0.0,
+        1.5707963705062866
+      ],
+      "target": [
+        0.0,
+        0.0,
+        1.36
+      ],
+      "type": "ORTHO"
+    },
+    {
+      "lens_mm": 55.0,
+      "location": [
+        0.0,
+        8.0,
+        1.3600000143051147
+      ],
+      "name": "Back",
+      "ortho_scale": 3.5999999046325684,
+      "rotation_euler_radians": [
+        -1.570796251296997,
+        3.141592502593994,
+        -0.0
+      ],
+      "target": [
+        0.0,
+        0.0,
+        1.36
+      ],
+      "type": "ORTHO"
+    },
+    {
+      "lens_mm": 55.0,
+      "location": [
+        -5.6570000648498535,
+        -5.6570000648498535,
+        1.3600000143051147
+      ],
+      "name": "FrontLeftThreeQuarter",
+      "ortho_scale": 3.5999999046325684,
+      "rotation_euler_radians": [
+        1.5707964897155762,
+        -0.0,
+        -0.7853983044624329
+      ],
+      "target": [
+        0.0,
+        0.0,
+        1.36
+      ],
+      "type": "ORTHO"
+    },
+    {
+      "lens_mm": 55.0,
+      "location": [
+        5.6570000648498535,
+        -5.6570000648498535,
+        1.3600000143051147
+      ],
+      "name": "FrontRightThreeQuarter",
+      "ortho_scale": 3.5999999046325684,
+      "rotation_euler_radians": [
+        1.5707964897155762,
+        -0.0,
+        0.7853983044624329
+      ],
+      "target": [
+        0.0,
+        0.0,
+        1.36
+      ],
+      "type": "ORTHO"
+    },
+    {
+      "lens_mm": 55.0,
+      "location": [
+        4.800000190734863,
+        -6.400000095367432,
+        3.4000000953674316
+      ],
+      "name": "PerspectiveTurntable",
+      "ortho_scale": null,
+      "rotation_euler_radians": [
+        1.3211172819137573,
+        -1.0911332992691314e-07,
+        0.6435011029243469
+      ],
+      "target": [
+        0.0,
+        0.0,
+        1.36
+      ],
+      "type": "PERSP"
+    }
+  ],
+  "coordinate_convention": {
+    "forward_axis": "-Y",
+    "ground_plane_z_m": 0.0,
+    "intended_modeling_pose": "relaxed A-pose with extended tail; the Prompt 01 diagnostic uses open arms and no authored anatomy",
+    "origin": "centered on the ground between the diagnostic feet",
+    "right_axis": "+X",
+    "units": "meters",
+    "up_axis": "+Z"
+  },
+  "documented_measurements": {
+    "arm_span_m": 2.625621,
+    "diagnostic_depth_m": 1.242397,
+    "height_m": 2.74,
+    "intended_seated_footprint_m": {
+      "depth": 1.25,
+      "width": 1.4
+    }
+  },
+  "glb": {
+    "bytes": 39616,
+    "deterministic_internal_repeat": true,
+    "sha256": "1784ca81984e963f8a7a93310381cd40b460c036dbf29cb8196113a85963b963"
+  },
+  "known_limitations": [
+    "The mesh is a pipeline diagnostic, not approved anatomy or final proportions.",
+    "Disconnected closed volumes are joined into one staging mesh only to expose depth, bounds, materials, and camera coverage.",
+    "The perspective camera is locked at the canonical turntable start angle; animation is deferred."
+  ],
+  "lights": [
+    {
+      "color": [
+        1.0,
+        0.9100000262260437,
+        0.8199999928474426
+      ],
+      "energy_w": 850.0,
+      "location": [
+        -3.200000047683716,
+        -4.199999809265137,
+        6.0
+      ],
+      "name": "NeutralKey",
+      "rotation_euler_radians": [
+        0.8498393297195435,
+        9.18545168815399e-08,
+        -0.6510767936706543
+      ],
+      "size_m": 4.0,
+      "type": "AREA"
+    },
+    {
+      "color": [
+        0.7799999713897705,
+        0.8799999952316284,
+        1.0
+      ],
+      "energy_w": 520.0,
+      "location": [
+        3.799999952316284,
+        -2.0,
+        3.799999952316284
+      ],
+      "name": "NeutralFill",
+      "rotation_euler_radians": [
+        1.0540794134140015,
+        2.236455287629724e-08,
+        1.0863184928894043
+      ],
+      "size_m": 3.5,
+      "type": "AREA"
+    },
+    {
+      "color": [
+        0.8600000143051147,
+        0.9100000262260437,
+        1.0
+      ],
+      "energy_w": 700.0,
+      "location": [
+        0.0,
+        4.0,
+        4.800000190734863
+      ],
+      "name": "NeutralRim",
+      "rotation_euler_radians": [
+        0.8605252504348755,
+        6.628265936114985e-08,
+        3.141592502593994
+      ],
+      "size_m": 3.0,
+      "type": "AREA"
+    }
+  ],
+  "materials": [
+    "DiagnosticFur",
+    "DiagnosticForward"
+  ],
+  "mesh": {
+    "base_faces": 348,
+    "bounds_m": {
+      "max": [
+        1.3128103017807007,
+        0.4099999666213989,
+        2.740000009536743
+      ],
+      "min": [
+        -1.3128103017807007,
+        -0.8323974609375,
+        0.0
+      ]
+    },
+    "connected_components": 7,
+    "dimensions_m": [
+      2.6256206035614014,
+      1.242397427558899,
+      2.740000009536743
+    ],
+    "materials": 2,
+    "primitives": 2,
+    "triangles": 396,
+    "vertices": 212
+  },
+  "production_glb": {
+    "path": "public/models/lemur.glb",
+    "sha256_before_and_after_generator": "3a8833d7d0e19a33f378da8133f945e66ce79ac5eb85ba85c4d3e6cee4f52f47",
+    "unchanged": true
+  },
+  "prompt": "01",
+  "render": {
+    "canonical_png_encoding": true,
+    "color_management": {
+      "display_device": "sRGB",
+      "exposure": 0.0,
+      "gamma": 1.0,
+      "look": "Medium High Contrast",
+      "view_transform": "Standard"
+    },
+    "engine": "BLENDER_EEVEE_NEXT",
+    "format": "PNG RGB 8-bit",
+    "resolution": [
+      512,
+      512
+    ],
+    "resolution_percentage": 100,
+    "world_color": [
+      0.035,
+      0.04,
+      0.055
+    ]
+  },
+  "required_staging_objects": [
+    "LemurFull3DRoot",
+    "LemurFull3DDiagnostic"
+  ],
+  "review_filenames_reproducible": true,
+  "review_files": [
+    "front.png",
+    "left.png",
+    "right.png",
+    "back.png",
+    "front-left-three-quarter.png",
+    "front-right-three-quarter.png",
+    "perspective-turntable.png",
+    "contact-sheet.png",
+    "metrics.json",
+    "review.md"
+  ],
+  "revision": "01"
+}
