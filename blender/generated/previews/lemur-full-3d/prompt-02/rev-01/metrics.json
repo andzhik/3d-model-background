@@ -1,0 +1,580 @@
+{
+  "asset_id": "lemur-full-3d",
+  "blender_version": "4.3.1",
+  "cameras": [
+    {
+      "lens_mm": 55.0,
+      "location": [
+        0.0,
+        -8.0,
+        1.3600000143051147
+      ],
+      "name": "Front",
+      "ortho_scale": 3.5999999046325684,
+      "rotation_euler_radians": [
+        1.5707964897155762,
+        -0.0,
+        0.0
+      ],
+      "target": [
+        0.0,
+        0.0,
+        1.36
+      ],
+      "type": "ORTHO"
+    },
+    {
+      "lens_mm": 55.0,
+      "location": [
+        -8.0,
+        0.0,
+        1.3600000143051147
+      ],
+      "name": "Left",
+      "ortho_scale": 3.5999999046325684,
+      "rotation_euler_radians": [
+        1.5707963705062866,
+        -0.0,
+        -1.5707963705062866
+      ],
+      "target": [
+        0.0,
+        0.0,
+        1.36
+      ],
+      "type": "ORTHO"
+    },
+    {
+      "lens_mm": 55.0,
+      "location": [
+        8.0,
+        0.0,
+        1.3600000143051147
+      ],
+      "name": "Right",
+      "ortho_scale": 3.5999999046325684,
+      "rotation_euler_radians": [
+        1.5707963705062866,
+        -0.0,
+        1.5707963705062866
+      ],
+      "target": [
+        0.0,
+        0.0,
+        1.36
+      ],
+      "type": "ORTHO"
+    },
+    {
+      "lens_mm": 55.0,
+      "location": [
+        0.0,
+        8.0,
+        1.3600000143051147
+      ],
+      "name": "Back",
+      "ortho_scale": 3.5999999046325684,
+      "rotation_euler_radians": [
+        -1.570796251296997,
+        3.141592502593994,
+        -0.0
+      ],
+      "target": [
+        0.0,
+        0.0,
+        1.36
+      ],
+      "type": "ORTHO"
+    },
+    {
+      "lens_mm": 55.0,
+      "location": [
+        -5.6570000648498535,
+        -5.6570000648498535,
+        1.3600000143051147
+      ],
+      "name": "FrontLeftThreeQuarter",
+      "ortho_scale": 3.5999999046325684,
+      "rotation_euler_radians": [
+        1.5707964897155762,
+        -0.0,
+        -0.7853983044624329
+      ],
+      "target": [
+        0.0,
+        0.0,
+        1.36
+      ],
+      "type": "ORTHO"
+    },
+    {
+      "lens_mm": 55.0,
+      "location": [
+        5.6570000648498535,
+        -5.6570000648498535,
+        1.3600000143051147
+      ],
+      "name": "FrontRightThreeQuarter",
+      "ortho_scale": 3.5999999046325684,
+      "rotation_euler_radians": [
+        1.5707964897155762,
+        -0.0,
+        0.7853983044624329
+      ],
+      "target": [
+        0.0,
+        0.0,
+        1.36
+      ],
+      "type": "ORTHO"
+    },
+    {
+      "lens_mm": 55.0,
+      "location": [
+        -7.919595718383789,
+        -1.1313709020614624,
+        3.3499999046325684
+      ],
+      "name": "PerspectiveTurntable",
+      "ortho_scale": null,
+      "rotation_euler_radians": [
+        1.326994776725769,
+        3.854932728586391e-08,
+        -1.4288996458053589
+      ],
+      "target": [
+        0.0,
+        0.0,
+        1.36
+      ],
+      "type": "PERSP"
+    }
+  ],
+  "coordinate_convention": {
+    "forward_axis": "-Y",
+    "ground_plane_z_m": 0.0,
+    "intended_modeling_pose": "relaxed A-pose with separated limbs and an extended raised tail",
+    "origin": "centered on the ground between the feet",
+    "right_axis": "+X",
+    "units": "meters",
+    "up_axis": "+Z"
+  },
+  "documented_measurements": {
+    "arm_span_m": 2.3,
+    "height_m": 2.79,
+    "intended_seated_footprint_m": {
+      "depth": 1.25,
+      "width": 1.4
+    },
+    "muzzle_projection_from_skull_center_m": 0.725,
+    "overall_depth_m": 2.161916,
+    "overall_width_with_tail_m": 2.315066,
+    "skull_width_m": 0.96,
+    "tail_centerline_length_m": 2.677083
+  },
+  "glb": {
+    "bytes": 87616,
+    "deterministic_internal_repeat": true,
+    "materials": 4,
+    "primitives": 30,
+    "sha256": "65c3dc67a3830d10b17041c0d3627bcf7e23599b7af061d80fb42f7fee3d5feb",
+    "triangles": 2104,
+    "vertices": 1926
+  },
+  "known_limitations": [
+    "Primary forms are separate closed components; unified deformation topology belongs to Prompt 03.",
+    "Face colors identify primary geometric volumes and are not final markings.",
+    "Hands are mitten-like primary volumes; fingers and gesture refinement belong to Prompt 04.",
+    "The reference is seated and perspective-projected, while this stage uses a relaxed A-pose for rigging."
+  ],
+  "lights": [
+    {
+      "color": [
+        1.0,
+        0.9100000262260437,
+        0.8199999928474426
+      ],
+      "energy_w": 850.0,
+      "location": [
+        -3.200000047683716,
+        -4.199999809265137,
+        6.0
+      ],
+      "name": "NeutralKey",
+      "rotation_euler_radians": [
+        0.8498393297195435,
+        9.18545168815399e-08,
+        -0.6510767936706543
+      ],
+      "size_m": 4.0,
+      "type": "AREA"
+    },
+    {
+      "color": [
+        0.7799999713897705,
+        0.8799999952316284,
+        1.0
+      ],
+      "energy_w": 520.0,
+      "location": [
+        3.799999952316284,
+        -2.0,
+        3.799999952316284
+      ],
+      "name": "NeutralFill",
+      "rotation_euler_radians": [
+        1.0540794134140015,
+        2.236455287629724e-08,
+        1.0863184928894043
+      ],
+      "size_m": 3.5,
+      "type": "AREA"
+    },
+    {
+      "color": [
+        0.8600000143051147,
+        0.9100000262260437,
+        1.0
+      ],
+      "energy_w": 700.0,
+      "location": [
+        0.0,
+        4.0,
+        4.800000190734863
+      ],
+      "name": "NeutralRim",
+      "rotation_euler_radians": [
+        0.8605252504348755,
+        6.628265936114985e-08,
+        3.141592502593994
+      ],
+      "size_m": 3.0,
+      "type": "AREA"
+    }
+  ],
+  "materials": [
+    "PrimaryCharcoal",
+    "PrimaryGray",
+    "PrimaryLight",
+    "PrimaryEye"
+  ],
+  "mesh": {
+    "all_primary_volumes_closed": true,
+    "base_faces": 1666,
+    "bounds_m": {
+      "max": [
+        1.1719183921813965,
+        1.3719156980514526,
+        2.7899999618530273
+      ],
+      "min": [
+        -1.1431480646133423,
+        -0.7899999618530273,
+        0.0
+      ]
+    },
+    "connected_components": 38,
+    "dimensions_m": [
+      2.3150664567947388,
+      2.16191565990448,
+      2.7899999618530273
+    ],
+    "materials": 4,
+    "mesh_objects": 30,
+    "primitives": 30,
+    "triangles": 2104,
+    "vertices": 1128,
+    "volume_checks": {
+      "Belly": {
+        "closed": true,
+        "connected_components": 1,
+        "non_manifold_or_boundary_edges": 0
+      },
+      "EarLeft": {
+        "closed": true,
+        "connected_components": 1,
+        "non_manifold_or_boundary_edges": 0
+      },
+      "EarRight": {
+        "closed": true,
+        "connected_components": 1,
+        "non_manifold_or_boundary_edges": 0
+      },
+      "EyeLeft": {
+        "closed": true,
+        "connected_components": 1,
+        "non_manifold_or_boundary_edges": 0
+      },
+      "EyePatchLeft": {
+        "closed": true,
+        "connected_components": 1,
+        "non_manifold_or_boundary_edges": 0
+      },
+      "EyePatchRight": {
+        "closed": true,
+        "connected_components": 1,
+        "non_manifold_or_boundary_edges": 0
+      },
+      "EyeRight": {
+        "closed": true,
+        "connected_components": 1,
+        "non_manifold_or_boundary_edges": 0
+      },
+      "FaceMaskLeft": {
+        "closed": true,
+        "connected_components": 1,
+        "non_manifold_or_boundary_edges": 0
+      },
+      "FaceMaskRight": {
+        "closed": true,
+        "connected_components": 1,
+        "non_manifold_or_boundary_edges": 0
+      },
+      "FootLeft": {
+        "closed": true,
+        "connected_components": 1,
+        "non_manifold_or_boundary_edges": 0
+      },
+      "FootRight": {
+        "closed": true,
+        "connected_components": 1,
+        "non_manifold_or_boundary_edges": 0
+      },
+      "HandLeft": {
+        "closed": true,
+        "connected_components": 1,
+        "non_manifold_or_boundary_edges": 0
+      },
+      "HandRight": {
+        "closed": true,
+        "connected_components": 1,
+        "non_manifold_or_boundary_edges": 0
+      },
+      "HaunchLeft": {
+        "closed": true,
+        "connected_components": 1,
+        "non_manifold_or_boundary_edges": 0
+      },
+      "HaunchRight": {
+        "closed": true,
+        "connected_components": 1,
+        "non_manifold_or_boundary_edges": 0
+      },
+      "LowerArmLeft": {
+        "closed": true,
+        "connected_components": 1,
+        "non_manifold_or_boundary_edges": 0
+      },
+      "LowerArmRight": {
+        "closed": true,
+        "connected_components": 1,
+        "non_manifold_or_boundary_edges": 0
+      },
+      "LowerLegLeft": {
+        "closed": true,
+        "connected_components": 1,
+        "non_manifold_or_boundary_edges": 0
+      },
+      "LowerLegRight": {
+        "closed": true,
+        "connected_components": 1,
+        "non_manifold_or_boundary_edges": 0
+      },
+      "Muzzle": {
+        "closed": true,
+        "connected_components": 1,
+        "non_manifold_or_boundary_edges": 0
+      },
+      "Neck": {
+        "closed": true,
+        "connected_components": 1,
+        "non_manifold_or_boundary_edges": 0
+      },
+      "Nose": {
+        "closed": true,
+        "connected_components": 1,
+        "non_manifold_or_boundary_edges": 0
+      },
+      "Pelvis": {
+        "closed": true,
+        "connected_components": 1,
+        "non_manifold_or_boundary_edges": 0
+      },
+      "Ribcage": {
+        "closed": true,
+        "connected_components": 1,
+        "non_manifold_or_boundary_edges": 0
+      },
+      "Skull": {
+        "closed": true,
+        "connected_components": 1,
+        "non_manifold_or_boundary_edges": 0
+      },
+      "Tail": {
+        "closed": true,
+        "connected_components": 9,
+        "non_manifold_or_boundary_edges": 0
+      },
+      "UpperArmLeft": {
+        "closed": true,
+        "connected_components": 1,
+        "non_manifold_or_boundary_edges": 0
+      },
+      "UpperArmRight": {
+        "closed": true,
+        "connected_components": 1,
+        "non_manifold_or_boundary_edges": 0
+      },
+      "UpperLegLeft": {
+        "closed": true,
+        "connected_components": 1,
+        "non_manifold_or_boundary_edges": 0
+      },
+      "UpperLegRight": {
+        "closed": true,
+        "connected_components": 1,
+        "non_manifold_or_boundary_edges": 0
+      }
+    }
+  },
+  "primary_volume_inventory": [
+    "skull and facial projection",
+    "neck",
+    "ribcage",
+    "belly",
+    "pelvis",
+    "paired upper/lower arms",
+    "paired hands",
+    "paired haunches",
+    "paired upper/lower legs",
+    "paired feet",
+    "paired ears",
+    "full tapered tail"
+  ],
+  "production_glb": {
+    "path": "public/models/lemur.glb",
+    "sha256_before_and_after_generator": "3a8833d7d0e19a33f378da8133f945e66ce79ac5eb85ba85c4d3e6cee4f52f47",
+    "unchanged": true
+  },
+  "prompt": "02",
+  "reference_comparison": {
+    "crop_pixels_left_top_right_bottom": [
+      448,
+      369,
+      1103,
+      1024
+    ],
+    "landmarks": [
+      "ear tips",
+      "eye line",
+      "muzzle",
+      "shoulders",
+      "pelvis/tail region"
+    ],
+    "role": "front-view identity guide, not orthographic ground truth",
+    "source": "images/yoge-lemur.png",
+    "source_sha256": "e3ef33713f7d4ef181b2fe30e4a4ee95aab0edf646861e9f346bb6af3fed970c"
+  },
+  "render": {
+    "canonical_png_encoding": true,
+    "color_management": {
+      "display_device": "sRGB",
+      "exposure": 0.0,
+      "gamma": 1.0,
+      "look": "Medium High Contrast",
+      "view_transform": "Standard"
+    },
+    "engine": "BLENDER_EEVEE_NEXT",
+    "format": "PNG RGB 8-bit",
+    "resolution": [
+      512,
+      512
+    ],
+    "resolution_percentage": 100,
+    "world_color": [
+      0.035,
+      0.04,
+      0.055
+    ]
+  },
+  "required_staging_objects": [
+    "LemurFull3DRoot",
+    "Ribcage",
+    "Pelvis",
+    "Belly",
+    "Neck",
+    "Skull",
+    "FaceMaskLeft",
+    "FaceMaskRight",
+    "EyePatchLeft",
+    "EyePatchRight",
+    "EyeLeft",
+    "EyeRight",
+    "Muzzle",
+    "Nose",
+    "EarLeft",
+    "EarRight",
+    "UpperArmLeft",
+    "LowerArmLeft",
+    "HandLeft",
+    "HaunchLeft",
+    "UpperLegLeft",
+    "LowerLegLeft",
+    "FootLeft",
+    "UpperArmRight",
+    "LowerArmRight",
+    "HandRight",
+    "HaunchRight",
+    "UpperLegRight",
+    "LowerLegRight",
+    "FootRight",
+    "Tail"
+  ],
+  "review_filenames_reproducible": true,
+  "review_files": [
+    "front.png",
+    "left.png",
+    "right.png",
+    "back.png",
+    "front-left-three-quarter.png",
+    "front-right-three-quarter.png",
+    "perspective-turntable.png",
+    "contact-sheet.png",
+    "turntable-contact-sheet.png",
+    "reference-comparison.png",
+    "reference-overlay.png",
+    "metrics.json",
+    "review.md",
+    "turntable-00.png",
+    "turntable-01.png",
+    "turntable-02.png",
+    "turntable-03.png",
+    "turntable-04.png",
+    "turntable-05.png",
+    "turntable-06.png",
+    "turntable-07.png"
+  ],
+  "revision": "01",
+  "rig_plan": {
+    "neutral_pose_clearance": "shoulders, elbows, wrists, hips, knees, ankles, and tail base remain separated for weighting",
+    "planned_bones": 54,
+    "planned_deform_bones": 46,
+    "planned_maximum_weighted_influences": 4
+  },
+  "symmetry": {
+    "construction": "paired forms use identical dimensions and X-mirrored coordinates",
+    "intended_pairs": [
+      "ears",
+      "face masks",
+      "eye patches",
+      "eyes",
+      "arms",
+      "hands",
+      "haunches",
+      "legs",
+      "feet"
+    ],
+    "intentional_asymmetry": "the tail curves behind and toward character right to expose attachment and full length",
+    "maximum_authored_pair_deviation_m": 0.0
+  }
+}
