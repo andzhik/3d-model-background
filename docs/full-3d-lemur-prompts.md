@@ -134,31 +134,65 @@ knees, ankles, neck, muzzle, eyes, ears, and tail base. Connect body regions
 where continuous deformation is required. Embedded eye shells may remain
 disconnected components inside the same mesh object.
 
-Work in organized deformation topology before final triangulation. Remove
-accidental intersections, duplicate surfaces, non-manifold defects, zero-area
-faces, and unusable poles at bending zones.
+Build the submitted surface from explicitly directed, deterministic anatomical
+cross-section loops and controlled transition patches. Do not use voxel remesh,
+isotropic remesh, uniform grid topology, or proximity-based subdivision as the
+submitted deformation topology. Such operations may only create a hidden shape
+reference that is excluded from the exported staging GLB and review wireframes.
 
-Produce smooth-shaded topology previews, wireframes from all primary views, and
-a topology-density heatmap or equivalent diagnostic. Include matched silhouette
-comparisons against the approved Prompt 02 renders so topology conversion cannot
-quietly change the approved proportions.
+Orient joint loops approximately perpendicular to the intended bend or twist
+axis. Provide inspectable closed loop sequences around the neck, shoulders,
+elbows, wrists, hips, knees, ankles, muzzle, eye sockets, eyelids, ears, and tail
+base. Keep high-valence poles outside maximum-bend regions. Work in organized
+deformation topology before final triangulation. Remove accidental
+intersections, duplicate surfaces, non-manifold defects, zero-area faces, and
+unusable poles at bending zones.
+
+Keep the base surface only as dense as silhouette and deformation require. It
+must remain capable of producing the reference's large, readable low-poly
+planes during Prompt 05; a uniformly dense mesh that would become micro-facet
+noise under flat shading is not acceptable. Document whether the deformation
+surface will also be the visible triangulated surface or how a separate
+deterministic display surface would remain animation-safe.
+
+Produce smooth-shaded topology previews, wireframes from all primary views,
+labeled close wireframes of every deformation zone, and a topology-density
+heatmap or equivalent diagnostic. Include alpha silhouette overlays or
+difference masks against the approved Prompt 02 renders so topology conversion
+cannot quietly change the approved proportions. Also provide a temporary
+flat-shaded triangulation diagnostic at intended presentation size; this is a
+facet-scale feasibility check, not approval of the final Prompt 05 facets.
 
 Verification:
 - Run mesh integrity checks.
 - Report vertices, base faces, connected components, and known intentional
   boundaries.
-- Demonstrate adequate loops at every planned joint.
+- For every planned joint, identify actual closed loop cycles and report loop
+  count, vertices per loop, spacing, orientation relative to the bend axis, and
+  distance from the nearest high-valence pole. Nearby vertex and edge counts do
+  not demonstrate adequate deformation loops.
+- Apply temporary deterministic diagnostic bends covering approximately
+  90-degree elbows and knees, raised shoulders, rotated hips, neck rotation,
+  wrist flexion, ankle flexion, and tail-base bending. Report inverted faces,
+  severe volume loss, pinching, cracks, and detected self-intersections. These
+  diagnostics do not replace the production rig work in Prompt 06.
 - Validate non-manifold edges, boundary edges, duplicate vertices and faces,
   zero-area faces, degenerate edges, inconsistent normals, and non-finite data.
 
 User verification guide:
 - Inspect the matched Prompt 02 silhouettes before topology details.
 - Enable wireframe in the interactive reviewer and orbit every planned joint;
-  use the density diagnostic to reject arbitrary density or unusable poles.
+  use the labeled loop and bend diagnostics to reject grid-like flow, arbitrary
+  density, poles in bend zones, pinching, or collapsing volume.
+- Inspect the temporary flat-shaded diagnostic at intended display size and
+  reject topology that can only produce dense, noisy micro-facets.
 
 Acceptance gate:
 - The mesh is structurally suitable for rigging.
+- Every required deformation region has directed loop flow and passes its
+  temporary bend diagnostic; vertex proximity alone is insufficient.
 - Density follows silhouette and deformation needs rather than uniform detail.
+- The topology supports large readable triangular planes for Prompt 05.
 - The result still preserves the approved proportions and identity.
 
 Present the review packet and stop for explicit topology approval.

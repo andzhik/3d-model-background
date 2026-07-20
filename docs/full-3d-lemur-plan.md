@@ -88,6 +88,10 @@ pose should be produced by the rig and stored as a named pose or animation.
 Rig behavior takes priority over arbitrary triangle density. Construct an
 animation-friendly base topology, primarily with organized quad loops, then
 apply a deterministic triangulation strategy for export and final shading.
+Voxel remeshing, uniform grids, and proximity-based subdivision may be used for
+hidden reference surfaces, but they do not qualify as submitted deformation
+topology. The reviewed and exported base must use explicitly directed anatomical
+loops and controlled transition patches.
 
 Topology must provide:
 
@@ -99,10 +103,20 @@ Topology must provide:
 - no accidental duplicate faces, non-finite vertices, or zero-area triangles;
 - clean normals and no visible cracks under animation.
 
+Loop validation must inspect real closed cycles, their spacing and orientation,
+and nearby pole placement. Counts of vertices or edges inside a joint-sized
+region are not evidence of usable deformation flow. Before topology approval,
+temporary deterministic bend diagnostics must expose pinching, inversion,
+collapse, cracking, and severe volume loss without being mistaken for the final
+production rig.
+
 Triangulation must be authored or deterministically controlled. Large triangles
 should describe anatomy and graphic plane changes. Small triangles belong only
 where silhouette, markings, or deformation require them. The visible result must
 not resemble uniform automatic tessellation.
+Topology review must include a temporary flat-shaded triangulation at intended
+presentation size so excessive density and micro-facet noise are caught before
+the final facet-design stage.
 
 ## 6. Materials and low-poly appearance
 
