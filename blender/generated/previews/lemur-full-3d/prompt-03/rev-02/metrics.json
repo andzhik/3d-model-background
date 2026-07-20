@@ -1,0 +1,1658 @@
+{
+  "asset_id": "lemur-full-3d",
+  "bend_diagnostics": [
+    {
+      "cracks_detected": 0,
+      "method": "rigid cross-section rotations with a deterministic ramp; ring area is preserved, quad triangle normals are checked for folding, and non-adjacent rings are clearance-tested",
+      "minimum_face_area_m2": 0.00065692,
+      "neutral_concave_quad_split_flags": 0,
+      "new_preferred_diagonal_changes": 0,
+      "nonadjacent_centerline_collisions_detected": 0,
+      "operations": [
+        {
+          "axis": "Y",
+          "degrees": -90,
+          "path": "arm.Left",
+          "pivot_loop": 1
+        },
+        {
+          "axis": "Y",
+          "degrees": 90,
+          "path": "arm.Right",
+          "pivot_loop": 1
+        }
+      ],
+      "pinching_detected": false,
+      "severe_volume_loss_detected": false,
+      "test": "Elbows 90",
+      "unavoidable_inverted_quads_detected": 0
+    },
+    {
+      "cracks_detected": 0,
+      "method": "rigid cross-section rotations with a deterministic ramp; ring area is preserved, quad triangle normals are checked for folding, and non-adjacent rings are clearance-tested",
+      "minimum_face_area_m2": 0.00036632,
+      "neutral_concave_quad_split_flags": 0,
+      "new_preferred_diagonal_changes": 0,
+      "nonadjacent_centerline_collisions_detected": 0,
+      "operations": [
+        {
+          "axis": "Y",
+          "degrees": 90,
+          "path": "leg.Left",
+          "pivot_loop": 3
+        },
+        {
+          "axis": "Y",
+          "degrees": -90,
+          "path": "leg.Right",
+          "pivot_loop": 3
+        }
+      ],
+      "pinching_detected": false,
+      "severe_volume_loss_detected": false,
+      "test": "Knees 90",
+      "unavoidable_inverted_quads_detected": 0
+    },
+    {
+      "cracks_detected": 0,
+      "method": "rigid cross-section rotations with a deterministic ramp; ring area is preserved, quad triangle normals are checked for folding, and non-adjacent rings are clearance-tested",
+      "minimum_face_area_m2": 0.00042413,
+      "neutral_concave_quad_split_flags": 0,
+      "new_preferred_diagonal_changes": 0,
+      "nonadjacent_centerline_collisions_detected": 0,
+      "operations": [
+        {
+          "axis": "Y",
+          "degrees": 55,
+          "path": "arm.Left",
+          "pivot_loop": 0
+        },
+        {
+          "axis": "Y",
+          "degrees": -55,
+          "path": "arm.Right",
+          "pivot_loop": 0
+        }
+      ],
+      "pinching_detected": false,
+      "severe_volume_loss_detected": false,
+      "test": "Shoulders raised",
+      "unavoidable_inverted_quads_detected": 0
+    },
+    {
+      "cracks_detected": 0,
+      "method": "rigid cross-section rotations with a deterministic ramp; ring area is preserved, quad triangle normals are checked for folding, and non-adjacent rings are clearance-tested",
+      "minimum_face_area_m2": 0.00062336,
+      "neutral_concave_quad_split_flags": 0,
+      "new_preferred_diagonal_changes": 0,
+      "nonadjacent_centerline_collisions_detected": 0,
+      "operations": [
+        {
+          "axis": "Z",
+          "degrees": -35,
+          "path": "leg.Left",
+          "pivot_loop": 0
+        },
+        {
+          "axis": "Z",
+          "degrees": 35,
+          "path": "leg.Right",
+          "pivot_loop": 0
+        }
+      ],
+      "pinching_detected": false,
+      "severe_volume_loss_detected": false,
+      "test": "Hips rotated",
+      "unavoidable_inverted_quads_detected": 0
+    },
+    {
+      "cracks_detected": 0,
+      "method": "rigid cross-section rotations with a deterministic ramp; ring area is preserved, quad triangle normals are checked for folding, and non-adjacent rings are clearance-tested",
+      "minimum_face_area_m2": 0.00076112,
+      "neutral_concave_quad_split_flags": 0,
+      "new_preferred_diagonal_changes": 0,
+      "nonadjacent_centerline_collisions_detected": 0,
+      "operations": [
+        {
+          "axis": "Z",
+          "degrees": 20,
+          "path": "neck",
+          "pivot_loop": 0
+        }
+      ],
+      "pinching_detected": false,
+      "severe_volume_loss_detected": false,
+      "test": "Neck rotated",
+      "unavoidable_inverted_quads_detected": 0
+    },
+    {
+      "cracks_detected": 0,
+      "method": "rigid cross-section rotations with a deterministic ramp; ring area is preserved, quad triangle normals are checked for folding, and non-adjacent rings are clearance-tested",
+      "minimum_face_area_m2": 0.00013106,
+      "neutral_concave_quad_split_flags": 0,
+      "new_preferred_diagonal_changes": 0,
+      "nonadjacent_centerline_collisions_detected": 0,
+      "operations": [
+        {
+          "axis": "Y",
+          "degrees": -65,
+          "path": "arm.Left",
+          "pivot_loop": 5
+        },
+        {
+          "axis": "Y",
+          "degrees": 65,
+          "path": "arm.Right",
+          "pivot_loop": 5
+        }
+      ],
+      "pinching_detected": false,
+      "severe_volume_loss_detected": false,
+      "test": "Wrists flexed",
+      "unavoidable_inverted_quads_detected": 0
+    },
+    {
+      "cracks_detected": 0,
+      "method": "rigid cross-section rotations with a deterministic ramp; ring area is preserved, quad triangle normals are checked for folding, and non-adjacent rings are clearance-tested",
+      "minimum_face_area_m2": 0.00074072,
+      "neutral_concave_quad_split_flags": 0,
+      "new_preferred_diagonal_changes": 0,
+      "nonadjacent_centerline_collisions_detected": 0,
+      "operations": [
+        {
+          "axis": "Y",
+          "degrees": 55,
+          "path": "leg.Left",
+          "pivot_loop": 5
+        },
+        {
+          "axis": "Y",
+          "degrees": -55,
+          "path": "leg.Right",
+          "pivot_loop": 5
+        }
+      ],
+      "pinching_detected": false,
+      "severe_volume_loss_detected": false,
+      "test": "Ankles flexed",
+      "unavoidable_inverted_quads_detected": 0
+    },
+    {
+      "cracks_detected": 0,
+      "method": "rigid cross-section rotations with a deterministic ramp; ring area is preserved, quad triangle normals are checked for folding, and non-adjacent rings are clearance-tested",
+      "minimum_face_area_m2": 0.000811,
+      "neutral_concave_quad_split_flags": 0,
+      "new_preferred_diagonal_changes": 0,
+      "nonadjacent_centerline_collisions_detected": 0,
+      "operations": [
+        {
+          "axis": "X",
+          "degrees": 50,
+          "path": "tail",
+          "pivot_loop": 0
+        }
+      ],
+      "pinching_detected": false,
+      "severe_volume_loss_detected": false,
+      "test": "Tail base bent",
+      "unavoidable_inverted_quads_detected": 0
+    }
+  ],
+  "blender_version": "4.3.1",
+  "cameras": [
+    {
+      "lens_mm": 55.0,
+      "location": [
+        0.0,
+        -8.0,
+        1.3600000143051147
+      ],
+      "name": "Front",
+      "ortho_scale": 3.5999999046325684,
+      "rotation_euler_radians": [
+        1.5707964897155762,
+        -0.0,
+        0.0
+      ],
+      "target": [
+        0.0,
+        0.0,
+        1.36
+      ],
+      "type": "ORTHO"
+    },
+    {
+      "lens_mm": 55.0,
+      "location": [
+        -8.0,
+        0.0,
+        1.3600000143051147
+      ],
+      "name": "Left",
+      "ortho_scale": 3.5999999046325684,
+      "rotation_euler_radians": [
+        1.5707963705062866,
+        -0.0,
+        -1.5707963705062866
+      ],
+      "target": [
+        0.0,
+        0.0,
+        1.36
+      ],
+      "type": "ORTHO"
+    },
+    {
+      "lens_mm": 55.0,
+      "location": [
+        8.0,
+        0.0,
+        1.3600000143051147
+      ],
+      "name": "Right",
+      "ortho_scale": 3.5999999046325684,
+      "rotation_euler_radians": [
+        1.5707963705062866,
+        -0.0,
+        1.5707963705062866
+      ],
+      "target": [
+        0.0,
+        0.0,
+        1.36
+      ],
+      "type": "ORTHO"
+    },
+    {
+      "lens_mm": 55.0,
+      "location": [
+        0.0,
+        8.0,
+        1.3600000143051147
+      ],
+      "name": "Back",
+      "ortho_scale": 3.5999999046325684,
+      "rotation_euler_radians": [
+        -1.570796251296997,
+        3.141592502593994,
+        -0.0
+      ],
+      "target": [
+        0.0,
+        0.0,
+        1.36
+      ],
+      "type": "ORTHO"
+    },
+    {
+      "lens_mm": 55.0,
+      "location": [
+        -5.6570000648498535,
+        -5.6570000648498535,
+        1.3600000143051147
+      ],
+      "name": "FrontLeftThreeQuarter",
+      "ortho_scale": 3.5999999046325684,
+      "rotation_euler_radians": [
+        1.5707964897155762,
+        -0.0,
+        -0.7853983044624329
+      ],
+      "target": [
+        0.0,
+        0.0,
+        1.36
+      ],
+      "type": "ORTHO"
+    },
+    {
+      "lens_mm": 55.0,
+      "location": [
+        5.6570000648498535,
+        -5.6570000648498535,
+        1.3600000143051147
+      ],
+      "name": "FrontRightThreeQuarter",
+      "ortho_scale": 3.5999999046325684,
+      "rotation_euler_radians": [
+        1.5707964897155762,
+        -0.0,
+        0.7853983044624329
+      ],
+      "target": [
+        0.0,
+        0.0,
+        1.36
+      ],
+      "type": "ORTHO"
+    },
+    {
+      "lens_mm": 55.0,
+      "location": [
+        -7.919595718383789,
+        -1.1313709020614624,
+        3.3499999046325684
+      ],
+      "name": "PerspectiveTurntable",
+      "ortho_scale": null,
+      "rotation_euler_radians": [
+        1.326994776725769,
+        3.854932728586391e-08,
+        -1.4288996458053589
+      ],
+      "target": [
+        0.0,
+        0.0,
+        1.36
+      ],
+      "type": "PERSP"
+    }
+  ],
+  "coordinate_convention": {
+    "forward_axis": "-Y",
+    "ground_plane_z_m": 0.0,
+    "right_axis": "+X",
+    "units": "meters",
+    "up_axis": "+Z"
+  },
+  "glb": {
+    "bytes": 34512,
+    "deterministic_internal_repeat": true,
+    "materials": 4,
+    "primitives": 4,
+    "sha256": "196a9e10f9b41b194953f8c6452c64e4d37e86877fbda0a071c91cb525beb109",
+    "triangles": 1680,
+    "vertices": 870
+  },
+  "integrity": {
+    "base_faces": 909,
+    "boundary_edges": 0,
+    "connected_components": 3,
+    "degenerate_edges": 0,
+    "duplicate_faces": 0,
+    "duplicate_vertices": 0,
+    "folded_quads": 0,
+    "high_valence_poles": 55,
+    "inconsistent_normals": 0,
+    "intentional_components": [
+      "EyeShell.Left",
+      "EyeShell.Right"
+    ],
+    "loop_cycles": {
+      "ankle.Left": {
+        "center_spacing_m": [
+          0.14177,
+          0.14431
+        ],
+        "closed_cycle_count": 3,
+        "cycle_vertex_indices": [
+          [
+            468,
+            469,
+            470,
+            471,
+            472,
+            473,
+            474,
+            475
+          ],
+          [
+            476,
+            477,
+            478,
+            479,
+            480,
+            481,
+            482,
+            483
+          ],
+          [
+            484,
+            485,
+            486,
+            487,
+            488,
+            489,
+            490,
+            491
+          ]
+        ],
+        "nearest_high_valence_pole_coordinate_m": [
+          -0.31,
+          -0.59498,
+          0.09917
+        ],
+        "nearest_high_valence_pole_m": 0.23551,
+        "nearest_high_valence_pole_vertex": 508,
+        "orientation": "cross-section plane approximately perpendicular to authored centerline bend/twist axis",
+        "vertices_per_loop": [
+          8,
+          8,
+          8
+        ]
+      },
+      "ankle.Right": {
+        "center_spacing_m": [
+          0.14177,
+          0.14431
+        ],
+        "closed_cycle_count": 3,
+        "cycle_vertex_indices": [
+          [
+            549,
+            550,
+            551,
+            552,
+            553,
+            554,
+            555,
+            556
+          ],
+          [
+            557,
+            558,
+            559,
+            560,
+            561,
+            562,
+            563,
+            564
+          ],
+          [
+            565,
+            566,
+            567,
+            568,
+            569,
+            570,
+            571,
+            572
+          ]
+        ],
+        "nearest_high_valence_pole_coordinate_m": [
+          0.31,
+          -0.59498,
+          0.09917
+        ],
+        "nearest_high_valence_pole_m": 0.23551,
+        "nearest_high_valence_pole_vertex": 589,
+        "orientation": "cross-section plane approximately perpendicular to authored centerline bend/twist axis",
+        "vertices_per_loop": [
+          8,
+          8,
+          8
+        ]
+      },
+      "ear.Left": {
+        "center_spacing_m": [
+          0.15532,
+          0.1656
+        ],
+        "closed_cycle_count": 3,
+        "cycle_vertex_indices": [
+          [
+            728,
+            729,
+            730,
+            731,
+            732,
+            733,
+            734,
+            735
+          ],
+          [
+            736,
+            737,
+            738,
+            739,
+            740,
+            741,
+            742,
+            743
+          ],
+          [
+            744,
+            745,
+            746,
+            747,
+            748,
+            749,
+            750,
+            751
+          ]
+        ],
+        "nearest_high_valence_pole_coordinate_m": [
+          -0.83295,
+          0.04554,
+          2.66755
+        ],
+        "nearest_high_valence_pole_m": 0.15401,
+        "nearest_high_valence_pole_vertex": 760,
+        "orientation": "cross-section plane approximately perpendicular to authored centerline bend/twist axis",
+        "vertices_per_loop": [
+          8,
+          8,
+          8
+        ]
+      },
+      "ear.Right": {
+        "center_spacing_m": [
+          0.15532,
+          0.1656
+        ],
+        "closed_cycle_count": 3,
+        "cycle_vertex_indices": [
+          [
+            761,
+            762,
+            763,
+            764,
+            765,
+            766,
+            767,
+            768
+          ],
+          [
+            769,
+            770,
+            771,
+            772,
+            773,
+            774,
+            775,
+            776
+          ],
+          [
+            777,
+            778,
+            779,
+            780,
+            781,
+            782,
+            783,
+            784
+          ]
+        ],
+        "nearest_high_valence_pole_coordinate_m": [
+          0.83295,
+          0.04554,
+          2.66755
+        ],
+        "nearest_high_valence_pole_m": 0.15401,
+        "nearest_high_valence_pole_vertex": 793,
+        "orientation": "cross-section plane approximately perpendicular to authored centerline bend/twist axis",
+        "vertices_per_loop": [
+          8,
+          8,
+          8
+        ]
+      },
+      "elbow.Left": {
+        "center_spacing_m": [
+          0.11225,
+          0.10308
+        ],
+        "closed_cycle_count": 3,
+        "cycle_vertex_indices": [
+          [
+            282,
+            283,
+            284,
+            285,
+            286,
+            287,
+            288,
+            289
+          ],
+          [
+            290,
+            291,
+            292,
+            293,
+            294,
+            295,
+            296,
+            297
+          ],
+          [
+            298,
+            299,
+            300,
+            301,
+            302,
+            303,
+            304,
+            305
+          ]
+        ],
+        "nearest_high_valence_pole_coordinate_m": [
+          -0.38803,
+          -0.06246,
+          1.47
+        ],
+        "nearest_high_valence_pole_m": 0.26427,
+        "nearest_high_valence_pole_vertex": 102,
+        "orientation": "cross-section plane approximately perpendicular to authored centerline bend/twist axis",
+        "vertices_per_loop": [
+          8,
+          8,
+          8
+        ]
+      },
+      "elbow.Right": {
+        "center_spacing_m": [
+          0.11225,
+          0.10308
+        ],
+        "closed_cycle_count": 3,
+        "cycle_vertex_indices": [
+          [
+            363,
+            364,
+            365,
+            366,
+            367,
+            368,
+            369,
+            370
+          ],
+          [
+            371,
+            372,
+            373,
+            374,
+            375,
+            376,
+            377,
+            378
+          ],
+          [
+            379,
+            380,
+            381,
+            382,
+            383,
+            384,
+            385,
+            386
+          ]
+        ],
+        "nearest_high_valence_pole_coordinate_m": [
+          0.44058,
+          -0.09598,
+          1.6272
+        ],
+        "nearest_high_valence_pole_m": 0.23793,
+        "nearest_high_valence_pole_vertex": 349,
+        "orientation": "cross-section plane approximately perpendicular to authored centerline bend/twist axis",
+        "vertices_per_loop": [
+          8,
+          8,
+          8
+        ]
+      },
+      "eye_socket.Left": {
+        "center_spacing_m": [
+          0.026
+        ],
+        "closed_cycle_count": 2,
+        "cycle_vertex_indices": [
+          [
+            794,
+            795,
+            796,
+            797,
+            798,
+            799,
+            800,
+            801
+          ],
+          [
+            802,
+            803,
+            804,
+            805,
+            806,
+            807,
+            808,
+            809
+          ]
+        ],
+        "nearest_high_valence_pole_coordinate_m": [
+          -0.18,
+          -0.365,
+          2.43
+        ],
+        "nearest_high_valence_pole_m": 0.08,
+        "nearest_high_valence_pole_vertex": 818,
+        "orientation": "cross-section plane approximately perpendicular to authored centerline bend/twist axis",
+        "vertices_per_loop": [
+          8,
+          8
+        ]
+      },
+      "eye_socket.Right": {
+        "center_spacing_m": [
+          0.026
+        ],
+        "closed_cycle_count": 2,
+        "cycle_vertex_indices": [
+          [
+            820,
+            821,
+            822,
+            823,
+            824,
+            825,
+            826,
+            827
+          ],
+          [
+            828,
+            829,
+            830,
+            831,
+            832,
+            833,
+            834,
+            835
+          ]
+        ],
+        "nearest_high_valence_pole_coordinate_m": [
+          0.18,
+          -0.365,
+          2.43
+        ],
+        "nearest_high_valence_pole_m": 0.08,
+        "nearest_high_valence_pole_vertex": 844,
+        "orientation": "cross-section plane approximately perpendicular to authored centerline bend/twist axis",
+        "vertices_per_loop": [
+          8,
+          8
+        ]
+      },
+      "eyelid.Left": {
+        "center_spacing_m": [
+          0.026
+        ],
+        "closed_cycle_count": 2,
+        "cycle_vertex_indices": [
+          [
+            802,
+            803,
+            804,
+            805,
+            806,
+            807,
+            808,
+            809
+          ],
+          [
+            810,
+            811,
+            812,
+            813,
+            814,
+            815,
+            816,
+            817
+          ]
+        ],
+        "nearest_high_valence_pole_coordinate_m": [
+          -0.18,
+          -0.565,
+          2.43
+        ],
+        "nearest_high_valence_pole_m": 0.068,
+        "nearest_high_valence_pole_vertex": 819,
+        "orientation": "cross-section plane approximately perpendicular to authored centerline bend/twist axis",
+        "vertices_per_loop": [
+          8,
+          8
+        ]
+      },
+      "eyelid.Right": {
+        "center_spacing_m": [
+          0.026
+        ],
+        "closed_cycle_count": 2,
+        "cycle_vertex_indices": [
+          [
+            828,
+            829,
+            830,
+            831,
+            832,
+            833,
+            834,
+            835
+          ],
+          [
+            836,
+            837,
+            838,
+            839,
+            840,
+            841,
+            842,
+            843
+          ]
+        ],
+        "nearest_high_valence_pole_coordinate_m": [
+          0.18,
+          -0.565,
+          2.43
+        ],
+        "nearest_high_valence_pole_m": 0.068,
+        "nearest_high_valence_pole_vertex": 845,
+        "orientation": "cross-section plane approximately perpendicular to authored centerline bend/twist axis",
+        "vertices_per_loop": [
+          8,
+          8
+        ]
+      },
+      "hip.Left": {
+        "center_spacing_m": [
+          0.14177,
+          0.15166
+        ],
+        "closed_cycle_count": 3,
+        "cycle_vertex_indices": [
+          [
+            436,
+            437,
+            438,
+            439,
+            440,
+            441,
+            442,
+            443
+          ],
+          [
+            444,
+            445,
+            446,
+            447,
+            448,
+            449,
+            450,
+            451
+          ],
+          [
+            452,
+            453,
+            454,
+            455,
+            456,
+            457,
+            458,
+            459
+          ]
+        ],
+        "nearest_high_valence_pole_coordinate_m": [
+          -0.36955,
+          -0.03394,
+          0.65
+        ],
+        "nearest_high_valence_pole_m": 0.109,
+        "nearest_high_valence_pole_vertex": 25,
+        "orientation": "cross-section plane approximately perpendicular to authored centerline bend/twist axis",
+        "vertices_per_loop": [
+          8,
+          8,
+          8
+        ]
+      },
+      "hip.Right": {
+        "center_spacing_m": [
+          0.14177,
+          0.15166
+        ],
+        "closed_cycle_count": 3,
+        "cycle_vertex_indices": [
+          [
+            517,
+            518,
+            519,
+            520,
+            521,
+            522,
+            523,
+            524
+          ],
+          [
+            525,
+            526,
+            527,
+            528,
+            529,
+            530,
+            531,
+            532
+          ],
+          [
+            533,
+            534,
+            535,
+            536,
+            537,
+            538,
+            539,
+            540
+          ]
+        ],
+        "nearest_high_valence_pole_coordinate_m": [
+          0.36955,
+          -0.03394,
+          0.65
+        ],
+        "nearest_high_valence_pole_m": 0.109,
+        "nearest_high_valence_pole_vertex": 31,
+        "orientation": "cross-section plane approximately perpendicular to authored centerline bend/twist axis",
+        "vertices_per_loop": [
+          8,
+          8,
+          8
+        ]
+      },
+      "knee.Left": {
+        "center_spacing_m": [
+          0.15166,
+          0.12728
+        ],
+        "closed_cycle_count": 3,
+        "cycle_vertex_indices": [
+          [
+            444,
+            445,
+            446,
+            447,
+            448,
+            449,
+            450,
+            451
+          ],
+          [
+            452,
+            453,
+            454,
+            455,
+            456,
+            457,
+            458,
+            459
+          ],
+          [
+            460,
+            461,
+            462,
+            463,
+            464,
+            465,
+            466,
+            467
+          ]
+        ],
+        "nearest_high_valence_pole_coordinate_m": [
+          -0.36955,
+          -0.03394,
+          0.65
+        ],
+        "nearest_high_valence_pole_m": 0.109,
+        "nearest_high_valence_pole_vertex": 25,
+        "orientation": "cross-section plane approximately perpendicular to authored centerline bend/twist axis",
+        "vertices_per_loop": [
+          8,
+          8,
+          8
+        ]
+      },
+      "knee.Right": {
+        "center_spacing_m": [
+          0.15166,
+          0.12728
+        ],
+        "closed_cycle_count": 3,
+        "cycle_vertex_indices": [
+          [
+            525,
+            526,
+            527,
+            528,
+            529,
+            530,
+            531,
+            532
+          ],
+          [
+            533,
+            534,
+            535,
+            536,
+            537,
+            538,
+            539,
+            540
+          ],
+          [
+            541,
+            542,
+            543,
+            544,
+            545,
+            546,
+            547,
+            548
+          ]
+        ],
+        "nearest_high_valence_pole_coordinate_m": [
+          0.36955,
+          -0.03394,
+          0.65
+        ],
+        "nearest_high_valence_pole_m": 0.109,
+        "nearest_high_valence_pole_vertex": 31,
+        "orientation": "cross-section plane approximately perpendicular to authored centerline bend/twist axis",
+        "vertices_per_loop": [
+          8,
+          8,
+          8
+        ]
+      },
+      "muzzle": {
+        "center_spacing_m": [
+          0.08062,
+          0.08062
+        ],
+        "closed_cycle_count": 3,
+        "cycle_vertex_indices": [
+          [
+            695,
+            696,
+            697,
+            698,
+            699,
+            700,
+            701,
+            702
+          ],
+          [
+            703,
+            704,
+            705,
+            706,
+            707,
+            708,
+            709,
+            710
+          ],
+          [
+            711,
+            712,
+            713,
+            714,
+            715,
+            716,
+            717,
+            718
+          ]
+        ],
+        "nearest_high_valence_pole_coordinate_m": [
+          0.0,
+          -0.725,
+          2.27
+        ],
+        "nearest_high_valence_pole_m": 0.085,
+        "nearest_high_valence_pole_vertex": 727,
+        "orientation": "cross-section plane approximately perpendicular to authored centerline bend/twist axis",
+        "vertices_per_loop": [
+          8,
+          8,
+          8
+        ]
+      },
+      "neck": {
+        "center_spacing_m": [
+          0.10025,
+          0.09014,
+          0.08006,
+          0.11011
+        ],
+        "closed_cycle_count": 5,
+        "cycle_vertex_indices": [
+          [
+            123,
+            124,
+            125,
+            126,
+            127,
+            128,
+            129,
+            130,
+            131,
+            132,
+            133,
+            134,
+            135,
+            136,
+            137,
+            138
+          ],
+          [
+            139,
+            140,
+            141,
+            142,
+            143,
+            144,
+            145,
+            146,
+            147,
+            148,
+            149,
+            150,
+            151,
+            152,
+            153,
+            154
+          ],
+          [
+            155,
+            156,
+            157,
+            158,
+            159,
+            160,
+            161,
+            162,
+            163,
+            164,
+            165,
+            166,
+            167,
+            168,
+            169,
+            170
+          ],
+          [
+            171,
+            172,
+            173,
+            174,
+            175,
+            176,
+            177,
+            178,
+            179,
+            180,
+            181,
+            182,
+            183,
+            184,
+            185,
+            186
+          ],
+          [
+            187,
+            188,
+            189,
+            190,
+            191,
+            192,
+            193,
+            194,
+            195,
+            196,
+            197,
+            198,
+            199,
+            200,
+            201,
+            202
+          ]
+        ],
+        "nearest_high_valence_pole_coordinate_m": [
+          -0.0,
+          -0.32,
+          2.19
+        ],
+        "nearest_high_valence_pole_m": 0.34,
+        "nearest_high_valence_pole_vertex": 199,
+        "orientation": "cross-section plane approximately perpendicular to authored centerline bend/twist axis",
+        "vertices_per_loop": [
+          16,
+          16,
+          16,
+          16,
+          16
+        ]
+      },
+      "shoulder.Left": {
+        "center_spacing_m": [
+          0.10817,
+          0.11225
+        ],
+        "closed_cycle_count": 3,
+        "cycle_vertex_indices": [
+          [
+            274,
+            275,
+            276,
+            277,
+            278,
+            279,
+            280,
+            281
+          ],
+          [
+            282,
+            283,
+            284,
+            285,
+            286,
+            287,
+            288,
+            289
+          ],
+          [
+            290,
+            291,
+            292,
+            293,
+            294,
+            295,
+            296,
+            297
+          ]
+        ],
+        "nearest_high_valence_pole_coordinate_m": [
+          -0.38803,
+          -0.06246,
+          1.47
+        ],
+        "nearest_high_valence_pole_m": 0.24076,
+        "nearest_high_valence_pole_vertex": 102,
+        "orientation": "cross-section plane approximately perpendicular to authored centerline bend/twist axis",
+        "vertices_per_loop": [
+          8,
+          8,
+          8
+        ]
+      },
+      "shoulder.Right": {
+        "center_spacing_m": [
+          0.10817,
+          0.11225
+        ],
+        "closed_cycle_count": 3,
+        "cycle_vertex_indices": [
+          [
+            355,
+            356,
+            357,
+            358,
+            359,
+            360,
+            361,
+            362
+          ],
+          [
+            363,
+            364,
+            365,
+            366,
+            367,
+            368,
+            369,
+            370
+          ],
+          [
+            371,
+            372,
+            373,
+            374,
+            375,
+            376,
+            377,
+            378
+          ]
+        ],
+        "nearest_high_valence_pole_coordinate_m": [
+          0.44058,
+          -0.09598,
+          1.6272
+        ],
+        "nearest_high_valence_pole_m": 0.16816,
+        "nearest_high_valence_pole_vertex": 349,
+        "orientation": "cross-section plane approximately perpendicular to authored centerline bend/twist axis",
+        "vertices_per_loop": [
+          8,
+          8,
+          8
+        ]
+      },
+      "tail_base": {
+        "center_spacing_m": [
+          0.14799,
+          0.19105,
+          0.23791
+        ],
+        "closed_cycle_count": 4,
+        "cycle_vertex_indices": [
+          [
+            598,
+            599,
+            600,
+            601,
+            602,
+            603,
+            604,
+            605
+          ],
+          [
+            606,
+            607,
+            608,
+            609,
+            610,
+            611,
+            612,
+            613
+          ],
+          [
+            614,
+            615,
+            616,
+            617,
+            618,
+            619,
+            620,
+            621
+          ],
+          [
+            622,
+            623,
+            624,
+            625,
+            626,
+            627,
+            628,
+            629
+          ]
+        ],
+        "nearest_high_valence_pole_coordinate_m": [
+          0.16418,
+          0.47134,
+          0.70999
+        ],
+        "nearest_high_valence_pole_m": 0.22897,
+        "nearest_high_valence_pole_vertex": 590,
+        "orientation": "cross-section plane approximately perpendicular to authored centerline bend/twist axis",
+        "vertices_per_loop": [
+          8,
+          8,
+          8,
+          8
+        ]
+      },
+      "wrist.Left": {
+        "center_spacing_m": [
+          0.16008,
+          0.12298
+        ],
+        "closed_cycle_count": 3,
+        "cycle_vertex_indices": [
+          [
+            306,
+            307,
+            308,
+            309,
+            310,
+            311,
+            312,
+            313
+          ],
+          [
+            314,
+            315,
+            316,
+            317,
+            318,
+            319,
+            320,
+            321
+          ],
+          [
+            322,
+            323,
+            324,
+            325,
+            326,
+            327,
+            328,
+            329
+          ]
+        ],
+        "nearest_high_valence_pole_coordinate_m": [
+          -1.10959,
+          -0.1864,
+          0.92041
+        ],
+        "nearest_high_valence_pole_m": 0.14177,
+        "nearest_high_valence_pole_vertex": 346,
+        "orientation": "cross-section plane approximately perpendicular to authored centerline bend/twist axis",
+        "vertices_per_loop": [
+          8,
+          8,
+          8
+        ]
+      },
+      "wrist.Right": {
+        "center_spacing_m": [
+          0.16008,
+          0.12298
+        ],
+        "closed_cycle_count": 3,
+        "cycle_vertex_indices": [
+          [
+            387,
+            388,
+            389,
+            390,
+            391,
+            392,
+            393,
+            394
+          ],
+          [
+            395,
+            396,
+            397,
+            398,
+            399,
+            400,
+            401,
+            402
+          ],
+          [
+            403,
+            404,
+            405,
+            406,
+            407,
+            408,
+            409,
+            410
+          ]
+        ],
+        "nearest_high_valence_pole_coordinate_m": [
+          1.10959,
+          -0.1864,
+          0.92041
+        ],
+        "nearest_high_valence_pole_m": 0.14177,
+        "nearest_high_valence_pole_vertex": 427,
+        "orientation": "cross-section plane approximately perpendicular to authored centerline bend/twist axis",
+        "vertices_per_loop": [
+          8,
+          8,
+          8
+        ]
+      }
+    },
+    "non_finite_vertices": 0,
+    "non_manifold_edges": 0,
+    "quads": 771,
+    "transition_patches": [
+      "shoulder.Left: 8-edge torso aperture to 8-vertex limb loop",
+      "shoulder.Right: 8-edge torso aperture to 8-vertex limb loop",
+      "hip.Left: 8-edge pelvis aperture to 8-vertex limb loop",
+      "hip.Right: 8-edge pelvis aperture to 8-vertex limb loop",
+      "tail_base: 8-edge posterior pelvis aperture to 8-vertex tail loop",
+      "muzzle: 8-edge facial aperture to 8-vertex projecting muzzle loop",
+      "ear.Left: 8-edge cranial aperture to 8-vertex pinna loop",
+      "ear.Right: 8-edge cranial aperture to 8-vertex pinna loop",
+      "transition stabilization: 5 unavoidable concave quads use deterministic diagonal pairs outside named maximum-bend cycles"
+    ],
+    "triangles": 138,
+    "unavoidable_folded_quads": 0,
+    "vertices": 846,
+    "zero_area_faces": 0
+  },
+  "known_intentional_boundaries": [],
+  "known_limitations": [
+    "Eye shells are the only disconnected components and remain embedded in the primary mesh object.",
+    "Hands, feet, facial identity, and final facet direction remain intentionally coarse until Prompts 04 and 05.",
+    "Temporary bends are topology diagnostics, not the Prompt 06 production rig or skin weights."
+  ],
+  "lights": [
+    {
+      "energy_w": 850.0,
+      "location": [
+        -3.200000047683716,
+        -4.199999809265137,
+        6.0
+      ],
+      "name": "NeutralKey",
+      "type": "AREA"
+    },
+    {
+      "energy_w": 520.0,
+      "location": [
+        3.799999952316284,
+        -2.0,
+        3.799999952316284
+      ],
+      "name": "NeutralFill",
+      "type": "AREA"
+    },
+    {
+      "energy_w": 700.0,
+      "location": [
+        0.0,
+        4.0,
+        4.800000190734863
+      ],
+      "name": "NeutralRim",
+      "type": "AREA"
+    }
+  ],
+  "materials": [
+    "PrimaryCharcoal",
+    "PrimaryGray",
+    "PrimaryLight",
+    "PrimaryEye"
+  ],
+  "mesh": {
+    "all_primary_volumes_closed": true,
+    "base_faces": 909,
+    "bounds_m": {
+      "max": [
+        1.144730567932129,
+        1.2941423654556274,
+        2.7200000286102295
+      ],
+      "min": [
+        -1.144730567932129,
+        -0.7249999642372131,
+        0.023869089782238007
+      ]
+    },
+    "connected_components": 3,
+    "dimensions_m": [
+      2.289461135864258,
+      2.0191423296928406,
+      2.6961309388279915
+    ],
+    "materials": 4,
+    "mesh_objects": 1,
+    "primitives": 4,
+    "triangles": 1680,
+    "vertices": 846,
+    "volume_checks": {
+      "LemurDeformationTopology": {
+        "closed": true,
+        "connected_components": 3,
+        "non_manifold_or_boundary_edges": 0
+      }
+    }
+  },
+  "production_glb": {
+    "path": "public/models/lemur.glb",
+    "sha256_before_and_after_generator": "3a8833d7d0e19a33f378da8133f945e66ce79ac5eb85ba85c4d3e6cee4f52f47",
+    "unchanged": true
+  },
+  "prompt": "03",
+  "render": {
+    "canonical_png_encoding": true,
+    "engine": "BLENDER_EEVEE_NEXT",
+    "format": "PNG RGB 8-bit",
+    "resolution": [
+      512,
+      512
+    ]
+  },
+  "review_files": [
+    "front.png",
+    "left.png",
+    "right.png",
+    "back.png",
+    "front-left-three-quarter.png",
+    "front-right-three-quarter.png",
+    "perspective-turntable.png",
+    "contact-sheet.png",
+    "turntable-contact-sheet.png",
+    "reference-comparison.png",
+    "reference-overlay.png",
+    "metrics.json",
+    "review.md",
+    "wireframe-front.png",
+    "wireframe-left.png",
+    "wireframe-right.png",
+    "wireframe-back.png",
+    "wireframe-front-left-three-quarter.png",
+    "wireframe-front-right-three-quarter.png",
+    "wireframe-contact-sheet.png",
+    "deformation-zone-contact-sheet.png",
+    "density-diagnostic.png",
+    "flat-triangulation-diagnostic.png",
+    "bend-diagnostic.png",
+    "silhouette-differences.png",
+    "turntable-00.png",
+    "turntable-01.png",
+    "turntable-02.png",
+    "turntable-03.png",
+    "turntable-04.png",
+    "turntable-05.png",
+    "turntable-06.png",
+    "turntable-07.png"
+  ],
+  "revision": "02",
+  "topology_authoring": {
+    "density_policy": "16 vertices around torso/head; 8 around limbs, muzzle, ears, eyes, and tail; extra loops only at silhouette changes and deformation zones",
+    "hidden_reference_surface": null,
+    "prohibited_operations_used": [],
+    "submitted_surface": "explicit deterministic anatomical cross-section loops and controlled 8-to-8 transition patches",
+    "visible_facet_relationship": "The same deformation quads will receive deterministic, anatomy-directed triangulation in Prompt 05. No denser display mesh is planned."
+  }
+}

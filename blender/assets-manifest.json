@@ -108,7 +108,7 @@
       "generator": "blender/scripts/generate_lemur_full_3d.py",
       "output": "public/models/lemur-full-3d.glb",
       "blendOutput": "blender/generated/lemur-full-3d.blend",
-      "previewDir": "blender/generated/previews/lemur-full-3d/prompt-02/rev-01",
+      "previewDir": "blender/generated/previews/lemur-full-3d/prompt-03/rev-02",
       "expectedPreviews": [
         "front.png",
         "left.png",
@@ -121,6 +121,12 @@
         "turntable-contact-sheet.png",
         "reference-comparison.png",
         "reference-overlay.png",
+        "wireframe-contact-sheet.png",
+        "deformation-zone-contact-sheet.png",
+        "density-diagnostic.png",
+        "flat-triangulation-diagnostic.png",
+        "bend-diagnostic.png",
+        "silhouette-differences.png",
         "turntable-00.png",
         "turntable-01.png",
         "turntable-02.png",
@@ -132,26 +138,14 @@
       ],
       "reviewPacket": {
         "expectedFiles": ["review.md", "metrics.json"],
-        "prompt": "02",
-        "revision": "01",
+        "prompt": "03",
+        "revision": "02",
         "orthographicCameraCount": 6,
         "totalCameraCount": 7
       },
       "expectedObjects": [
         "LemurFull3DRoot",
-        "Skull",
-        "Muzzle",
-        "Neck",
-        "Ribcage",
-        "Pelvis",
-        "UpperArmLeft",
-        "LowerArmRight",
-        "HandLeft",
-        "HaunchRight",
-        "UpperLegLeft",
-        "LowerLegRight",
-        "FootLeft",
-        "Tail"
+        "LemurDeformationTopology"
       ],
       "expectedMaterials": [
         "PrimaryCharcoal",

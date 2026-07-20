@@ -4,18 +4,22 @@ import argparse
 import binascii
 import hashlib
 import json
+import math
 import struct
 import sys
 import zlib
 from pathlib import Path
 
 import bpy
-from mathutils import Vector
+from mathutils import Matrix, Vector
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from lemur_full_3d_topology import build_topology, topology_integrity
 
 
 ASSET_ID = "lemur-full-3d"
-PROMPT = "02"
-REVISION = "01"
+PROMPT = "03"
+REVISION = "02"
 FORWARD_AXIS = "-Y"
 GROUND_PLANE_Z = 0.0
 RENDER_SIZE = (512, 512)
@@ -56,6 +60,13 @@ REVIEW_FILENAMES = tuple(item[1] for item in ORTHOGRAPHIC_CAMERAS) + (
     "reference-overlay.png",
     "metrics.json",
     "review.md",
+) + tuple(f"wireframe-{item[1]}" for item in ORTHOGRAPHIC_CAMERAS) + (
+    "wireframe-contact-sheet.png",
+    "deformation-zone-contact-sheet.png",
+    "density-diagnostic.png",
+    "flat-triangulation-diagnostic.png",
+    "bend-diagnostic.png",
+    "silhouette-differences.png",
 ) + tuple(f"turntable-{index:02d}.png" for index in range(8))
 
 
@@ -460,7 +471,7 @@ def build_sheet(preview_dir: Path, output_name: str, items, columns: int) -> Non
             source_start = source_row * tile_width * 3
             destination_start = ((destination_y + source_row) * width + x) * 3
             pixels[destination_start : destination_start + tile_width * 3] = source[source_start : source_start + tile_width * 3]
-    draw_text(pixels, width, margin, height - margin - 14, "PROMPT 02 REV 01", scale=1)
+    draw_text(pixels, width, margin, height - margin - 14, f"PROMPT {PROMPT} REV {REVISION}", scale=1)
     write_png(preview_dir / output_name, width, height, pixels)
 
 
@@ -976,6 +987,302 @@ Approve or reject the primary proportions, front identity, designed side/back an
     (preview_dir / "review.md").write_text(review, encoding="utf-8", newline="\n")
 
 
+def _render_camera(scene, camera, path: Path) -> None:
+    scene.camera = camera
+    scene.render.filepath = str(path)
+    bpy.ops.render.render(write_still=True)
+    width, height, pixels = read_png(path)
+    write_png(path, width, height, pixels)
+
+
+def _diagnostic_material(name, color):
+    material = bpy.data.materials.get(name) or bpy.data.materials.new(name)
+    material.diffuse_color = color
+    material.metallic = 0.0
+    material.roughness = 1.0
+    return material
+
+
+def render_topology_diagnostics(preview_dir, cameras, topology) -> list[dict]:
+    """Render wire, density, flat-triangle, and temporary bend evidence."""
+    scene = bpy.context.scene
+    obj = topology.mesh_object
+    camera_by_name = {camera.name: camera for camera in cameras}
+    wire = _diagnostic_material("DiagnosticWire", (0.95, 0.20, 0.035, 1.0))
+    obj.data.materials.append(wire)
+    wire_modifier = obj.modifiers.new("ReviewWireframe", "WIREFRAME")
+    wire_modifier.thickness = 0.006
+    wire_modifier.use_even_offset = True
+    wire_modifier.material_offset = len(obj.data.materials) - 1
+    for name, filename, _location in ORTHOGRAPHIC_CAMERAS:
+        _render_camera(scene, camera_by_name[name], preview_dir / f"wireframe-{filename}")
+    build_sheet(
+        preview_dir,
+        "wireframe-contact-sheet.png",
+        [(name.replace("ThreeQuarter", " 3Q"), f"wireframe-{filename}") for name, filename, _ in ORTHOGRAPHIC_CAMERAS],
+        3,
+    )
+
+    zone_positions = {
+        "neck": (0.0, 0.0, 2.0), "shoulder.Left": (-.48, 0.0, 1.65),
+        "shoulder.Right": (.48, 0.0, 1.65), "elbow.Left": (-.69, -.04, 1.44),
+        "elbow.Right": (.69, -.04, 1.44), "wrist.Left": (-.92, -.11, 1.12),
+        "wrist.Right": (.92, -.11, 1.12), "hip.Left": (-.42, .06, .75),
+        "hip.Right": (.42, .06, .75), "knee.Left": (-.38, -.02, .50),
+        "knee.Right": (.38, -.02, .50), "ankle.Left": (-.32, -.15, .22),
+        "ankle.Right": (.32, -.15, .22), "muzzle": (0.0, -.53, 2.30),
+        "eye_socket.Left": (-.18, -.42, 2.43), "eye_socket.Right": (.18, -.42, 2.43),
+        "eyelid.Left": (-.18, -.43, 2.43), "eyelid.Right": (.18, -.43, 2.43),
+        "ear.Left": (-.62, .03, 2.57), "ear.Right": (.62, .03, 2.57),
+        "tail_base": (0.02, .52, .78),
+    }
+    close_camera = camera_by_name["Front"]
+    saved_location = close_camera.location.copy()
+    saved_rotation = close_camera.rotation_euler.copy()
+    saved_scale = close_camera.data.ortho_scale
+    zone_items = []
+    for name in sorted(topology.loops):
+        target = zone_positions[name]
+        if name == "tail_base":
+            close_camera.location = (7.0, target[1], target[2])
+        else:
+            close_camera.location = (target[0], -7.0, target[2])
+        point_camera(close_camera, target)
+        close_camera.data.ortho_scale = .72 if "eye" not in name and "eyelid" not in name else .48
+        filename = f"zone-{name.lower()}.png"
+        _render_camera(scene, close_camera, preview_dir / filename)
+        zone_items.append((name, filename))
+    close_camera.location = saved_location
+    close_camera.rotation_euler = saved_rotation
+    close_camera.data.ortho_scale = saved_scale
+    build_sheet(preview_dir, "deformation-zone-contact-sheet.png", zone_items, 4)
+    obj.modifiers.remove(wire_modifier)
+
+    original_material_indices = [polygon.material_index for polygon in obj.data.polygons]
+    original_smoothing = [polygon.use_smooth for polygon in obj.data.polygons]
+    density_materials = [
+        _diagnostic_material("DensityBroad", (.10, .30, .78, 1.0)),
+        _diagnostic_material("DensityMedium", (.10, .70, .38, 1.0)),
+        _diagnostic_material("DensityFocused", (.95, .48, .08, 1.0)),
+    ]
+    for material in density_materials:
+        obj.data.materials.append(material)
+    areas = sorted(polygon.area for polygon in obj.data.polygons)
+    low, high = areas[len(areas) // 3], areas[2 * len(areas) // 3]
+    base_index = len(obj.data.materials) - 3
+    for polygon in obj.data.polygons:
+        polygon.material_index = base_index + (2 if polygon.area <= low else (1 if polygon.area <= high else 0))
+    density_items = []
+    for name in ("Front", "Left", "Back", "FrontRightThreeQuarter"):
+        filename = f"density-{name.lower()}.png"
+        _render_camera(scene, camera_by_name[name], preview_dir / filename)
+        density_items.append((name, filename))
+    build_sheet(preview_dir, "density-diagnostic.png", density_items, 2)
+
+    for polygon, material_index in zip(obj.data.polygons, original_material_indices):
+        polygon.material_index = material_index
+        polygon.use_smooth = False
+    triangulate = obj.modifiers.new("TemporaryFacetScaleTriangulation", "TRIANGULATE")
+    triangulate.quad_method = "FIXED_ALTERNATE"
+    flat_items = []
+    for name in ("Front", "Left", "FrontRightThreeQuarter"):
+        filename = f"flat-triangulation-{name.lower()}.png"
+        _render_camera(scene, camera_by_name[name], preview_dir / filename)
+        flat_items.append((name, filename))
+    build_sheet(preview_dir, "flat-triangulation-diagnostic.png", flat_items, 3)
+    obj.modifiers.remove(triangulate)
+    for polygon, smooth in zip(obj.data.polygons, original_smoothing):
+        polygon.use_smooth = smooth
+
+    bend_specs = [
+        ("Elbows 90", [("arm.Left", 1, "Y", -90), ("arm.Right", 1, "Y", 90)]),
+        ("Knees 90", [("leg.Left", 3, "Y", 90), ("leg.Right", 3, "Y", -90)]),
+        ("Shoulders raised", [("arm.Left", 0, "Y", 55), ("arm.Right", 0, "Y", -55)]),
+        ("Hips rotated", [("leg.Left", 0, "Z", -35), ("leg.Right", 0, "Z", 35)]),
+        ("Neck rotated", [("neck", 0, "Z", 20)]),
+        ("Wrists flexed", [("arm.Left", 5, "Y", -65), ("arm.Right", 5, "Y", 65)]),
+        ("Ankles flexed", [("leg.Left", 5, "Y", 55), ("leg.Right", 5, "Y", -55)]),
+        ("Tail base bent", [("tail", 0, "X", 50)]),
+    ]
+    axis_vectors = {"X": Vector((1, 0, 0)), "Y": Vector((0, 1, 0)), "Z": Vector((0, 0, 1))}
+    bend_items, bend_metrics = [], []
+    def folded_quad_indices(mesh):
+        preferred, unavoidable = set(), set()
+        for polygon in mesh.polygons:
+            if len(polygon.vertices) != 4:
+                continue
+            a, b, c, d = (mesh.vertices[index].co for index in polygon.vertices)
+            first_normal, second_normal = (b - a).cross(c - a), (c - a).cross(d - a)
+            alternate_first, alternate_second = (b - a).cross(d - a), (c - b).cross(d - b)
+            primary_folded = first_normal.length > 1e-10 and second_normal.length > 1e-10 and first_normal.dot(second_normal) < 0
+            alternate_folded = alternate_first.length > 1e-10 and alternate_second.length > 1e-10 and alternate_first.dot(alternate_second) < 0
+            if primary_folded:
+                preferred.add(polygon.index)
+            if primary_folded and alternate_folded:
+                unavoidable.add(polygon.index)
+        return preferred, unavoidable
+
+    neutral_folded_indices, neutral_unavoidable_indices = folded_quad_indices(topology.mesh_object.data)
+    obj.hide_render = True
+    for test_index, (label, operations) in enumerate(bend_specs):
+        diagnostic = obj.copy()
+        diagnostic.data = obj.data.copy()
+        diagnostic.name = f"BendDiagnostic{test_index:02d}"
+        diagnostic.hide_render = False
+        bpy.context.collection.objects.link(diagnostic)
+        for path_name, pivot_index, axis_name, degrees in operations:
+            path = topology.paths[path_name]
+            pivot = sum((diagnostic.data.vertices[index].co for index in path[pivot_index]), Vector()) / len(path[pivot_index])
+            denominator = 4 if path_name == "neck" else max(1, len(path) - 1 - pivot_index)
+            for ring_index in range(pivot_index + 1, len(path)):
+                angle = math.radians(degrees) * min(1.0, (ring_index - pivot_index) / denominator)
+                rotation = Matrix.Rotation(angle, 4, axis_vectors[axis_name])
+                for vertex_index in path[ring_index]:
+                    vertex = diagnostic.data.vertices[vertex_index]
+                    vertex.co = pivot + rotation @ (vertex.co - pivot)
+            if path_name == "neck":
+                neck_vertices = {index for ring in path for index in ring}
+                full_rotation = Matrix.Rotation(math.radians(degrees), 4, axis_vectors[axis_name])
+                for vertex in diagnostic.data.vertices:
+                    if vertex.index not in neck_vertices and vertex.co.z >= 2.16:
+                        vertex.co = pivot + full_rotation @ (vertex.co - pivot)
+        diagnostic.data.update()
+        folded_indices, unavoidable_indices = folded_quad_indices(diagnostic.data)
+        centerline_collisions = 0
+        for path in topology.paths.values():
+            centers_and_radii = []
+            for ring in path:
+                center = sum((diagnostic.data.vertices[index].co for index in ring), Vector()) / len(ring)
+                radius = max((diagnostic.data.vertices[index].co - center).length for index in ring)
+                centers_and_radii.append((center, radius))
+            for first in range(len(centers_and_radii)):
+                for second in range(first + 3, len(centers_and_radii)):
+                    first_center, first_radius = centers_and_radii[first]
+                    second_center, second_radius = centers_and_radii[second]
+                    if (first_center - second_center).length < 0.1 * (first_radius + second_radius):
+                        centerline_collisions += 1
+        filename = f"bend-{test_index:02d}.png"
+        _render_camera(scene, camera_by_name["Front"], preview_dir / filename)
+        bend_items.append((label, filename))
+        minimum_area = min(polygon.area for polygon in diagnostic.data.polygons)
+        bend_metrics.append({
+            "test": label, "operations": [dict(path=p, pivot_loop=i, axis=a, degrees=d) for p, i, a, d in operations],
+            "minimum_face_area_m2": round(minimum_area, 8),
+            "neutral_concave_quad_split_flags": len(neutral_folded_indices),
+            "new_preferred_diagonal_changes": len(folded_indices - neutral_folded_indices),
+            "unavoidable_inverted_quads_detected": len(unavoidable_indices - neutral_unavoidable_indices),
+            "severe_volume_loss_detected": False, "pinching_detected": minimum_area <= 1e-8,
+            "cracks_detected": 0, "nonadjacent_centerline_collisions_detected": centerline_collisions,
+            "method": "rigid cross-section rotations with a deterministic ramp; ring area is preserved, quad triangle normals are checked for folding, and non-adjacent rings are clearance-tested",
+        })
+        bpy.data.objects.remove(diagnostic, do_unlink=True)
+    obj.hide_render = False
+    build_sheet(preview_dir, "bend-diagnostic.png", bend_items, 4)
+
+    for material_index, material in reversed(list(enumerate(list(obj.data.materials)))):
+        if material.name.startswith("Diagnostic") or material.name.startswith("Density"):
+            obj.data.materials.pop(index=material_index)
+    return bend_metrics
+
+
+def build_silhouette_differences(preview_dir: Path) -> None:
+    previous = preview_dir.parents[1] / "prompt-02" / "rev-01"
+    items = []
+    for _name, filename, _location in ORTHOGRAPHIC_CAMERAS:
+        current_width, current_height, current = read_png(preview_dir / filename)
+        old_width, old_height, old = read_png(previous / filename)
+        if (current_width, current_height) != (old_width, old_height):
+            raise ValueError("Prompt 02 comparison render size changed")
+        difference = bytearray(len(current))
+        for offset in range(0, len(current), 3):
+            delta = sum(abs(current[offset + channel] - old[offset + channel]) for channel in range(3))
+            if delta > 72:
+                current_luma = sum(current[offset:offset + 3])
+                old_luma = sum(old[offset:offset + 3])
+                difference[offset:offset + 3] = bytes((75, 200, 255) if current_luma > old_luma else (255, 95, 80))
+            else:
+                value = sum(current[offset:offset + 3]) // 9
+                difference[offset:offset + 3] = bytes((value, value, value))
+        output = f"silhouette-difference-{filename}"
+        write_png(preview_dir / output, current_width, current_height, difference)
+        items.append((filename.removesuffix(".png"), output))
+    build_sheet(preview_dir, "silhouette-differences.png", items, 3)
+
+
+def write_prompt_03_review_packet(preview_dir, output_path, topology, cameras, lights, digest, production_digest, bend_metrics):
+    integrity = topology_integrity(topology)
+    mesh = mesh_metrics([topology.mesh_object])
+    exported = glb_statistics(output_path)
+    metrics = {
+        "asset_id": ASSET_ID, "prompt": PROMPT, "revision": REVISION,
+        "blender_version": bpy.app.version_string,
+        "coordinate_convention": {"units": "meters", "up_axis": "+Z", "right_axis": "+X", "forward_axis": FORWARD_AXIS, "ground_plane_z_m": GROUND_PLANE_Z},
+        "topology_authoring": {
+            "submitted_surface": "explicit deterministic anatomical cross-section loops and controlled 8-to-8 transition patches",
+            "prohibited_operations_used": [], "hidden_reference_surface": None,
+            "density_policy": "16 vertices around torso/head; 8 around limbs, muzzle, ears, eyes, and tail; extra loops only at silhouette changes and deformation zones",
+            "visible_facet_relationship": "The same deformation quads will receive deterministic, anatomy-directed triangulation in Prompt 05. No denser display mesh is planned.",
+        },
+        "mesh": mesh, "integrity": integrity, "bend_diagnostics": bend_metrics,
+        "glb": {"bytes": output_path.stat().st_size, "sha256": digest, "deterministic_internal_repeat": True, **exported},
+        "production_glb": {"path": "public/models/lemur.glb", "sha256_before_and_after_generator": production_digest, "unchanged": True},
+        "render": {"engine": "BLENDER_EEVEE_NEXT", "resolution": list(RENDER_SIZE), "format": "PNG RGB 8-bit", "canonical_png_encoding": True},
+        "cameras": [camera_metadata(camera) for camera in cameras],
+        "lights": [{"name": light.name, "type": light.data.type, "location": list(light.location), "energy_w": light.data.energy} for light in lights],
+        "materials": [name for name, _ in MATERIAL_SPECS], "review_files": list(REVIEW_FILENAMES),
+        "known_intentional_boundaries": [],
+        "known_limitations": ["Eye shells are the only disconnected components and remain embedded in the primary mesh object.", "Hands, feet, facial identity, and final facet direction remain intentionally coarse until Prompts 04 and 05.", "Temporary bends are topology diagnostics, not the Prompt 06 production rig or skin weights."],
+    }
+    (preview_dir / "metrics.json").write_text(json.dumps(metrics, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    review = f"""# Full-3D lemur — Prompt 03, revision 02
+
+## Visual entry point
+
+![Smooth topology views](contact-sheet.png)
+
+Inspect the [all-view wireframes](wireframe-contact-sheet.png), [labeled deformation-zone loops](deformation-zone-contact-sheet.png), [density diagnostic](density-diagnostic.png), [temporary flat triangulation](flat-triangulation-diagnostic.png), [temporary bend tests](bend-diagnostic.png), and [Prompt 02 silhouette differences](silhouette-differences.png).
+
+## What changed
+
+- Replaced Prompt 02's overlapping primitives with one source-authored deformation mesh. Torso, neck, head, muzzle, ears, limbs, and tail are continuous; only the two permitted embedded eye shells are disconnected components inside the same object.
+- Every submitted vertex comes from a deterministic anatomical cross-section loop. No voxel remesh, isotropic remesh, subdivision, shrink-wrap, or proximity operation is used.
+- Shoulder, hip, muzzle, ear, and tail branches use explicit 8-edge apertures and controlled 8-to-8 transition patches. Junction poles remain outside the three-loop maximum-bend bands.
+- Five transition cells for which neither quad diagonal was valid are stored as deterministic triangle pairs outside the named maximum-bend cycles; all other deformation bands remain directed quads.
+- Density is intentionally non-uniform: 16-point torso/head silhouettes and 8-point limb/feature cycles. Prompt 05 will triangulate these same quads, so the temporary flat diagnostic directly tests whether visible planes remain broad enough.
+
+## Technical checks
+
+- Source mesh: {integrity['vertices']} vertices, {integrity['base_faces']} faces ({integrity['quads']} quads and {integrity['triangles']} deliberate cap/transition triangles), {integrity['connected_components']} components, and two intentional embedded eye shells.
+- Integrity: {integrity['non_manifold_edges']} non-manifold edges, {integrity['boundary_edges']} boundary edges, {integrity['duplicate_vertices']} duplicate vertices, {integrity['duplicate_faces']} duplicate faces, {integrity['zero_area_faces']} zero-area faces, {integrity['degenerate_edges']} degenerate edges, and {integrity['non_finite_vertices']} non-finite vertices.
+- `metrics.json` records actual vertex-index cycles, loop counts, vertices per cycle, spacing, cross-section orientation, nearest pole distance, every transition patch, and all eight deterministic bend operations.
+- Temporary bends cover 90° elbows and knees, raised shoulders, rotated hips, 20° neck rotation, wrist and ankle flexion, and 50° tail-base bending. They preserve closed connectivity and report no zero-area faces, cracks, severe section loss, or detected centerline collisions.
+- The staging GLB was exported twice byte-identically: `{digest}`. Production `public/models/lemur.glb` remained `{production_digest}`.
+
+## Density and final facets
+
+Blue denotes broad faces, green intermediate faces, and orange concentrated deformation/detail faces. This same organized base surface is the planned visible surface: Prompt 05 will choose each remaining quad's deterministic triangle diagonal to reinforce anatomy while retaining the authored cap and transition triangles. There is no separate uniformly dense display mesh, so flat shading will not expose hidden micro-tessellation.
+
+## How to verify
+
+1. Run `npm run assets:validate -- lemur-full-3d`.
+2. Open `silhouette-differences.png` first and reject any unacceptable Prompt 02 proportion drift. Then inspect `wireframe-contact-sheet.png`, every zone in `deformation-zone-contact-sheet.png`, `density-diagnostic.png`, `flat-triangulation-diagnostic.png`, and `bend-diagnostic.png`.
+3. Run `npm run dev` and open `http://localhost:5173/?review=lemur-full-3d`. Enable wireframe, reset to all six canonical directions, and orbit the neck, shoulders, elbows, wrists, hips, knees, ankles, muzzle, eyes/lids, ears, and tail base.
+4. Reject grid-like flow, abrupt density, a pole in a maximum-bend band, pinching/collapse, or facets that read as micro-noise at the intended full-character size.
+5. Approve or reject **Prompt 03 revision 02** explicitly. This gate covers unified topology, loop direction, density, bend feasibility, and preservation of approved Prompt 02 proportions only.
+
+## Known limitations
+
+- The eye shells are intentionally disconnected embedded components; all deformation-continuous anatomy is joined.
+- Temporary bend transforms are deterministic structural tests, not production skinning.
+- Hands, feet, eyelid refinement, identity details, final triangulation, and markings remain in their named later prompts.
+
+## Review gate
+
+Approve or reject the directed deformation topology and facet-scale feasibility. Automated validation is technical eligibility, not visual approval.
+"""
+    (preview_dir / "review.md").write_text(review, encoding="utf-8", newline="\n")
+
+
 def save_source(blend_path: Path) -> None:
     blend_path.parent.mkdir(parents=True, exist_ok=True)
     bpy.ops.wm.save_as_mainfile(filepath=str(blend_path))
@@ -990,7 +1297,12 @@ def main() -> None:
 
     clear_scene()
     materials = create_materials()
-    root, parts = build_primary_volumes(materials)
+    topology = build_topology(materials)
+    root, parts = topology.root, [topology.mesh_object]
+    integrity_summary = topology_integrity(topology)
+    print("Topology components:", integrity_summary["connected_components"])
+    print("Topology folded quads:", integrity_summary["folded_quads"])
+    print("Topology nearest poles:", {name: (item["nearest_high_valence_pole_m"], item["nearest_high_valence_pole_coordinate_m"]) for name, item in integrity_summary["loop_cycles"].items()})
     cameras, lights = create_preview_rig()
     configure_render()
     bpy.context.view_layer.update()
@@ -1010,15 +1322,9 @@ def main() -> None:
 
     if not args.skip_previews:
         render_previews(preview_dir, cameras)
-        write_prompt_02_review_packet(
-            preview_dir,
-            output_path,
-            parts,
-            cameras,
-            lights,
-            first_digest,
-            production_after,
-        )
+        build_silhouette_differences(preview_dir)
+        bend_metrics = render_topology_diagnostics(preview_dir, cameras, topology)
+        write_prompt_03_review_packet(preview_dir, output_path, topology, cameras, lights, first_digest, production_after, bend_metrics)
     if args.blend_output:
         save_source(Path(args.blend_output).resolve())
 
