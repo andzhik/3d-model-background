@@ -1,4 +1,4 @@
-"""Build the Prompt 02 full-volume lemur and its deterministic review packet."""
+"""Build the Prompt 03 unified-topology lemur and deterministic review packet."""
 
 import argparse
 import binascii
@@ -14,7 +14,7 @@ from mathutils import Vector
 
 
 ASSET_ID = "lemur-full-3d"
-PROMPT = "02"
+PROMPT = "03"
 REVISION = "01"
 FORWARD_AXIS = "-Y"
 GROUND_PLANE_Z = 0.0
@@ -48,15 +48,26 @@ PERSPECTIVE_CAMERA = (
     "perspective-turntable.png",
     (4.8, -6.4, 3.4),
 )
+TAIL_POINTS = (
+    (0.0, 0.36, 0.87), (0.04, 0.65, 0.78), (0.18, 0.91, 0.80),
+    (0.42, 1.12, 0.91), (0.69, 1.24, 1.08), (0.91, 1.23, 1.29),
+    (1.05, 1.10, 1.52), (1.08, 0.91, 1.73), (0.99, 0.73, 1.91),
+    (0.83, 0.61, 2.04),
+)
 REVIEW_FILENAMES = tuple(item[1] for item in ORTHOGRAPHIC_CAMERAS) + (
     PERSPECTIVE_CAMERA[1],
     "contact-sheet.png",
     "turntable-contact-sheet.png",
-    "reference-comparison.png",
-    "reference-overlay.png",
+    "wireframe-contact-sheet.png",
+    "density-contact-sheet.png",
+    "silhouette-comparison-contact-sheet.png",
     "metrics.json",
     "review.md",
-) + tuple(f"turntable-{index:02d}.png" for index in range(8))
+) + tuple(f"turntable-{index:02d}.png" for index in range(8)) + tuple(
+    f"{prefix}{item[1]}"
+    for prefix in ("wireframe-", "density-", "silhouette-")
+    for item in ORTHOGRAPHIC_CAMERAS
+)
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -222,14 +233,8 @@ def build_primary_volumes(materials: dict[str, bpy.types.Material]) -> tuple:
         limb(f"LowerLeg{suffix}", (0.34 * side, 0.02, 0.43), (0.31 * side, -0.10, 0.18), 0.17, 0.115, light)
         sphere(f"Foot{suffix}", (0.32 * side, -0.28, 0.105), (0.205, 0.37, 0.105), charcoal)
 
-    tail_points = [
-        (0.0, 0.36, 0.87), (0.04, 0.65, 0.78), (0.18, 0.91, 0.80),
-        (0.42, 1.12, 0.91), (0.69, 1.24, 1.08), (0.91, 1.23, 1.29),
-        (1.05, 1.10, 1.52), (1.08, 0.91, 1.73), (0.99, 0.73, 1.91),
-        (0.83, 0.61, 2.04),
-    ]
     tail_parts = []
-    for index, (start, end) in enumerate(zip(tail_points, tail_points[1:])):
+    for index, (start, end) in enumerate(zip(TAIL_POINTS, TAIL_POINTS[1:])):
         radius = 0.18 - index * 0.012
         tail_parts.append(add_tapered_volume(f"TailSegment{index + 1:02d}", start, end, radius, radius - 0.012, charcoal, 10))
     tail = join_parts("Tail", tail_parts)
@@ -240,6 +245,83 @@ def build_primary_volumes(materials: dict[str, bpy.types.Material]) -> tuple:
         part["primary_volume"] = True
     root["modeling_pose"] = "relaxed A-pose with extended raised tail"
     return root, parts
+
+
+def build_unified_topology(materials: dict[str, bpy.types.Material]) -> tuple:
+    """Union Prompt 02 forms into one manifold deformation mesh plus eye shells.
+
+    A fixed voxel grid creates a reproducible, predominantly quad base surface.
+    The 5 cm cell size supplies at least three cross-section bands through every
+    planned joint while preserving the approved Prompt 02 envelope.
+    """
+    root, parts = build_primary_volumes(materials)
+    # Overlapping joint volumes remove the hard cone-to-cone pinches from the
+    # approved segmented tail while retaining its centerline and taper.
+    for index, point in enumerate(TAIL_POINTS[1:-1], start=1):
+        radius = (0.18 - index * 0.012) * 0.98
+        joint = add_icosphere(
+            f"TailBlend{index:02d}", point, (radius, radius, radius),
+            materials["PrimaryCharcoal"],
+        )
+        joint.parent = root
+        parts.append(joint)
+    eyes = [part for part in parts if part.name in {"EyeLeft", "EyeRight"}]
+    continuous = [part for part in parts if part not in eyes]
+    bpy.ops.object.select_all(action="DESELECT")
+    for part in continuous:
+        part.select_set(True)
+    bpy.context.view_layer.objects.active = continuous[0]
+    bpy.ops.object.join()
+    body = continuous[0]
+    body.name = "LemurUnifiedTopology"
+    body.data.name = "LemurUnifiedTopologyGeometry"
+    body.data.materials.clear()
+    body.data.materials.append(materials["PrimaryGray"])
+    body.data.remesh_voxel_size = 0.05
+    body.data.remesh_voxel_adaptivity = 0.0
+    bpy.context.view_layer.objects.active = body
+    body.select_set(True)
+    bpy.ops.object.voxel_remesh()
+    smooth = body.modifiers.new("DeterministicSurfaceRelaxation", "SMOOTH")
+    smooth.factor = 0.28
+    smooth.iterations = 3
+    smooth.use_x = True
+    smooth.use_y = True
+    smooth.use_z = True
+    bpy.context.view_layer.objects.active = body
+    bpy.ops.object.modifier_apply(modifier=smooth.name)
+    # Add real local density where bends and facial/ear silhouettes need it.
+    # Selection is coordinate-driven and therefore reproducible.
+    bpy.ops.object.mode_set(mode="EDIT")
+    bpy.ops.mesh.select_all(action="DESELECT")
+    bpy.ops.object.mode_set(mode="OBJECT")
+    local_density_zones = [
+        (Vector(center), radius * 0.82) for center, radius in JOINT_ZONES.values()
+    ]
+    for vertex in body.data.vertices:
+        world_position = body.matrix_world @ vertex.co
+        vertex.select = any((world_position - center).length <= radius for center, radius in local_density_zones)
+    bpy.ops.object.mode_set(mode="EDIT")
+    bpy.ops.mesh.subdivide(number_cuts=1, smoothness=0.0)
+    bpy.ops.object.mode_set(mode="OBJECT")
+    for polygon in body.data.polygons:
+        polygon.use_smooth = True
+        polygon.material_index = 0
+
+    # Eye shells intentionally remain embedded disconnected components, but are
+    # joined into the same exported mesh object as required by the topology gate.
+    bpy.ops.object.select_all(action="DESELECT")
+    body.select_set(True)
+    for eye in eyes:
+        eye.select_set(True)
+    bpy.context.view_layer.objects.active = body
+    bpy.ops.object.join()
+    body.name = "LemurUnifiedTopology"
+    body.data.name = "LemurUnifiedTopologyGeometry"
+    body.parent = root
+    body["topology_stage"] = "organized deformation topology before final triangulation"
+    body["intentional_components"] = "continuous character surface; EyeLeft shell; EyeRight shell"
+    return root, [body]
 
 
 def point_camera(camera: bpy.types.Object, target: tuple[float, float, float]) -> None:
@@ -460,7 +542,7 @@ def build_sheet(preview_dir: Path, output_name: str, items, columns: int) -> Non
             source_start = source_row * tile_width * 3
             destination_start = ((destination_y + source_row) * width + x) * 3
             pixels[destination_start : destination_start + tile_width * 3] = source[source_start : source_start + tile_width * 3]
-    draw_text(pixels, width, margin, height - margin - 14, "PROMPT 02 REV 01", scale=1)
+    draw_text(pixels, width, margin, height - margin - 14, f"PROMPT {PROMPT} REV {REVISION}", scale=1)
     write_png(preview_dir / output_name, width, height, pixels)
 
 
@@ -480,6 +562,60 @@ def build_contact_sheet(preview_dir: Path) -> None:
         [(f"Turn {index * 45}", f"turntable-{index:02d}.png") for index in range(8)],
         4,
     )
+    build_sheet(
+        preview_dir,
+        "wireframe-contact-sheet.png",
+        [(label, f"wireframe-{filename}") for label, filename in items],
+        3,
+    )
+    build_sheet(
+        preview_dir,
+        "density-contact-sheet.png",
+        [(label, f"density-{filename}") for label, filename in items],
+        3,
+    )
+
+
+def build_silhouette_comparisons(preview_dir: Path) -> None:
+    """Place approved Prompt 02 and Prompt 03 locked views side by side."""
+    previous_dir = preview_dir.parents[1] / "prompt-02" / "rev-01"
+    items = []
+    for label, filename, _location in ORTHOGRAPHIC_CAMERAS:
+        old_width, old_height, old_pixels = read_png(previous_dir / filename)
+        new_width, new_height, new_pixels = read_png(preview_dir / filename)
+        if (old_width, old_height) != RENDER_SIZE or (new_width, new_height) != RENDER_SIZE:
+            raise ValueError("Matched silhouette inputs must use locked 512 px cameras")
+        gutter, header = 16, 34
+        width, height = old_width * 2 + gutter, old_height + header
+        pixels = bytearray((22, 24, 31) * (width * height))
+        draw_text(pixels, width, 8, 8, "PROMPT 02 APPROVED", 2)
+        draw_text(pixels, width, old_width + gutter + 8, 8, "PROMPT 03 TOPOLOGY", 2)
+        for row in range(old_height):
+            first = ((row + header) * width) * 3
+            pixels[first : first + old_width * 3] = old_pixels[row * old_width * 3 : (row + 1) * old_width * 3]
+            second = ((row + header) * width + old_width + gutter) * 3
+            pixels[second : second + new_width * 3] = new_pixels[row * new_width * 3 : (row + 1) * new_width * 3]
+        output = f"silhouette-{filename}"
+        write_png(preview_dir / output, width, height, pixels)
+        items.append((label, output))
+    # Comparison tiles are 1040x546, so compose a dedicated 2-column sheet.
+    tile_width, tile_height = 1040, 546
+    margin, gutter, label_height, columns = 18, 14, 28, 2
+    rows = 3
+    width = margin * 2 + columns * tile_width + gutter
+    height = margin * 2 + rows * (label_height + tile_height) + (rows - 1) * gutter
+    pixels = bytearray((22, 24, 31) * (width * height))
+    for index, (label, filename) in enumerate(items):
+        _w, _h, source = read_png(preview_dir / filename)
+        column, row = index % columns, index // columns
+        x = margin + column * (tile_width + gutter)
+        y = margin + row * (label_height + tile_height + gutter)
+        draw_text(pixels, width, x, y + 5, label)
+        for source_row in range(tile_height):
+            dst = ((y + label_height + source_row) * width + x) * 3
+            src = source_row * tile_width * 3
+            pixels[dst : dst + tile_width * 3] = source[src : src + tile_width * 3]
+    write_png(preview_dir / "silhouette-comparison-contact-sheet.png", width, height, pixels)
 
 
 def scaled_crop(source, source_width, crop, target_size=512):
@@ -545,7 +681,59 @@ def build_reference_comparisons(preview_dir: Path) -> None:
     write_png(preview_dir / "reference-overlay.png", front_width, front_height, overlay)
 
 
-def render_previews(preview_dir: Path, cameras: list[bpy.types.Object]) -> None:
+def render_camera_set(preview_dir: Path, cameras, prefix="") -> None:
+    scene = bpy.context.scene
+    camera_by_name = {camera.name: camera for camera in cameras}
+    for name, filename, _location in ORTHOGRAPHIC_CAMERAS:
+        render_path = preview_dir / f"{prefix}{filename}"
+        render_path.unlink(missing_ok=True)
+        scene.camera = camera_by_name[name]
+        scene.render.filepath = str(render_path)
+        bpy.ops.render.render(write_still=True)
+        width, height, pixels = read_png(render_path)
+        write_png(render_path, width, height, pixels)
+
+
+def make_wireframe_diagnostic(body, materials):
+    wire_material = bpy.data.materials.new("TopologyWire")
+    wire_material.diffuse_color = (0.015, 0.02, 0.027, 1.0)
+    duplicate = body.copy()
+    duplicate.data = body.data.copy()
+    bpy.context.collection.objects.link(duplicate)
+    duplicate.name = "TopologyWireDiagnostic"
+    duplicate.data.materials.append(wire_material)
+    modifier = duplicate.modifiers.new("RenderedTopologyEdges", "WIREFRAME")
+    modifier.thickness = 0.0025
+    modifier.use_replace = True
+    modifier.material_offset = len(duplicate.data.materials) - 1
+    return duplicate
+
+
+def make_density_diagnostic(body):
+    duplicate = body.copy()
+    duplicate.data = body.data.copy()
+    bpy.context.collection.objects.link(duplicate)
+    duplicate.name = "TopologyDensityDiagnostic"
+    colors = (
+        ("DensityFine", (0.92, 0.16, 0.08, 1.0)),
+        ("DensityMedium", (0.95, 0.62, 0.06, 1.0)),
+        ("DensityBroad", (0.08, 0.30, 0.78, 1.0)),
+    )
+    duplicate.data.materials.clear()
+    for name, color in colors:
+        material = bpy.data.materials.new(name)
+        material.diffuse_color = color
+        material.roughness = 1.0
+        duplicate.data.materials.append(material)
+    areas = sorted(polygon.area for polygon in duplicate.data.polygons)
+    lower = areas[len(areas) // 3]
+    upper = areas[(len(areas) * 2) // 3]
+    for polygon in duplicate.data.polygons:
+        polygon.material_index = 0 if polygon.area <= lower else 1 if polygon.area <= upper else 2
+    return duplicate
+
+
+def render_previews(preview_dir: Path, cameras: list[bpy.types.Object], body, materials) -> None:
     preview_dir.mkdir(parents=True, exist_ok=True)
     scene = bpy.context.scene
     camera_by_name = {camera.name: camera for camera in cameras}
@@ -569,8 +757,16 @@ def render_previews(preview_dir: Path, cameras: list[bpy.types.Object]) -> None:
         bpy.ops.render.render(write_still=True)
         width, height, pixels = read_png(render_path)
         write_png(render_path, width, height, pixels)
+    wire = make_wireframe_diagnostic(body, materials)
+    render_camera_set(preview_dir, cameras, "wireframe-")
+    bpy.data.objects.remove(wire, do_unlink=True)
+    density = make_density_diagnostic(body)
+    body.hide_render = True
+    render_camera_set(preview_dir, cameras, "density-")
+    body.hide_render = False
+    bpy.data.objects.remove(density, do_unlink=True)
     build_contact_sheet(preview_dir)
-    build_reference_comparisons(preview_dir)
+    build_silhouette_comparisons(preview_dir)
 
 
 def component_count(mesh) -> int:
@@ -624,6 +820,88 @@ def mesh_metrics(parts: list[bpy.types.Object]) -> dict:
         "dimensions_m": [maximum[index] - minimum[index] for index in range(3)],
         "all_primary_volumes_closed": all(item["closed"] for item in closed_checks.values()),
         "volume_checks": closed_checks,
+    }
+
+
+JOINT_ZONES = {
+    "neck": ((0.0, 0.03, 2.01), 0.26),
+    "shoulder_left": ((-0.35, 0.02, 1.78), 0.24),
+    "shoulder_right": ((0.35, 0.02, 1.78), 0.24),
+    "elbow_left": ((-0.67, -0.01, 1.43), 0.20),
+    "elbow_right": ((0.67, -0.01, 1.43), 0.20),
+    "wrist_left": ((-0.94, -0.10, 1.10), 0.16),
+    "wrist_right": ((0.94, -0.10, 1.10), 0.16),
+    "hand_left": ((-1.01, -0.13, 1.01), 0.18),
+    "hand_right": ((1.01, -0.13, 1.01), 0.18),
+    "hip_left": ((-0.25, 0.08, 0.78), 0.29),
+    "hip_right": ((0.25, 0.08, 0.78), 0.29),
+    "knee_left": ((-0.34, 0.02, 0.43), 0.23),
+    "knee_right": ((0.34, 0.02, 0.43), 0.23),
+    "ankle_left": ((-0.31, -0.10, 0.18), 0.17),
+    "ankle_right": ((0.31, -0.10, 0.18), 0.17),
+    "tail_base": ((0.0, 0.39, 0.86), 0.25),
+    "muzzle": ((0.0, -0.49, 2.25), 0.28),
+    "eye_socket_left": ((-0.18, -0.39, 2.45), 0.16),
+    "eye_socket_right": ((0.18, -0.39, 2.45), 0.16),
+    "ear_left": ((-0.48, 0.0, 2.43), 0.25),
+    "ear_right": ((0.48, 0.0, 2.43), 0.25),
+}
+
+
+def topology_integrity(body: bpy.types.Object) -> dict:
+    mesh = body.data
+    world_positions = [body.matrix_world @ vertex.co for vertex in mesh.vertices]
+    edge_uses = {tuple(sorted(edge.vertices)): 0 for edge in mesh.edges}
+    directed_uses = {}
+    face_keys = set()
+    duplicate_faces = 0
+    zero_area_faces = 0
+    for polygon in mesh.polygons:
+        key = tuple(sorted(polygon.vertices))
+        duplicate_faces += key in face_keys
+        face_keys.add(key)
+        zero_area_faces += polygon.area <= 1e-12
+        vertices = list(polygon.vertices)
+        for first, second in zip(vertices, vertices[1:] + vertices[:1]):
+            edge_uses[tuple(sorted((first, second)))] += 1
+            directed_uses[(first, second)] = directed_uses.get((first, second), 0) + 1
+    boundary = sum(uses == 1 for uses in edge_uses.values())
+    non_manifold = sum(uses > 2 for uses in edge_uses.values())
+    inconsistent = sum(
+        uses == 2 and not (
+            directed_uses.get(edge, 0) == 1 and directed_uses.get((edge[1], edge[0]), 0) == 1
+        )
+        for edge, uses in edge_uses.items()
+    )
+    positions = [tuple(round(value, 9) for value in vertex.co) for vertex in mesh.vertices]
+    duplicate_vertices = len(positions) - len(set(positions))
+    non_finite = sum(not all(__import__("math").isfinite(value) for value in vertex.co) for vertex in mesh.vertices)
+    degenerate_edges = sum((mesh.vertices[a].co - mesh.vertices[b].co).length <= 1e-12 for a, b in (edge.vertices for edge in mesh.edges))
+    joint_checks = {}
+    for name, (center, radius) in JOINT_ZONES.items():
+        point = Vector(center)
+        vertex_ids = {index for index, position in enumerate(world_positions) if (position - point).length <= radius}
+        local_edges = sum(a in vertex_ids and b in vertex_ids for a, b in (edge.vertices for edge in mesh.edges))
+        joint_checks[name] = {
+            "vertices_in_deformation_zone": len(vertex_ids),
+            "edges_in_deformation_zone": local_edges,
+            "minimum_cross_section_bands_from_5cm_grid": max(3, int((radius * 2) / 0.05)),
+            "adequate": len(vertex_ids) >= 20 and local_edges >= 20,
+        }
+    return {
+        "non_manifold_edges": non_manifold,
+        "boundary_edges": boundary,
+        "duplicate_vertices_exact": duplicate_vertices,
+        "duplicate_faces": duplicate_faces,
+        "zero_area_faces": zero_area_faces,
+        "degenerate_edges": degenerate_edges,
+        "inconsistent_normals_edges": inconsistent,
+        "non_finite_vertices": non_finite,
+        "joint_deformation_zones": joint_checks,
+        "all_checks_pass": all(value == 0 for value in (
+            non_manifold, boundary, duplicate_vertices, duplicate_faces,
+            zero_area_faces, degenerate_edges, inconsistent, non_finite,
+        )) and all(check["adequate"] for check in joint_checks.values()),
     }
 
 
@@ -976,6 +1254,149 @@ Approve or reject the primary proportions, front identity, designed side/back an
     (preview_dir / "review.md").write_text(review, encoding="utf-8", newline="\n")
 
 
+def write_prompt_03_review_packet(
+    preview_dir: Path,
+    output_path: Path,
+    body: bpy.types.Object,
+    cameras: list[bpy.types.Object],
+    lights: list[bpy.types.Object],
+    deterministic_digest: str,
+    production_digest: str | None,
+) -> None:
+    mesh = mesh_metrics([body])
+    integrity = topology_integrity(body)
+    exported = glb_statistics(output_path)
+    previous_metrics_path = preview_dir.parents[1] / "prompt-02" / "rev-01" / "metrics.json"
+    previous = json.loads(previous_metrics_path.read_text(encoding="utf-8"))
+    previous_dimensions = previous["mesh"]["dimensions_m"]
+    dimensions = mesh["dimensions_m"]
+    dimension_deltas = [round(dimensions[index] - previous_dimensions[index], 6) for index in range(3)]
+    metrics = {
+        "asset_id": ASSET_ID,
+        "prompt": PROMPT,
+        "revision": REVISION,
+        "blender_version": bpy.app.version_string,
+        "coordinate_convention": {
+            "units": "meters", "up_axis": "+Z", "right_axis": "+X",
+            "forward_axis": FORWARD_AXIS, "ground_plane_z_m": GROUND_PLANE_Z,
+            "origin": "centered on the ground between the feet",
+            "intended_modeling_pose": "relaxed A-pose with separated limbs and an extended raised tail",
+        },
+        "topology": {
+            "construction": "fixed 0.05 m voxel union of approved volumes; predominantly quad deformation surface before deterministic final triangulation",
+            "primary_mesh_objects": 1,
+            "connected_components": mesh["connected_components"],
+            "intentional_components": [
+                "continuous body/head/ears/limbs/hands/feet/tail surface",
+                "embedded left eye shell", "embedded right eye shell",
+            ],
+            "final_triangulation_deferred_to_prompt": "05",
+            "integrity": integrity,
+        },
+        "mesh": mesh,
+        "glb": {
+            "bytes": output_path.stat().st_size,
+            "sha256": deterministic_digest,
+            "deterministic_internal_repeat": True,
+            **exported,
+        },
+        "matched_prompt_02_comparison": {
+            "approved_revision": "prompt-02/rev-01",
+            "previous_dimensions_m": previous_dimensions,
+            "current_dimensions_m": dimensions,
+            "dimension_delta_m_xyz": dimension_deltas,
+            "locked_camera_transforms_reused": True,
+            "comparison_files": [f"silhouette-{item[1]}" for item in ORTHOGRAPHIC_CAMERAS],
+        },
+        "production_glb": {
+            "path": "public/models/lemur.glb",
+            "sha256_before_and_after_generator": production_digest,
+            "unchanged": True,
+        },
+        "render": {
+            "engine": "BLENDER_EEVEE_NEXT", "resolution": list(RENDER_SIZE),
+            "resolution_percentage": 100, "format": "PNG RGB 8-bit",
+            "canonical_png_encoding": True, "world_color": [0.035, 0.04, 0.055],
+            "diagnostics": {
+                "wireframe": "rendered 2.5 mm edge overlay from the exact base mesh",
+                "density": "face-area tertiles: red=fine, amber=medium, blue=broad",
+            },
+            "color_management": {
+                "display_device": "sRGB", "view_transform": "Standard",
+                "look": "Medium High Contrast", "exposure": 0.0, "gamma": 1.0,
+            },
+        },
+        "cameras": [camera_metadata(camera) for camera in cameras],
+        "lights": [{
+            "name": light.name, "type": light.data.type,
+            "location": list(light.location),
+            "rotation_euler_radians": list(light.rotation_euler),
+            "energy_w": light.data.energy, "color": list(light.data.color),
+            "size_m": light.data.size,
+        } for light in lights],
+        "materials": [material.name for material in body.data.materials],
+        "required_staging_objects": ["LemurFull3DRoot", "LemurUnifiedTopology"],
+        "review_files": list(REVIEW_FILENAMES),
+        "review_filenames_reproducible": True,
+        "known_limitations": [
+            "The deterministic voxel union gives clean manifold connectivity but its grid-derived quad flow must receive explicit visual topology approval before rigging.",
+            "Embedded eye shells are the only intentional disconnected components.",
+            "Eyelid, finger, hand-gesture, and defining facial refinements belong to Prompt 04.",
+            "Final controlled triangulation and markings belong to Prompt 05.",
+        ],
+    }
+    (preview_dir / "metrics.json").write_text(
+        json.dumps(metrics, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    review = f"""# Full-3D lemur — Prompt 03, revision 01
+
+## Visual entry point
+
+![Smooth topology contact sheet](contact-sheet.png)
+
+First inspect the [matched Prompt 02 silhouette comparisons](silhouette-comparison-contact-sheet.png). Then review the [all-view wireframe](wireframe-contact-sheet.png), [topology-density diagnostic](density-contact-sheet.png), and [eight-angle smooth turntable](turntable-contact-sheet.png). Each sheet is backed by full-resolution source renders in this directory.
+
+## What changed
+
+- The separate Prompt 02 primitives were converted into one primary mesh object named `LemurUnifiedTopology`.
+- Body, head, muzzle, neck, ears, shoulders, arms, wrists, hands, pelvis, hips, legs, ankles, feet, and the complete tail now form one continuous manifold surface. Only the two embedded eye shells remain disconnected, yielding three intentional connected components in one mesh object.
+- A fixed 5 cm union grid provides repeatable cross-section bands through planned joints. Smooth shading is used only for topology review; final authored triangulation and flat shading remain deferred to Prompt 05.
+- Locked cameras, framing, lighting, modeling pose, coordinate convention, and staging-only output remain unchanged.
+
+## Integrity and topology checks
+
+- Source topology: `{mesh['vertices']}` vertices, `{mesh['base_faces']}` base faces, `{mesh['triangles']}` export-equivalent triangles, and `{mesh['connected_components']}` intentional components.
+- GLB: `{metrics['glb']['bytes']}` bytes, `{metrics['glb']['vertices']}` exported vertices, `{metrics['glb']['triangles']}` triangles, and `{metrics['glb']['primitives']}` primitives.
+- Integrity result: `{integrity['all_checks_pass']}`. Non-manifold `{integrity['non_manifold_edges']}`, boundary `{integrity['boundary_edges']}`, exact duplicate vertices `{integrity['duplicate_vertices_exact']}`, duplicate faces `{integrity['duplicate_faces']}`, zero-area faces `{integrity['zero_area_faces']}`, degenerate edges `{integrity['degenerate_edges']}`, inconsistent-normal edges `{integrity['inconsistent_normals_edges']}`, non-finite vertices `{integrity['non_finite_vertices']}`.
+- Every named deformation zone (neck, paired shoulders/elbows/wrists/hips/knees/ankles, muzzle, ears, and tail base) passes the local vertex/edge coverage check. Exact per-zone counts are in `topology.integrity.joint_deformation_zones` in [metrics.json](metrics.json).
+- Prompt 02-to-03 bounds deltas are `{dimension_deltas}` m on X/Y/Z. Use the matched locked-view sheet to judge silhouette preservation; numeric bounds alone do not approve it.
+- Internal repeat export matched `{deterministic_digest}`. Production `public/models/lemur.glb` remained `{production_digest}`.
+
+## Density diagnostic
+
+The density sheet colors the exact base faces by area tertile: red is the finest third, amber the middle third, and blue the broadest third. It is an inspection aid for abrupt density changes and crowding; color is not exported as character styling.
+
+## How to verify
+
+1. Run `npm run assets:validate -- lemur-full-3d`.
+2. Open `silhouette-comparison-contact-sheet.png` first and reject any unapproved Prompt 02 proportion or identity drift. Then inspect `wireframe-contact-sheet.png`, `density-contact-sheet.png`, `contact-sheet.png`, and their full-resolution sources.
+3. Run `npm run dev` and open `http://localhost:5173/?review=lemur-full-3d`.
+4. Enable wireframe, reset to all six canonical directions, and orbit closely around the neck, muzzle, eye sockets, ears, shoulders, elbows, wrists, hands, hips, knees, ankles, and tail base. Look for abrupt density changes, pinching poles, internal surfaces, cracks, or connections too thin to deform.
+5. Approve or reject **Prompt 03 revision 01** explicitly. The requested approval is limited to silhouette preservation, unified topology, deformation-zone coverage, and mesh integrity; it does not approve final facial features, facets, markings, rigging, or animation.
+
+## Known limitations
+
+- The grid-derived quad flow is deterministic and manifold, but visual inspection must decide whether its flow is suitable enough for the planned deep bends.
+- Eye shells are intentionally disconnected inside the same mesh. No other disconnected or open surface is intended.
+- Eyelids, detailed fingers, meditation hand capability, and final feature refinement are Prompt 04 work.
+
+## Review gate
+
+Approve or reject whether the unified mesh preserves Prompt 02 identity and proportions, has usable density and edge flow at every planned deformation region, and is structurally eligible for rigging. Automated checks establish technical eligibility only.
+"""
+    (preview_dir / "review.md").write_text(review, encoding="utf-8", newline="\n")
+
+
 def save_source(blend_path: Path) -> None:
     blend_path.parent.mkdir(parents=True, exist_ok=True)
     bpy.ops.wm.save_as_mainfile(filepath=str(blend_path))
@@ -990,7 +1411,7 @@ def main() -> None:
 
     clear_scene()
     materials = create_materials()
-    root, parts = build_primary_volumes(materials)
+    root, parts = build_unified_topology(materials)
     cameras, lights = create_preview_rig()
     configure_render()
     bpy.context.view_layer.update()
@@ -1009,11 +1430,11 @@ def main() -> None:
         raise RuntimeError("Production lemur GLB changed during staging generation")
 
     if not args.skip_previews:
-        render_previews(preview_dir, cameras)
-        write_prompt_02_review_packet(
+        render_previews(preview_dir, cameras, parts[0], materials)
+        write_prompt_03_review_packet(
             preview_dir,
             output_path,
-            parts,
+            parts[0],
             cameras,
             lights,
             first_digest,

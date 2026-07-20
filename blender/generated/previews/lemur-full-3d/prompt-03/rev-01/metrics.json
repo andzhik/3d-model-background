@@ -1,0 +1,537 @@
+{
+  "asset_id": "lemur-full-3d",
+  "blender_version": "4.3.1",
+  "cameras": [
+    {
+      "lens_mm": 55.0,
+      "location": [
+        0.0,
+        -8.0,
+        1.3600000143051147
+      ],
+      "name": "Front",
+      "ortho_scale": 3.5999999046325684,
+      "rotation_euler_radians": [
+        1.5707964897155762,
+        -0.0,
+        0.0
+      ],
+      "target": [
+        0.0,
+        0.0,
+        1.36
+      ],
+      "type": "ORTHO"
+    },
+    {
+      "lens_mm": 55.0,
+      "location": [
+        -8.0,
+        0.0,
+        1.3600000143051147
+      ],
+      "name": "Left",
+      "ortho_scale": 3.5999999046325684,
+      "rotation_euler_radians": [
+        1.5707963705062866,
+        -0.0,
+        -1.5707963705062866
+      ],
+      "target": [
+        0.0,
+        0.0,
+        1.36
+      ],
+      "type": "ORTHO"
+    },
+    {
+      "lens_mm": 55.0,
+      "location": [
+        8.0,
+        0.0,
+        1.3600000143051147
+      ],
+      "name": "Right",
+      "ortho_scale": 3.5999999046325684,
+      "rotation_euler_radians": [
+        1.5707963705062866,
+        -0.0,
+        1.5707963705062866
+      ],
+      "target": [
+        0.0,
+        0.0,
+        1.36
+      ],
+      "type": "ORTHO"
+    },
+    {
+      "lens_mm": 55.0,
+      "location": [
+        0.0,
+        8.0,
+        1.3600000143051147
+      ],
+      "name": "Back",
+      "ortho_scale": 3.5999999046325684,
+      "rotation_euler_radians": [
+        -1.570796251296997,
+        3.141592502593994,
+        -0.0
+      ],
+      "target": [
+        0.0,
+        0.0,
+        1.36
+      ],
+      "type": "ORTHO"
+    },
+    {
+      "lens_mm": 55.0,
+      "location": [
+        -5.6570000648498535,
+        -5.6570000648498535,
+        1.3600000143051147
+      ],
+      "name": "FrontLeftThreeQuarter",
+      "ortho_scale": 3.5999999046325684,
+      "rotation_euler_radians": [
+        1.5707964897155762,
+        -0.0,
+        -0.7853983044624329
+      ],
+      "target": [
+        0.0,
+        0.0,
+        1.36
+      ],
+      "type": "ORTHO"
+    },
+    {
+      "lens_mm": 55.0,
+      "location": [
+        5.6570000648498535,
+        -5.6570000648498535,
+        1.3600000143051147
+      ],
+      "name": "FrontRightThreeQuarter",
+      "ortho_scale": 3.5999999046325684,
+      "rotation_euler_radians": [
+        1.5707964897155762,
+        -0.0,
+        0.7853983044624329
+      ],
+      "target": [
+        0.0,
+        0.0,
+        1.36
+      ],
+      "type": "ORTHO"
+    },
+    {
+      "lens_mm": 55.0,
+      "location": [
+        -7.919595718383789,
+        -1.1313709020614624,
+        3.3499999046325684
+      ],
+      "name": "PerspectiveTurntable",
+      "ortho_scale": null,
+      "rotation_euler_radians": [
+        1.326994776725769,
+        3.854932728586391e-08,
+        -1.4288996458053589
+      ],
+      "target": [
+        0.0,
+        0.0,
+        1.36
+      ],
+      "type": "PERSP"
+    }
+  ],
+  "coordinate_convention": {
+    "forward_axis": "-Y",
+    "ground_plane_z_m": 0.0,
+    "intended_modeling_pose": "relaxed A-pose with separated limbs and an extended raised tail",
+    "origin": "centered on the ground between the feet",
+    "right_axis": "+X",
+    "units": "meters",
+    "up_axis": "+Z"
+  },
+  "glb": {
+    "bytes": 529404,
+    "deterministic_internal_repeat": true,
+    "materials": 2,
+    "primitives": 2,
+    "sha256": "3a1a6e4338a28ff659550645a9917bcfd163a2e3586b443ebd2d6164e5017266",
+    "triangles": 23888,
+    "vertices": 11992
+  },
+  "known_limitations": [
+    "The deterministic voxel union gives clean manifold connectivity but its grid-derived quad flow must receive explicit visual topology approval before rigging.",
+    "Embedded eye shells are the only intentional disconnected components.",
+    "Eyelid, finger, hand-gesture, and defining facial refinements belong to Prompt 04.",
+    "Final controlled triangulation and markings belong to Prompt 05."
+  ],
+  "lights": [
+    {
+      "color": [
+        1.0,
+        0.9100000262260437,
+        0.8199999928474426
+      ],
+      "energy_w": 850.0,
+      "location": [
+        -3.200000047683716,
+        -4.199999809265137,
+        6.0
+      ],
+      "name": "NeutralKey",
+      "rotation_euler_radians": [
+        0.8498393297195435,
+        9.18545168815399e-08,
+        -0.6510767936706543
+      ],
+      "size_m": 4.0,
+      "type": "AREA"
+    },
+    {
+      "color": [
+        0.7799999713897705,
+        0.8799999952316284,
+        1.0
+      ],
+      "energy_w": 520.0,
+      "location": [
+        3.799999952316284,
+        -2.0,
+        3.799999952316284
+      ],
+      "name": "NeutralFill",
+      "rotation_euler_radians": [
+        1.0540794134140015,
+        2.236455287629724e-08,
+        1.0863184928894043
+      ],
+      "size_m": 3.5,
+      "type": "AREA"
+    },
+    {
+      "color": [
+        0.8600000143051147,
+        0.9100000262260437,
+        1.0
+      ],
+      "energy_w": 700.0,
+      "location": [
+        0.0,
+        4.0,
+        4.800000190734863
+      ],
+      "name": "NeutralRim",
+      "rotation_euler_radians": [
+        0.8605252504348755,
+        6.628265936114985e-08,
+        3.141592502593994
+      ],
+      "size_m": 3.0,
+      "type": "AREA"
+    }
+  ],
+  "matched_prompt_02_comparison": {
+    "approved_revision": "prompt-02/rev-01",
+    "comparison_files": [
+      "silhouette-front.png",
+      "silhouette-left.png",
+      "silhouette-right.png",
+      "silhouette-back.png",
+      "silhouette-front-left-three-quarter.png",
+      "silhouette-front-right-three-quarter.png"
+    ],
+    "current_dimensions_m": [
+      2.308316230773926,
+      2.1457383036613464,
+      2.7758439779281616
+    ],
+    "dimension_delta_m_xyz": [
+      -0.00675,
+      -0.016177,
+      -0.014156
+    ],
+    "locked_camera_transforms_reused": true,
+    "previous_dimensions_m": [
+      2.3150664567947388,
+      2.16191565990448,
+      2.7899999618530273
+    ]
+  },
+  "materials": [
+    "PrimaryGray",
+    "PrimaryEye"
+  ],
+  "mesh": {
+    "all_primary_volumes_closed": true,
+    "base_faces": 11835,
+    "bounds_m": {
+      "max": [
+        1.1668075323104858,
+        1.3636051416397095,
+        2.779238700866699
+      ],
+      "min": [
+        -1.14150869846344,
+        -0.782133162021637,
+        0.0033947229385375977
+      ]
+    },
+    "connected_components": 3,
+    "dimensions_m": [
+      2.308316230773926,
+      2.1457383036613464,
+      2.7758439779281616
+    ],
+    "materials": 2,
+    "mesh_objects": 1,
+    "primitives": 2,
+    "triangles": 23888,
+    "vertices": 11950,
+    "volume_checks": {
+      "LemurUnifiedTopology": {
+        "closed": true,
+        "connected_components": 3,
+        "non_manifold_or_boundary_edges": 0
+      }
+    }
+  },
+  "production_glb": {
+    "path": "public/models/lemur.glb",
+    "sha256_before_and_after_generator": "3a8833d7d0e19a33f378da8133f945e66ce79ac5eb85ba85c4d3e6cee4f52f47",
+    "unchanged": true
+  },
+  "prompt": "03",
+  "render": {
+    "canonical_png_encoding": true,
+    "color_management": {
+      "display_device": "sRGB",
+      "exposure": 0.0,
+      "gamma": 1.0,
+      "look": "Medium High Contrast",
+      "view_transform": "Standard"
+    },
+    "diagnostics": {
+      "density": "face-area tertiles: red=fine, amber=medium, blue=broad",
+      "wireframe": "rendered 2.5 mm edge overlay from the exact base mesh"
+    },
+    "engine": "BLENDER_EEVEE_NEXT",
+    "format": "PNG RGB 8-bit",
+    "resolution": [
+      512,
+      512
+    ],
+    "resolution_percentage": 100,
+    "world_color": [
+      0.035,
+      0.04,
+      0.055
+    ]
+  },
+  "required_staging_objects": [
+    "LemurFull3DRoot",
+    "LemurUnifiedTopology"
+  ],
+  "review_filenames_reproducible": true,
+  "review_files": [
+    "front.png",
+    "left.png",
+    "right.png",
+    "back.png",
+    "front-left-three-quarter.png",
+    "front-right-three-quarter.png",
+    "perspective-turntable.png",
+    "contact-sheet.png",
+    "turntable-contact-sheet.png",
+    "wireframe-contact-sheet.png",
+    "density-contact-sheet.png",
+    "silhouette-comparison-contact-sheet.png",
+    "metrics.json",
+    "review.md",
+    "turntable-00.png",
+    "turntable-01.png",
+    "turntable-02.png",
+    "turntable-03.png",
+    "turntable-04.png",
+    "turntable-05.png",
+    "turntable-06.png",
+    "turntable-07.png",
+    "wireframe-front.png",
+    "wireframe-left.png",
+    "wireframe-right.png",
+    "wireframe-back.png",
+    "wireframe-front-left-three-quarter.png",
+    "wireframe-front-right-three-quarter.png",
+    "density-front.png",
+    "density-left.png",
+    "density-right.png",
+    "density-back.png",
+    "density-front-left-three-quarter.png",
+    "density-front-right-three-quarter.png",
+    "silhouette-front.png",
+    "silhouette-left.png",
+    "silhouette-right.png",
+    "silhouette-back.png",
+    "silhouette-front-left-three-quarter.png",
+    "silhouette-front-right-three-quarter.png"
+  ],
+  "revision": "01",
+  "topology": {
+    "connected_components": 3,
+    "construction": "fixed 0.05 m voxel union of approved volumes; predominantly quad deformation surface before deterministic final triangulation",
+    "final_triangulation_deferred_to_prompt": "05",
+    "integrity": {
+      "all_checks_pass": true,
+      "boundary_edges": 0,
+      "degenerate_edges": 0,
+      "duplicate_faces": 0,
+      "duplicate_vertices_exact": 0,
+      "inconsistent_normals_edges": 0,
+      "joint_deformation_zones": {
+        "ankle_left": {
+          "adequate": true,
+          "edges_in_deformation_zone": 276,
+          "minimum_cross_section_bands_from_5cm_grid": 6,
+          "vertices_in_deformation_zone": 163
+        },
+        "ankle_right": {
+          "adequate": true,
+          "edges_in_deformation_zone": 268,
+          "minimum_cross_section_bands_from_5cm_grid": 6,
+          "vertices_in_deformation_zone": 159
+        },
+        "ear_left": {
+          "adequate": true,
+          "edges_in_deformation_zone": 1037,
+          "minimum_cross_section_bands_from_5cm_grid": 10,
+          "vertices_in_deformation_zone": 540
+        },
+        "ear_right": {
+          "adequate": true,
+          "edges_in_deformation_zone": 1039,
+          "minimum_cross_section_bands_from_5cm_grid": 10,
+          "vertices_in_deformation_zone": 541
+        },
+        "elbow_left": {
+          "adequate": true,
+          "edges_in_deformation_zone": 944,
+          "minimum_cross_section_bands_from_5cm_grid": 8,
+          "vertices_in_deformation_zone": 490
+        },
+        "elbow_right": {
+          "adequate": true,
+          "edges_in_deformation_zone": 944,
+          "minimum_cross_section_bands_from_5cm_grid": 8,
+          "vertices_in_deformation_zone": 490
+        },
+        "eye_socket_left": {
+          "adequate": true,
+          "edges_in_deformation_zone": 370,
+          "minimum_cross_section_bands_from_5cm_grid": 6,
+          "vertices_in_deformation_zone": 181
+        },
+        "eye_socket_right": {
+          "adequate": true,
+          "edges_in_deformation_zone": 364,
+          "minimum_cross_section_bands_from_5cm_grid": 6,
+          "vertices_in_deformation_zone": 179
+        },
+        "hand_left": {
+          "adequate": true,
+          "edges_in_deformation_zone": 1023,
+          "minimum_cross_section_bands_from_5cm_grid": 7,
+          "vertices_in_deformation_zone": 527
+        },
+        "hand_right": {
+          "adequate": true,
+          "edges_in_deformation_zone": 1061,
+          "minimum_cross_section_bands_from_5cm_grid": 7,
+          "vertices_in_deformation_zone": 546
+        },
+        "hip_left": {
+          "adequate": true,
+          "edges_in_deformation_zone": 134,
+          "minimum_cross_section_bands_from_5cm_grid": 11,
+          "vertices_in_deformation_zone": 82
+        },
+        "hip_right": {
+          "adequate": true,
+          "edges_in_deformation_zone": 132,
+          "minimum_cross_section_bands_from_5cm_grid": 11,
+          "vertices_in_deformation_zone": 82
+        },
+        "knee_left": {
+          "adequate": true,
+          "edges_in_deformation_zone": 932,
+          "minimum_cross_section_bands_from_5cm_grid": 9,
+          "vertices_in_deformation_zone": 494
+        },
+        "knee_right": {
+          "adequate": true,
+          "edges_in_deformation_zone": 936,
+          "minimum_cross_section_bands_from_5cm_grid": 9,
+          "vertices_in_deformation_zone": 496
+        },
+        "muzzle": {
+          "adequate": true,
+          "edges_in_deformation_zone": 1496,
+          "minimum_cross_section_bands_from_5cm_grid": 11,
+          "vertices_in_deformation_zone": 769
+        },
+        "neck": {
+          "adequate": true,
+          "edges_in_deformation_zone": 114,
+          "minimum_cross_section_bands_from_5cm_grid": 10,
+          "vertices_in_deformation_zone": 82
+        },
+        "shoulder_left": {
+          "adequate": true,
+          "edges_in_deformation_zone": 836,
+          "minimum_cross_section_bands_from_5cm_grid": 9,
+          "vertices_in_deformation_zone": 437
+        },
+        "shoulder_right": {
+          "adequate": true,
+          "edges_in_deformation_zone": 820,
+          "minimum_cross_section_bands_from_5cm_grid": 9,
+          "vertices_in_deformation_zone": 431
+        },
+        "tail_base": {
+          "adequate": true,
+          "edges_in_deformation_zone": 516,
+          "minimum_cross_section_bands_from_5cm_grid": 10,
+          "vertices_in_deformation_zone": 286
+        },
+        "wrist_left": {
+          "adequate": true,
+          "edges_in_deformation_zone": 571,
+          "minimum_cross_section_bands_from_5cm_grid": 6,
+          "vertices_in_deformation_zone": 307
+        },
+        "wrist_right": {
+          "adequate": true,
+          "edges_in_deformation_zone": 575,
+          "minimum_cross_section_bands_from_5cm_grid": 6,
+          "vertices_in_deformation_zone": 309
+        }
+      },
+      "non_finite_vertices": 0,
+      "non_manifold_edges": 0,
+      "zero_area_faces": 0
+    },
+    "intentional_components": [
+      "continuous body/head/ears/limbs/hands/feet/tail surface",
+      "embedded left eye shell",
+      "embedded right eye shell"
+    ],
+    "primary_mesh_objects": 1
+  }
+}
